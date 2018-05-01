@@ -1,40 +1,37 @@
-import React from 'react';
-import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles';
-import purple from 'material-ui/colors/purple';
-import green from 'material-ui/colors/green';
-import CssBaseline from 'material-ui/CssBaseline';
+import React from 'react'
+import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles'
+import purple from 'material-ui/colors/purple'
+import green from 'material-ui/colors/green'
+import 'typeface-roboto'
 
 // A theme with custom primary and secondary color.
 // It's optional.
 const theme = createMuiTheme({
   palette: {
+    type: 'dark',
     primary: {
       light: purple[300],
       main: purple[500],
-      dark: purple[700],
+      dark: purple[700]
     },
     secondary: {
       light: green[300],
       main: green[500],
-      dark: green[700],
-    },
-  },
-});
+      dark: green[700]
+    }
+  }
+})
 
-function withRoot(Component) {
-  function WithRoot(props) {
-    // MuiThemeProvider makes the theme available down the React tree
-    // thanks to React context.
+function withRoot (Component) {
+  function WithRoot (props) {
     return (
       <MuiThemeProvider theme={theme}>
-        {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
-        <CssBaseline />
         <Component {...props} />
       </MuiThemeProvider>
-    );
+    )
   }
 
-  return WithRoot;
+  return WithRoot
 }
 
-export default withRoot;
+export default withRoot

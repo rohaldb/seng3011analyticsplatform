@@ -1,12 +1,17 @@
 import React from 'react'
-import Button from 'material-ui/Button'
-import Typography from 'material-ui/Typography'
 import { withStyles } from 'material-ui/styles'
 import withRoot from '../withRoot'
+import { VerticalTimeline, VerticalTimelineElement } from 'react-vertical-timeline-component'
+import 'react-vertical-timeline-component/style.min.css'
+import { Event } from 'material-ui-icons'
+import 'typeface-roboto'
+import _ from 'lodash'
 
 const styles = theme => ({
   root: {
-    textAlign: 'center'
+    fontFamily: 'Roboto',
+    // need to fix the background
+    backgroundColor: '#eee'
   }
 })
 
@@ -17,15 +22,23 @@ class Index extends React.Component {
 
     return (
       <div className={classes.root}>
-        <Typography variant='display1' gutterBottom>
-          Material-UI
-        </Typography>
-        <Typography variant='subheading' gutterBottom>
-          example project
-        </Typography>
-        <Button variant='raised' color='secondary' onClick={this.handleClick}>
-          Super Secret Password
-        </Button>
+        <VerticalTimeline>
+          { _.map([1, 1, 1, 1, 1], (x, i) =>
+            <VerticalTimelineElement
+              key={i}
+              className='vertical-timeline-element--work'
+              date='2011 - present'
+              iconStyle={{ background: 'rgb(233, 30, 99)', color: '#fff' }}
+              icon={<Event />}
+    >
+              <h3 className='vertical-timeline-element-title'>Event Title</h3>
+              <h4 className='vertical-timeline-element-subtitle'>Miami, FL</h4>
+              <p>
+        Creative Direction, User Experience, Visual Design, Project Management, Team Leading
+      </p>
+            </VerticalTimelineElement>
+          )}
+        </VerticalTimeline>
       </div>
     )
   }
