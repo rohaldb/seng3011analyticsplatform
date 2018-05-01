@@ -5,6 +5,9 @@ import { VerticalTimeline, VerticalTimelineElement } from 'react-vertical-timeli
 import 'react-vertical-timeline-component/style.min.css'
 import { Event } from 'material-ui-icons'
 import _ from 'lodash'
+import Events from '../eventData'
+import { Link } from 'react-router-dom'
+import moment from 'moment'
 
 const styles = theme => ({
   root: {
@@ -21,19 +24,18 @@ class Landing extends React.Component {
     return (
       <div className={classes.root}>
         <VerticalTimeline>
-          { _.map([1, 1, 1, 1, 1], (x, i) =>
+          { _.map(_.keys(Events), (k, i) =>
             <VerticalTimelineElement
               key={i}
               className='vertical-timeline-element--work'
-              date='2011 - present'
+              date={`${moment(Events[k].start_date).format('DD MMM YY')} - ${moment(Events[k].end_date).format('DD MMM YY')}`}
               iconStyle={{ background: 'rgb(233, 30, 99)', color: '#fff' }}
               icon={<Event />}
-    >
-              <h3 className='vertical-timeline-element-title'>Event Title</h3>
-              <h4 className='vertical-timeline-element-subtitle'>Miami, FL</h4>
-              <p>
-        Creative Direction, User Experience, Visual Design, Project Management, Team Leading
-      </p>
+          >
+              <Link to={`/event/${k}`}>
+                <h3 className='vertical-timeline-element-title'>{Events[k].name}</h3>
+              </Link>
+              <p>{Events[k].description}</p>
             </VerticalTimelineElement>
           )}
         </VerticalTimeline>
