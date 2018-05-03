@@ -1,7 +1,5 @@
 import React from 'react'
 import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles'
-import purple from 'material-ui/colors/purple'
-import green from 'material-ui/colors/green'
 import 'typeface-roboto'
 
 // A theme with custom primary and secondary color.
@@ -10,14 +8,14 @@ const theme = createMuiTheme({
   palette: {
     type: 'dark',
     primary: {
-      light: purple[300],
-      main: purple[500],
-      dark: purple[700]
+      light: '#647786',
+      main: '#394b59',
+      dark: '#112330'
     },
     secondary: {
-      light: green[300],
-      main: green[500],
-      dark: green[700]
+      light: '#df78ef',
+      main: '#ab47bc',
+      dark: '#790e8b'
     }
   }
 })

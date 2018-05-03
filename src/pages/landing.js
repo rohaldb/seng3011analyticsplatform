@@ -1,7 +1,5 @@
 import React from 'react'
-import { withStyles } from 'material-ui/styles'
 import withRoot from '../withRoot'
-import Typography from 'material-ui/Typography'
 import { VerticalTimeline, VerticalTimelineElement } from 'react-vertical-timeline-component'
 import 'react-vertical-timeline-component/style.min.css'
 import { Event } from 'material-ui-icons'
@@ -9,10 +7,12 @@ import _ from 'lodash'
 import Events from '../eventData'
 import { Link } from 'react-router-dom'
 import moment from 'moment'
-import Grid from 'material-ui/Grid'
-// eslint-disable-next-line
-import Css from '../assets/landing.css'
-import Chip from 'material-ui/Chip'
+import {
+  Grid,
+  Chip,
+  Typography,
+  withStyles
+} from 'material-ui'
 
 const styles = theme => ({
   root: {
@@ -31,6 +31,13 @@ const styles = theme => ({
       textDecoration: 'underline',
       textDecorationColor: 'black'
     }
+  },
+  title: {
+    color: theme.palette.primary.main,
+    marginTop: '1em'
+  },
+  subTitle: {
+    color: theme.palette.secondary.main
   }
 })
 
@@ -49,7 +56,23 @@ class Landing extends React.Component {
 
     return (
       <Grid container direction='column' className={classes.root}>
-        <Grid container direction='row'>
+        <Grid item container justify='center' direction='row'>
+          <Grid item xs={8}>
+            <Grid container alignItems='center' direction='column'>
+              <Grid item>
+                <Typography variant='display3' gutterBottom className={classes.title}>
+                  Website Title
+                </Typography>
+              </Grid>
+              <Grid item>
+                <Typography variant='title' gutterBottom className={classes.subTitle}>
+                  This is where a website summary can go. We can put any info a user may want to see on arrival
+                </Typography>
+              </Grid>
+            </Grid>
+          </Grid>
+        </Grid>
+        <Grid item container direction='row'>
           <Grid item xs={12}>
             <VerticalTimeline>
               { _.map(_.keys(Events), (k, i) =>

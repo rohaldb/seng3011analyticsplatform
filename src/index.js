@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom'
 import { Landing, Event } from './pages'
 import { BrowserRouter as Router, Route } from 'react-router-dom'
 import 'typeface-roboto'
+// eslint-disable-next-line
+import './assets/landing.css'
 
 const Root = () => (
   <Router>
