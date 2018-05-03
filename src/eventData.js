@@ -1,4 +1,4 @@
-// more keys: 78Mhx8UT, wZBNu9hY, 7HTAkxj7, r7F3SepB
+// more keys: wZBNu9hY, 7HTAkxj7, r7F3SepB
 const Events = {
   qcHY624B: {
     name: 'Samsung Battery Scandal',
@@ -19,6 +19,17 @@ const Events = {
     related_companies: [
       'Facebook',
       'Cambridge Analytica'
+    ]
+  },
+  '78Mhx8UT': {
+    name: 'Another Title',
+    description: 'Some random text!',
+    // assume dates are unix time stamps
+    start_date: 1112893624595,
+    end_date: 1496302995,
+    related_companies: [
+      'Google',
+      'Microsoft'
     ]
   }
 }

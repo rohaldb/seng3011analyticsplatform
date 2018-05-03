@@ -1,6 +1,7 @@
 import React from 'react'
 import { withStyles } from 'material-ui/styles'
 import withRoot from '../withRoot'
+import Typography from 'material-ui/Typography'
 import { VerticalTimeline, VerticalTimelineElement } from 'react-vertical-timeline-component'
 import 'react-vertical-timeline-component/style.min.css'
 import { Event } from 'material-ui-icons'
@@ -8,13 +9,38 @@ import _ from 'lodash'
 import Events from '../eventData'
 import { Link } from 'react-router-dom'
 import moment from 'moment'
+import Grid from 'material-ui/Grid'
+// eslint-disable-next-line
+import Css from '../assets/landing.css'
+import Chip from 'material-ui/Chip'
 
 const styles = theme => ({
   root: {
     // need to fix the background
-    backgroundColor: '#eee'
+    backgroundColor: 'rgb(227,227,227)',
+    minHeight: '100vh'
+  },
+  chip: {
+    marginTop: theme.spacing.unit,
+    marginRight: theme.spacing.unit,
+    fontSize: ''
+  },
+  link: {
+    textDecoration: 'none',
+    '&:hover': {
+      textDecoration: 'underline',
+      textDecorationColor: 'black'
+    }
   }
 })
+
+const bgCols = [
+  'rgb(33, 150, 243)',
+  'rgb(233, 30, 99)',
+  '#4caf50',
+  '#ff5722',
+  '#ab47bc'
+]
 
 class Landing extends React.Component {
 
@@ -22,24 +48,38 @@ class Landing extends React.Component {
     const { classes } = this.props
 
     return (
-      <div className={classes.root}>
-        <VerticalTimeline>
-          { _.map(_.keys(Events), (k, i) =>
-            <VerticalTimelineElement
-              key={i}
-              className='vertical-timeline-element--work'
-              date={`${moment(Events[k].start_date).format('DD MMM YY')} - ${moment(Events[k].end_date).format('DD MMM YY')}`}
-              iconStyle={{ background: 'rgb(233, 30, 99)', color: '#fff' }}
-              icon={<Event />}
-          >
-              <Link to={`/event/${k}`}>
-                <h3 className='vertical-timeline-element-title'>{Events[k].name}</h3>
-              </Link>
-              <p>{Events[k].description}</p>
-            </VerticalTimelineElement>
-          )}
-        </VerticalTimeline>
-      </div>
+      <Grid container direction='column' className={classes.root}>
+        <Grid container direction='row'>
+          <Grid item xs={12}>
+            <VerticalTimeline>
+              { _.map(_.keys(Events), (k, i) =>
+                <VerticalTimelineElement
+                  style={{color: 'white !important'}}
+                  key={i}
+                  className='vertical-timeline-element--work'
+                  date={`${moment(Events[k].start_date).format('DD MMM YY')} - ${moment(Events[k].end_date).format('DD MMM YY')}`}
+                  iconStyle={{ background: bgCols[i % bgCols.length], color: '#fff' }}
+                  icon={<Event />}
+              >
+                  <Link to={`event/${k}`} className={classes.link}>
+                    <Typography variant='title' className='vertical-timeline-element-title' gutterBottom>
+                      {Events[k].name}
+                    </Typography>
+                  </Link>
+                  <Typography gutterBottom>
+                    {Events[k].description}
+                  </Typography>
+                  <div>
+                    {_.map(Events[k].related_companies, (c, i) =>
+                      <Chip label={c} className={classes.chip} key={i} />
+                )}
+                  </div>
+                </VerticalTimelineElement>
+              )}
+            </VerticalTimeline>
+          </Grid>
+        </Grid>
+      </Grid>
     )
   }
 }

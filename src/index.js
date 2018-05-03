@@ -7,12 +7,14 @@ import 'typeface-roboto'
 const Root = () => (
   <Router>
     <div style={{fontFamily: 'Roboto'}}>
-      <Route exact path='/' component={Landing} />
+      <Route exact path='/' component={LandingParams} />
       <Route path='/event/:eventID' component={EventParams} />
     </div>
   </Router>
 )
 
-const EventParams = ({ match }) => <Event eventID={match.params.eventID} />
+const EventParams = ({ match, history }) => <Event eventID={match.params.eventID} history={history} />
+
+const LandingParams = ({ history }) => <Landing history={history} />
 
 ReactDOM.render(<Root />, document.querySelector('#root'))
