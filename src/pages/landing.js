@@ -65,7 +65,7 @@ class Landing extends React.Component {
                 </Typography>
               </Grid>
               <Grid item>
-                <Typography variant='title' gutterBottom className={classes.subTitle}>
+                <Typography variant='subheading' gutterBottom className={classes.subTitle}>
                   This is where a website summary can go. We can put any info a user may want to see on arrival
                 </Typography>
               </Grid>
@@ -77,7 +77,6 @@ class Landing extends React.Component {
             <VerticalTimeline>
               { _.map(_.keys(Events), (k, i) =>
                 <VerticalTimelineElement
-                  style={{color: 'white !important'}}
                   key={i}
                   className='vertical-timeline-element--work'
                   date={`${moment(Events[k].start_date).format('DD MMM YY')} - ${moment(Events[k].end_date).format('DD MMM YY')}`}
