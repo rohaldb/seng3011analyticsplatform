@@ -1,0 +1,61 @@
+Research ~6 major events + companies related and metrics to measure impact:
+- Will flesh out this a lot more after I finish work
+
+
+e.g. Samsung battery scandal
+Query string, date range, companies affected
+Companies that received most reactions etc.:
+
+
+1. Samsung battery scandal (impacted: Samsung + other phone/service retailers/providers)
+http://fortune.com/2016/10/10/timeline-samsun-galaxy-note-recall-crisis/
+- Galaxy Note 7 announced on August 2nd 2016
+- August 19 released 
+- October 7th Adjusts shipments etc. (crisis over)
+- https://www.nytimes.com/2017/01/22/business/samsung-galaxy-note-7-battery-fires-report.html
+- jan 22 2017, public apology
+
+2. Royal commission into banking  (impacted: AMP, CBA, Westpac, ANZ, NAB, BT Financial, Aussie Home Loans, St George)
+- the big four banks are four of the five largest companies in Australia by market value
+- http://www.radfordlawyers.com.au/royal-commission-timeline/
+- November 30 2017 RC is announced
+- Established on 14 December
+- January 2018 officially begun - ongoing
+- interim report due out 30 sep 2018 and final out 1 Feb 2019
+- CBA: https://www.theguardian.com/australia-news/2018/apr/18/banking-royal-commission-cba-agrees-it-is-the-gold-medallist-at-fees-for-no-service
+    - April 18th 2018 - charging fees to clients who have died.
+    - Also of note: CBA is already being sued “for 53,700 breaches of money laundering and counter-terrorism financing laws after the bank failed to report properly on $77m worth of suspicious transactions through its intelligent deposit ATMs over a number of years.” (August 2017)
+    - Below: Commonwealth Bank admits it lost backup data for 20m accounts (3rd of May 2018)
+    - https://www.theguardian.com/australia-news/2018/may/03/commonwealth-bank-admits-it-lost-backup-data-for-20m-accounts
+- AMP: https://www.theguardian.com/australia-news/2018/apr/20/amp-chief-executivebanking-royal-commission-scandal
+    - April 20th - lying to regulators
+    - 4th May AMP appoints former CBA boss David Murray as new chairman
+        -  http://www.abc.net.au/news/2018-05-04/amp-appoints-former-cba-boss-david-murray-as-new-chairman/9728510
+- Nov 2017,  federal court imposed pecuniary penalties of $10m each on ANZ and NAB for attempting to manipulate the bank bill swap rate
+
+3. Malaysia Airline missing plane MH370 + MH17(impacted: Malaysia Airlines - MAS)
+- http://www.abc.net.au/news/2015-03-08/timeline-a-year-of-searching-for-mh370/6261778
+- MH370 March 8th 2014 -> declared an accident jan 29 2015 -> March 5th 2015 (search is effectively cancelled) 
+- https://www.strategic-risk-europe.com/exclusive-lessons-from-malaysia-airlines-mh370-and-mh17/1417686.article
+- MH17 shot down in ukraine July 2014 - leads to almost certain failure of company after years of mismanagement and recent incidents
+    - http://www.abc.net.au/news/2014-07-21/mh17-crash-to-worsen-malaysia-airlines-perilous-financial-posit/5611488
+
+
+
+3. Trump becoming president
+4. Macron being elected
+5. Brexit 
+6. North Korea meeting with China/USA/South Korea
+7. Harvey Weinstein sexual assault
+8. London Westminster Bridge attack?
+9. Hurricanes in Texas, Florida impact on companies there?
+10. Elon musk dismisses Wall Street analysts  recently
+11. GFC but probably a bit too broad 
+12. Environmental impacts: Adani?
+13. China reduced building for a bit a few years ago, Australian mining companies fell with iron ore
+14. Fire in Bangladesh factory, Nike
+15. Crown casino, packer resigned and executive were locked up. PBL
+16. Australian wheat board, firearm. Paying huge bribes
+17. ABC childcare going under
+18. Amazon? 
+19. Snapchat - kylie jenner
