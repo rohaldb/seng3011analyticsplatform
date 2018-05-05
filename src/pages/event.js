@@ -5,11 +5,7 @@ import Events from '../eventData'
 // import { Grid, Row, Col } from 'react-flexbox-grid'
 import Grid from 'material-ui/Grid';
 import Paper from 'material-ui/Paper';
-import { EventSummary } from '../components'
-import { Article } from '../components'
-import { Companie } from '../components'
-import { Stock } from '../components'
-import { Map } from '../components'
+import { EventSummary, Article, Company, Stock, Map } from '../components'
 import moment from 'moment'
 
 const styles = theme => ({
@@ -45,21 +41,21 @@ class Event extends React.Component {
           </Grid>
           <Grid item xs={4}>
             <Paper className={classes.paper}>
-                <Companie
+                <Company
                     name="Facebook"
                 />
             </Paper>
           </Grid>
           <Grid item xs={4}>
             <Paper className={classes.paper}>
-                <Companie
+                <Company
                     name="Google"
                 />
             </Paper>
           </Grid>
           <Grid item xs={4}>
             <Paper className={classes.paper}>
-                <Companie
+                <Company
                     name="Amazon"
                 />
             </Paper>
