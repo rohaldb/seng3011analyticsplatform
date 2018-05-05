@@ -3,6 +3,9 @@ import { withStyles } from 'material-ui/styles'
 import withRoot from '../withRoot'
 import Events from '../eventData'
 import { Grid, Row, Col } from 'react-flexbox-grid';
+// import { SimpleMap } from '../SimpleMap';
+import SimpleMap from '../SimpleMap';
+// import { SimpleMap } from './layouts/Home';
 
 const styles = theme => ({
   roots: {
@@ -14,18 +17,25 @@ const styles = theme => ({
     // marginRight: '5%'
   },
   box: {
-    color: 'blue',
     border: 'solid 1px black',
     margin: '2%',
     padding: '5%'
   },
-  stocksMap: {
+  maps: {
     margin: '2%',
     width: '100px',
     height: '200px',
-    border: 'solid 1px black',
-    padding: '5%'
+    // border: 'solid 1px black',
+    // padding: '5%'
+  },
+  stocks: {
+      margin: '2%',
+      width: '100px',
+      height: '200px',
+      border: 'solid 1px black',
+      padding: '5%'
   }
+
 })
 
 class Event extends React.Component {
@@ -50,6 +60,8 @@ class Event extends React.Component {
           <Col className={classes.box} xs>
               <h1>{EventData.name}</h1>
               <h3>{EventData.description}</h3>
+              <h3>start: {EventData.start_date}</h3>
+              <h3>end: {EventData.end_date}</h3>
           </Col>
          </Row>
 
@@ -66,26 +78,28 @@ class Event extends React.Component {
         </Row>
 
         <Row className={classes.row} around="xs">
-         <Col className={classes.stocksMap} xs>
+         <Col className={classes.stocks} xs>
            Stocks
          </Col>
-         <Col className={classes.stocksMap} xs>
-            Maps
+         <Col className={classes.maps} xs>
+             <div style={{width: '100%', height: '100%'}}>
+                <SimpleMap/>
+            </div>
          </Col>
         </Row>
         <Row className={classes.row} around="xs">
             <Col className={classes.box} xs>
-                Stocks
+                News Article 1
             </Col>
         </Row>
         <Row className={classes.row} around="xs">
             <Col className={classes.box} xs>
-                Stocks
+                News Article 2
             </Col>
         </Row>
         <Row className={classes.row} around="xs">
             <Col className={classes.box} xs>
-                Stocks
+                News Article 3
             </Col>
         </Row>
     </Grid>
