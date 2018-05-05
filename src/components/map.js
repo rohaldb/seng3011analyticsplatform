@@ -10,7 +10,7 @@ const styles = theme => ({
     },
     title: {
         color: 'white',
-        marginBottom: '0'
+        textAlign: 'center'
     }
 })
 
@@ -22,11 +22,11 @@ class Map extends React.Component {
 
   render () {
     const { title } = this.props
-    const { classes, eventID } = this.props
+    const { classes } = this.props
 
     return (
       <div>
-        <h1 className={classes.title}>{this.props.title}</h1>
+        <h1 className={classes.title}>{title}</h1>
       </div>
     )
   }

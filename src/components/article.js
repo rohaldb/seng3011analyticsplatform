@@ -27,13 +27,13 @@ class Article extends React.Component {
 
   render () {
     const { title, body, source } = this.props
-    const { classes, eventID } = this.props
+    const { classes } = this.props
 
     return (
       <div>
-        <h1 className={classes.title}>{this.props.title}</h1>
-        <p className={classes.body}>{this.props.body}</p>
-        <p>source</p>
+        <h1 className={classes.title}>{title}</h1>
+        <p className={classes.body}>{body}</p>
+        <p>{source}</p>
       </div>
     )
   }

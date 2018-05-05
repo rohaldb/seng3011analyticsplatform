@@ -10,6 +10,7 @@ import { Article } from '../components'
 import { Companie } from '../components'
 import { Stock } from '../components'
 import { Map } from '../components'
+import moment from 'moment'
 
 const styles = theme => ({
     root: {
@@ -37,8 +38,8 @@ class Event extends React.Component {
                   <EventSummary
                     name={EventData.name}
                     description={EventData.description}
-                    start_date={EventData.start_date}
-                    end_date={EventData.end_date}
+                    start_date={`${moment(EventData.start_date).format('DD MMM YY')}`}
+                    end_date={`${moment(EventData.end_date).format('DD MMM YY')}`}
                   />
             </Paper>
           </Grid>
@@ -66,14 +67,14 @@ class Event extends React.Component {
           <Grid item xs={6}>
             <Paper className={classes.paper}>
                 <Stock
-                    title="stock title"
+                    title="Stock"
                 />
             </Paper>
           </Grid>
           <Grid item xs={6}>
             <Paper className={classes.paper}>
                 <Map
-                    title="Map title"
+                    title="Map"
                 />
             </Paper>
           </Grid>

@@ -10,7 +10,8 @@ const styles = theme => ({
     },
     name: {
         color: 'white',
-        marginBottom: '0'
+        textAlign: 'center',
+        // marginTop: '0'
     }
 })
 
@@ -22,11 +23,11 @@ class Companie extends React.Component {
 
   render () {
     const { name } = this.props
-    const { classes, eventID } = this.props
+    const { classes } = this.props
 
     return (
       <div>
-        <h1 className={classes.name}>{this.props.name}</h1>
+        <h1 className={classes.name}>{name}</h1>
       </div>
     )
   }
