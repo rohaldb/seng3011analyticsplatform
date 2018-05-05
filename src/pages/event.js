@@ -5,14 +5,10 @@ import Events from '../eventData'
 // import { Grid, Row, Col } from 'react-flexbox-grid'
 import Grid from 'material-ui/Grid';
 import Paper from 'material-ui/Paper';
-import { EventSummary } from '../components'
-import { Article } from '../components'
 import NewsCard from './newsCard'
-import { Companie } from '../components'
-import { Stock } from '../components'
 import moment from 'moment'
-import { Map } from '../components'
 import { CircularProgress } from 'material-ui/Progress'
+import { EventSummary, Article, Company, Stock, Map } from '../components'
 
 const styles = theme => ({
     root: {
@@ -76,28 +72,28 @@ class Event extends React.Component {
                   <EventSummary
                     name={EventData.name}
                     description={EventData.description}
-                    start_date={EventData.start_date}
-                    end_date={EventData.end_date}
+                    start_date={`${moment(EventData.start_date).format('DD MMM YY')}`}
+                    end_date={`${moment(EventData.end_date).format('DD MMM YY')}`}
                   />
             </Paper>
           </Grid>
           <Grid item xs={4}>
             <Paper className={classes.paper}>
-                <Companie
+                <Company
                     name="Facebook"
                 />
             </Paper>
           </Grid>
           <Grid item xs={4}>
             <Paper className={classes.paper}>
-                <Companie
+                <Company
                     name="Google"
                 />
             </Paper>
           </Grid>
           <Grid item xs={4}>
             <Paper className={classes.paper}>
-                <Companie
+                <Company
                     name="Amazon"
                 />
             </Paper>
@@ -105,14 +101,14 @@ class Event extends React.Component {
           <Grid item xs={6}>
             <Paper className={classes.paper}>
                 <Stock
-                    title="stock title"
+                    title="Stock"
                 />
             </Paper>
           </Grid>
           <Grid item xs={6}>
             <Paper className={classes.paper}>
                 <Map
-                    title="Map title"
+                    title="Map"
                 />
             </Paper>
           </Grid>
