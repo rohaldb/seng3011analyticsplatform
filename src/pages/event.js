@@ -6,6 +6,10 @@ import Events from '../eventData'
 import Grid from 'material-ui/Grid';
 import Paper from 'material-ui/Paper';
 import { EventSummary } from '../components'
+import { Article } from '../components'
+import { Companie } from '../components'
+import { Stock } from '../components'
+import { Map } from '../components'
 
 const styles = theme => ({
     root: {
@@ -14,7 +18,6 @@ const styles = theme => ({
     },
     paper: {
       padding: theme.spacing.unit * 2,
-      textAlign: 'center',
       color: theme.palette.text.secondary,
     }
 })
@@ -28,7 +31,7 @@ class Event extends React.Component {
     return (
 
       <div className={classes.root}>
-        <Grid fluid container spacing={24}>
+        <Grid container spacing={24}>
           <Grid item xs={12}>
             <Paper className={classes.paper}>
                   <EventSummary
@@ -40,28 +43,66 @@ class Event extends React.Component {
             </Paper>
           </Grid>
           <Grid item xs={4}>
-            <Paper className={classes.paper}>Companie 1</Paper>
+            <Paper className={classes.paper}>
+                <Companie
+                    name="Facebook"
+                />
+            </Paper>
           </Grid>
           <Grid item xs={4}>
-            <Paper className={classes.paper}>Companie 2</Paper>
+            <Paper className={classes.paper}>
+                <Companie
+                    name="Google"
+                />
+            </Paper>
           </Grid>
           <Grid item xs={4}>
-            <Paper className={classes.paper}>Companie 3</Paper>
+            <Paper className={classes.paper}>
+                <Companie
+                    name="Amazon"
+                />
+            </Paper>
           </Grid>
           <Grid item xs={6}>
-            <Paper className={classes.paper}>Stocks</Paper>
+            <Paper className={classes.paper}>
+                <Stock
+                    title="stock title"
+                />
+            </Paper>
           </Grid>
           <Grid item xs={6}>
-            <Paper className={classes.paper}>Heat Map</Paper>
+            <Paper className={classes.paper}>
+                <Map
+                    title="Map title"
+                />
+            </Paper>
           </Grid>
           <Grid item xs={12}>
-            <Paper className={classes.paper}>Article 1</Paper>
+              <Paper className={classes.paper}>
+                    <Article
+                      title="Article 1"
+                      body="body of article 1"
+                      source="source of article 1"
+                    />
+              </Paper>
           </Grid>
           <Grid item xs={12}>
-            <Paper className={classes.paper}>Article 2</Paper>
+            <Paper className={classes.paper}>
+                <Article
+                  title="Article 2"
+                  body="body of article 2"
+                  source="source of article 2"
+                />
+            </Paper>
           </Grid>
           <Grid item xs={12}>
-            <Paper className={classes.paper}>Article 3</Paper>
+            <Paper className={classes.paper}>
+                <Article
+                  title="Article 3"
+                  body="body of article 3"
+                  source="source of article 3"
+                />
+            </Paper>
           </Grid>
         </Grid>
       </div>
