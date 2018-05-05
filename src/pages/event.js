@@ -16,8 +16,15 @@ const styles = theme => ({
   box: {
     color: 'blue',
     border: 'solid 1px black',
-    margin: '10px',
-    padding: '10%'
+    margin: '2%',
+    padding: '5%'
+  },
+  stocksMap: {
+    margin: '2%',
+    width: '100px',
+    height: '200px',
+    border: 'solid 1px black',
+    padding: '5%'
   }
 })
 
@@ -41,7 +48,8 @@ class Event extends React.Component {
       <Grid fluid className={classes.grid}>
         <Row className={classes.row} around="xs">
           <Col className={classes.box} xs>
-            description
+              <h1>{EventData.name}</h1>
+              <h3>{EventData.description}</h3>
           </Col>
          </Row>
 
@@ -58,10 +66,10 @@ class Event extends React.Component {
         </Row>
 
         <Row className={classes.row} around="xs">
-         <Col className={classes.box} xs>
+         <Col className={classes.stocksMap} xs>
            Stocks
          </Col>
-         <Col className={classes.box} xs>
+         <Col className={classes.stocksMap} xs>
             Maps
          </Col>
         </Row>
