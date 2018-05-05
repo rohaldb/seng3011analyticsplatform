@@ -79,7 +79,7 @@ class Landing extends React.Component {
                 <VerticalTimelineElement
                   key={i}
                   className='vertical-timeline-element--work'
-                  date={`${moment(Events[k].start_date).format('DD MMM YY')} - ${moment(Events[k].end_date).format('DD MMM YY')}`}
+                  date={`${moment(Events[k].start_date * 1000).format('DD MMM YY')} - ${moment(Events[k].end_date * 1000).format('DD MMM YY')}`}
                   iconStyle={{ background: bgCols[i % bgCols.length], color: '#fff' }}
                   icon={<Event />}
               >

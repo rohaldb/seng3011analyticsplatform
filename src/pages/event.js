@@ -72,8 +72,8 @@ class Event extends React.Component {
                   <EventSummary
                     name={EventData.name}
                     description={EventData.description}
-                    start_date={`${moment(EventData.start_date).format('DD MMM YY')}`}
-                    end_date={`${moment(EventData.end_date).format('DD MMM YY')}`}
+                    start_date={`${moment(EventData.start_date * 1000).format('DD MMM YY')}`}
+                    end_date={`${moment(EventData.end_date * 1000).format('DD MMM YY')}`}
                   />
             </Paper>
           </Grid>
