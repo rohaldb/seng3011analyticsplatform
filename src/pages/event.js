@@ -62,6 +62,7 @@ class Event extends React.Component {
     const { responseJSON, loading } = this.state
     const { classes, eventID } = this.props
     const EventData = Events[eventID]
+    document.title = 'EventStock - ' + EventData.name
 
     return (
 

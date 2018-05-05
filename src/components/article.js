@@ -39,7 +39,7 @@ class Article extends React.Component {
             <h2 className={classes.title}>{this.props.title}</h2>
             <h4 className={classes.date}>{this.props.date}</h4>
             <p className={classes.body}>{this.props.body}
-              <a target="_blank" href={this.props.url}>Read more</a>
+              <a target="_blank" href={this.props.url}>Read More</a>
             </p>
           </div>
         </Paper>

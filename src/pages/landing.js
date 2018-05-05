@@ -54,6 +54,10 @@ class Landing extends React.Component {
   render () {
     const { classes } = this.props
 
+    const date = (d) => {
+      return (d === 'ongoing') ? 'Present' : moment(d * 1000).format('DD MMM YY')
+    }
+
     return (
       <Grid container direction='column' className={classes.root}>
         <Grid item container justify='center' direction='row'>
@@ -61,7 +65,7 @@ class Landing extends React.Component {
             <Grid container alignItems='center' direction='column'>
               <Grid item>
                 <Typography variant='display3' gutterBottom className={classes.title}>
-                  Website Title
+                  EventStock
                 </Typography>
               </Grid>
               <Grid item>
@@ -79,7 +83,7 @@ class Landing extends React.Component {
                 <VerticalTimelineElement
                   key={i}
                   className='vertical-timeline-element--work'
-                  date={`${moment(Events[k].start_date * 1000).format('DD MMM YY')} - ${moment(Events[k].end_date * 1000).format('DD MMM YY')}`}
+                  date={`${moment(Events[k].start_date * 1000).format('DD MMM YY')} - ${date(Events[k].end_date)}`}
                   iconStyle={{ background: bgCols[i % bgCols.length], color: '#fff' }}
                   icon={<Event />}
               >

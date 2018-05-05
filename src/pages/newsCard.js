@@ -6,8 +6,9 @@ import Card, { CardHeader, CardContent } from 'material-ui/Card'
 import Typography from 'material-ui/Typography'
 import moment from 'moment'
 import _ from 'lodash'
-import Paper from 'material-ui/Paper';
+import Paper from 'material-ui/Paper'
 import { Article } from '../components'
+import { prettyDate } from './time'
 
 // Styles should go here CSS should go here
 const styles = theme => ({
@@ -31,17 +32,16 @@ class NewsCard extends Component {
 
     return (
       data.map(function(item, i) {
-        const date = (new moment(item.webPublicationDate)).format('DD MMM YY')
-        const time = (new moment(item.webPublicationDate)).format('HH:mm:ss')
-        const timestamp = `${date}  at ${ time}`
+        const timestamp = prettyDate(new Date(item.webPublicationDate))
         return <Article
           title={item.webTitle}
           date={timestamp}
-          body={item.fields.bodyText.substring(0, 300) + ' ... '}
+          body={item.fields.bodyText.substring(0, 350).replace(/\s[^\s]*$/, '').replace(/\s*[^a-z]+$/i, '') + ' ... '}
           url={item.webUrl}
           />
       })
     )
+
   }
 }
 

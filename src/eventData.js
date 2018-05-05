@@ -2,9 +2,20 @@
  * dates are unix timestamps
  * keywords used for news article search
  * names, descriptions and companies pre-determined
+ * events are arranged by increasing start date
  */
 
 const Events = {
+  p3TAkxj7: {
+    name: 'Malaysia Airlines scandal',
+    description: 'Future of Malaysia Airlines uncertain after Flight MH370 missing and Flight MH17 shot down',
+    start_date: 1394197200, /* date of crash */
+    end_date: 1425474000, /* search for mh370 cancelled */
+    related_companies: [
+      'Malaysia Airlines'
+    ],
+    keywords: ['malaysia airlines', 'mh370', 'mh17']
+  },
   qcHY624B: {
     name: 'Samsung battery scandal',
     description: 'Samsung share prices plummet after Galaxy Note 7 batteries cause explosions',
@@ -32,31 +43,11 @@ const Events = {
     ],
     keywords: ['banking', 'royal', 'commission']
   },
-  p3TAkxj7: {
-    name: 'Malaysia Airlines scandal',
-    description: 'Future of Malaysia Airlines uncertain after Flight MH370 missing and Flight MH17 shot down',
-    start_date: 1394197200, /* date of crash */
-    end_date: 1425474000, /* search for mh370 cancelled */
-    related_companies: [
-      'Malaysia Airlines'
-    ],
-    keywords: ['malaysia airlines', 'mh370', 'mh17']
-  },
-  r7F3SepB: {
-    name: 'Elon Musk dismissive of analysts',
-    description: 'Elon Musk\'s refusal to answer \'boring\' questions sinks Tesla shares',
-    start_date: 1525010400, /* initial instance */
-    end_date: 1530280800, /* ongoing - end date in future */
-    related_companies: [
-      'Tesla'
-    ],
-    keywords: ['tesla', 'elon musk', 'analysts']
-  },
   Kr3muXpn: {
     name: 'Cambridge Analytica scandal',
     description: 'Facebook in the spotlight after Cambridge Analytica involved in alleged harvesting and use of personal data',
     start_date: 1519822800, /* scandal made public */
-    end_date: 1530280800, /* ongoing - end date in future */
+    end_date: 'ongoing', /* ongoing - developing story */
     related_companies: [
       'Facebook',
       'Cambridge Analytica'
@@ -73,6 +64,16 @@ const Events = {
       'PBL'
     ],
     keywords: ['james packer', 'crown resorts', 'resigns', 'mental health']
+  },
+  r7F3SepB: {
+    name: 'Elon Musk dismissive of analysts',
+    description: 'Elon Musk\'s refusal to answer \'boring\' questions sinks Tesla shares',
+    start_date: 1525010400, /* initial instance */
+    end_date: 'ongoing', /* ongoing - recent event */
+    related_companies: [
+      'Tesla'
+    ],
+    keywords: ['tesla', 'elon musk', 'analysts']
   },
   /*
   g3F6aUb7: {
