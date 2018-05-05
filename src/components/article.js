@@ -2,6 +2,8 @@ import React from 'react'
 import { withStyles } from 'material-ui/styles'
 import withRoot from '../withRoot'
 import PropTypes from 'prop-types'
+import Grid from 'material-ui/Grid'
+import Paper from 'material-ui/Paper';
 
 const styles = theme => ({
     root: {
@@ -21,20 +23,27 @@ class Article extends React.Component {
 
   static propTypes = {
     title: PropTypes.string.isRequired,
+    date: PropTypes.string.isRequired,
     body: PropTypes.string.isRequired,
-    source: PropTypes.string.isRequired,
+    url: PropTypes.string.isRequired,
   }
 
   render () {
-    const { title, body, source } = this.props
+    const { title, date, body, url } = this.props
     const { classes, eventID } = this.props
 
     return (
-      <div>
-        <h1 className={classes.title}>{this.props.title}</h1>
-        <p className={classes.body}>{this.props.body}</p>
-        <p>source</p>
-      </div>
+      <Grid item xs={12}>
+        <Paper className={classes.paper}>
+          <div>
+            <h2 className={classes.title}>{this.props.title}</h2>
+            <h4 className={classes.date}>{this.props.date}</h4>
+            <p className={classes.body}>{this.props.body}
+              <a target="_blank" href={this.props.url}>Read more</a>
+            </p>
+          </div>
+        </Paper>
+      </Grid>
     )
   }
 }

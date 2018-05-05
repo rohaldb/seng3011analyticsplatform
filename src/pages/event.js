@@ -7,9 +7,12 @@ import Grid from 'material-ui/Grid';
 import Paper from 'material-ui/Paper';
 import { EventSummary } from '../components'
 import { Article } from '../components'
+import NewsCard from './newsCard'
 import { Companie } from '../components'
 import { Stock } from '../components'
+import moment from 'moment'
 import { Map } from '../components'
+import { CircularProgress } from 'material-ui/Progress'
 
 const styles = theme => ({
     root: {
@@ -24,7 +27,43 @@ const styles = theme => ({
 
 class Event extends React.Component {
 
+  constructor(props) {
+    super(props);
+    this.state = {loading: false, responseJSON: null};
+  }
+
+  getNews() {
+    this.setState({ loading: true })
+
+    const eventInfo = Events[this.props.eventID]
+    const start = new moment(eventInfo.start_date * 1000)
+    const end = new moment(eventInfo.end_date * 1000)
+    const keywords = eventInfo.keywords.toString().replace(/,/g, '%20AND%20')
+
+    const base = 'https://content.guardianapis.com/search'
+    const params = 'page-size=50&show-blocks=main&show-fields=bodyText'
+    const apiKey = 'api-key=35b90e54-3944-4e4f-9b0e-a511d0dda44d'
+    const query = `q=${keywords}`
+    const dates = `from-date=${start.format('YYYY-MM-DD')}&to-date=${end.format('YYYY-MM-DD')}`
+
+    console.log(`fetching ${base}?${query}&${dates}&${params}&${apiKey}`)
+    fetch(`${base}?${query}&${dates}&${params}&${apiKey}`)
+    .then((response) => {
+      if (response.ok) {
+        response.json().then(data => {
+          console.log(data)
+          this.setState({ responseJSON: data, loading: false })
+        })
+      }
+    }).catch(error => console.error(error))
+  }
+
+  componentDidMount() {
+    this.getNews()
+  }
+
   render () {
+    const { responseJSON, loading } = this.state
     const { classes, eventID } = this.props
     const EventData = Events[eventID]
 
@@ -77,33 +116,12 @@ class Event extends React.Component {
                 />
             </Paper>
           </Grid>
-          <Grid item xs={12}>
-              <Paper className={classes.paper}>
-                    <Article
-                      title="Article 1"
-                      body="body of article 1"
-                      source="source of article 1"
-                    />
-              </Paper>
-          </Grid>
-          <Grid item xs={12}>
-            <Paper className={classes.paper}>
-                <Article
-                  title="Article 2"
-                  body="body of article 2"
-                  source="source of article 2"
-                />
-            </Paper>
-          </Grid>
-          <Grid item xs={12}>
-            <Paper className={classes.paper}>
-                <Article
-                  title="Article 3"
-                  body="body of article 3"
-                  source="source of article 3"
-                />
-            </Paper>
-          </Grid>
+
+          { loading ? <CircularProgress className={classes.margin}
+            size={70} color="secondary" /> :
+            responseJSON ?
+            <NewsCard responseJSON={responseJSON} /> : null }
+
         </Grid>
       </div>
     )
