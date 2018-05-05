@@ -25,7 +25,8 @@ class Event extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = {loading: false, responseJSON: null};
+    document.getElementById('global').style.overflow = 'hidden';
+    this.state = {loading: false, responseJSON: null, items: 10, pagination: false};
   }
 
   getNews() {
@@ -56,17 +57,29 @@ class Event extends React.Component {
 
   componentDidMount() {
     this.getNews()
+    this.refs.iScroll.addEventListener("scroll", () => {
+      if (this.refs.iScroll.scrollTop + this.refs.iScroll.clientHeight >=this.refs.iScroll.scrollHeight){
+        this.loadMoreItems();
+      }
+    });
+  }
+
+  loadMoreItems() {
+    this.setState({ pagination: true });
+    setTimeout(() => {
+      this.setState({ items: this.state.items + 3, pagination: false });
+    }, 3000);
   }
 
   render () {
-    const { responseJSON, loading } = this.state
+    const { responseJSON, items, loading } = this.state
     const { classes, eventID } = this.props
     const EventData = Events[eventID]
     document.title = 'EventStock - ' + EventData.name
 
     return (
 
-      <div className={classes.root}>
+      <div class="overlay" className={classes.root} ref="iScroll" style={{ height: document.documentElement.clientHeight-100,  overflow: "scroll" }}>
         <Grid container spacing={24}>
           <Grid item xs={12}>
             <Paper className={classes.paper}>
@@ -117,7 +130,7 @@ class Event extends React.Component {
           { loading ? <CircularProgress className={classes.margin}
             size={70} color="secondary" /> :
             responseJSON ?
-            <NewsCard responseJSON={responseJSON} /> : null }
+            <NewsCard responseJSON={responseJSON} items={items}/> : null }
 
         </Grid>
       </div>
