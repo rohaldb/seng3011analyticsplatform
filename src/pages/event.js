@@ -13,7 +13,8 @@ import { getDate } from '../time'
 const styles = theme => ({
     root: {
       flexGrow: 1,
-      padding: '4%'
+      padding: '4%',
+      overlay: true
     },
     paper: {
       padding: theme.spacing.unit * 2,
@@ -83,7 +84,7 @@ class Event extends React.Component {
 
     return (
 
-      <div class="overlay" className={classes.root} ref="iScroll" style={{ height: document.documentElement.clientHeight-100,  overflow: "scroll" }}>
+      <div className={classes.root} ref="iScroll" style={{ height: document.documentElement.clientHeight - 100, overflow: "scroll" }}>
         <Grid container spacing={24}>
           <Grid item xs={12}>
             <Paper className={classes.paper}>

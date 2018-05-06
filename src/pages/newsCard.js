@@ -19,7 +19,7 @@ class NewsCard extends Component {
 
   static propTypes = {
     responseJSON: PropTypes.object.isRequired,
-    items: PropTypes.object.isRequired,
+    items: PropTypes.number.isRequired,
   }
 
   displayItems(data, num) {
@@ -27,7 +27,7 @@ class NewsCard extends Component {
     data.map(function(item, i) {
       const timestamp = prettyDate(new Date(item.webPublicationDate))
       if (num-- >= 0) {
-        items.push(<Article
+        items.push(<Article key={num}
           title={item.webTitle}
           date={timestamp}
           body={item.fields.bodyText.substring(0, 350).replace(/\s[^\s]*$/, '').replace(/\s*[^a-z]+$/i, '') + ' ... '}

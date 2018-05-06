@@ -95,7 +95,7 @@ class Landing extends React.Component {
                   </Typography>
                   <div>
                     {_.map(Events[k].related_companies, (c, i) =>
-                      <Chip label={i} className={classes.chip} key={c} />
+                      <Chip label={i} className={classes.chip} key={i} />
                 )}
                   </div>
                 </VerticalTimelineElement>
