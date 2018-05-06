@@ -41,7 +41,10 @@ class Event extends React.Component {
     const params = 'page-size=100&show-blocks=main&show-fields=bodyText'
     const apiKey = 'api-key=35b90e54-3944-4e4f-9b0e-a511d0dda44d'
     const query = `q=${keywords}`
-    const dates = `from-date=${start.format('YYYY-MM-DD')}&to-date=${end.format('YYYY-MM-DD')}`
+    var dates = `from-date=${start.format('YYYY-MM-DD')}`
+    if (eventInfo.end_date !== 'ongoing') {
+      dates += `&to-date=${end.format('YYYY-MM-DD')}`
+    }
 
     console.log(`fetching ${base}?${query}&${dates}&${params}&${apiKey}`)
     fetch(`${base}?${query}&${dates}&${params}&${apiKey}`)
