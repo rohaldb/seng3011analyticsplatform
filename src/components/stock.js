@@ -2,7 +2,12 @@ import React from 'react'
 import { withStyles } from 'material-ui/styles'
 import withRoot from '../withRoot'
 import PropTypes from 'prop-types'
+
+import 'amstock3/amcharts/amcharts.js';
+import 'amstock3/amcharts/serial.js';
+import 'amstock3/amcharts/amstock.js';
 import AmCharts from '@amcharts/amcharts3-react';
+import 'amstock3/amcharts/themes/light.js';
 
 const styles = theme => ({
     root: {
@@ -15,134 +20,161 @@ const styles = theme => ({
     }
 })
 
-// Generate random data
-function generateData() {
-  var firstDate = new Date();
-
-  var dataProvider = [];
-
-  for (var i = 0; i < 100; ++i) {
-    var date = new Date(firstDate.getTime());
-
-    date.setDate(i);
-
-    dataProvider.push({
-      date: date,
-      value: Math.floor(Math.random() * 100)
-    });
-  }
-
-  return dataProvider;
-}
-
 class Stock extends React.Component {
 
   static propTypes = {
     title: PropTypes.string.isRequired,
+    stockJSON: PropTypes.object.isRequired,
+  };
+
+  // Generate config object for AMCharts
+  config_compare (datasets) {
+    return {
+      "type": "stock",
+      "theme": "light",
+      "dataSets": datasets,
+
+      "panels": [ {
+        "title": "Value",
+        "showCategoryAxis": false,
+        "percentHeight": 70,
+        "valueAxes": [ {
+          "id": "v1",
+          "dashLength": 5
+        } ],
+
+        "categoryAxis": {
+          "dashLength": 5
+        },
+
+        "stockGraphs": [ {
+          "type": "candlestick",
+          "id": "g1",
+          "openField": "open",
+          "closeField": "close",
+          "highField": "high",
+          "lowField": "low",
+          "valueField": "close",
+          "lineColor": "#7f8da9",
+          "fillColors": "#7f8da9",
+          "negativeLineColor": "#db4c3c",
+          "negativeFillColors": "#db4c3c",
+          "fillAlphas": 1,
+          "useDataSetColors": false,
+          "comparable": true,
+          "compareField": "value",
+          "showBalloon": false,
+          "proCandlesticks": true
+        } ],
+
+        "stockLegend": {
+          "valueTextRegular": undefined,
+          "periodValueTextComparing": "[[percents.value.close]]%"
+        }
+      },
+
+        {
+          "title": "Volume",
+          "percentHeight": 30,
+          "marginTop": 1,
+          "showCategoryAxis": true,
+          "valueAxes": [ {
+            "dashLength": 5
+          } ],
+
+          "categoryAxis": {
+            "dashLength": 5
+          },
+
+          "stockGraphs": [ {
+            "valueField": "volume",
+            "type": "column",
+            "showBalloon": false,
+            "fillAlphas": 1
+          } ],
+
+          "stockLegend": {
+            "markerType": "none",
+            "markerSize": 0,
+            "labelText": "",
+            "periodValueTextRegular": "[[value.close]]"
+          }
+        }
+      ],
+
+      "chartScrollbarSettings": {
+        "graph": "g1",
+        "graphType": "line",
+        "usePeriod": "WW"
+      },
+
+      "chartCursorSettings": {
+        "valueLineBalloonEnabled": true,
+        "valueLineEnabled": true
+      },
+
+      "periodSelector": {
+        "position": "bottom",
+        "periods": [ {
+          "period": "DD",
+          "count": 10,
+          "label": "10 days"
+        }, {
+          "period": "MM",
+          "selected": true,
+          "count": 1,
+          "label": "1 month"
+        }, {
+          "period": "YYYY",
+          "count": 1,
+          "label": "1 year"
+        }, {
+          "period": "YTD",
+          "label": "YTD"
+        }, {
+          "period": "MAX",
+          "label": "MAX"
+        } ]
+      }
+    }
   }
 
   constructor (props) {
     super(props);
-    this.state = {
-      dataProvider: generateData(),
-      timer: null
-    };
-  }
 
-  componentDidMount() {
-    this.setState({
-      // Update the chart dataProvider every 3 seconds
-      timer: setInterval(() => {
-        this.setState({
-          dataProvider: generateData()
-        });
-      }, 3000)
-    });
+    // Generate stock chart data
+    let stockJSON = this.props.stockJSON;
+    let companyDatasets = [];
+    for (let companyCode in stockJSON) {
+      if (stockJSON.hasOwnProperty(companyCode)) {
+        let companyJSON = {
+          "fieldMappings": [
+            {
+              "fromField": "value",
+              "toField": "value"
+            }
+          ],
+          "dataProvider": stockJSON[companyCode],
+          "title": companyCode,
+          "categoryField": "date",
+          "compared": true,
+        };
+
+        companyDatasets.push(companyJSON);
+      }
+    }
+
+    this.state = { config: this.config_compare(companyDatasets) };
   }
 
   render () {
-    const { title } = this.props
-    const { classes } = this.props
-
-    const config = {
-      "type": "serial",
-      "theme": "light",
-      "marginRight": 40,
-      "marginLeft": 40,
-      "autoMarginOffset": 20,
-      "mouseWheelZoomEnabled": true,
-      "valueAxes": [{
-        "id": "v1",
-        "axisAlpha": 0,
-        "position": "left",
-        "ignoreAxisWidth": true
-      }],
-      "balloon": {
-        "borderThickness": 1,
-        "shadowAlpha": 0
-      },
-      "graphs": [{
-        "id": "g1",
-        "balloon":{
-          "drop": true,
-          "adjustBorderColor": false,
-          "color":"#ffffff"
-        },
-        "bullet": "round",
-        "bulletBorderAlpha": 1,
-        "bulletColor": "#FFFFFF",
-        "bulletSize": 5,
-        "hideBulletsCount": 50,
-        "lineThickness": 2,
-        "title": "red line",
-        "useLineColorForBulletBorder": true,
-        "valueField": "value",
-        "balloonText": "<span style='font-size:18px;'>[[value]]</span>"
-      }],
-      "chartScrollbar": {
-        "graph": "g1",
-        "oppositeAxis": false,
-        "offset":30,
-        "scrollbarHeight": 80,
-        "backgroundAlpha": 0,
-        "selectedBackgroundAlpha": 0.1,
-        "selectedBackgroundColor": "#888888",
-        "graphFillAlpha": 0,
-        "graphLineAlpha": 0.5,
-        "selectedGraphFillAlpha": 0,
-        "selectedGraphLineAlpha": 1,
-        "autoGridCount": true,
-        "color":"#AAAAAA"
-      },
-      "chartCursor": {
-        "pan": true,
-        "valueLineEnabled": true,
-        "valueLineBalloonEnabled": true,
-        "cursorAlpha":1,
-        "cursorColor":"#258cbb",
-        "limitToGraph":"g1",
-        "valueLineAlpha":0.2,
-        "valueZoomable": true
-      },
-      "valueScrollbar":{
-        "oppositeAxis": false,
-        "offset":50,
-        "scrollbarHeight":10
-      },
-      "categoryField": "date",
-      "categoryAxis": {
-        "parseDates": true,
-        "dashLength": 1,
-        "minorGridEnabled": true
-      },
-      "dataProvider": this.state.dataProvider
-    };
-
+    const { title } = this.props;
+    const { classes } = this.props;
 
     return (
       <div>
         <h1 className={classes.title}>{title}</h1>
-        <AmCharts.React style={{ width: "100%", height: "500px" }} options={config} />
+        <AmCharts.React className="stockChart" style={{ width: "100%", height: "500px" }} options={this.state.config} />
       </div>
     )
   }

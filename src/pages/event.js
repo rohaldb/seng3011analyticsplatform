@@ -26,7 +26,8 @@ class Event extends React.Component {
   constructor(props) {
     super(props)
     document.getElementById('global').style.overflow = 'hidden'
-    this.state = {loading: false, responseJSON: null, items: 10, pagination: false}
+    this.state = {loading: false, responseJSON: null, items: 10, pagination: false,
+      stockJSON: {}, loadingStock: true}
   }
 
   getNews() {
@@ -55,8 +56,61 @@ class Event extends React.Component {
     }).catch(error => console.error(error))
   }
 
+  getStockPrices() {
+    const eventInfo = Events[this.props.eventID];
+    const companies = eventInfo.related_companies;
+
+    let companiesProcessed = 0;
+    for (let companyName in companies) {
+      // console.log("COMPANY: " + companyName);
+      if (companies.hasOwnProperty(companyName) && companies[companyName]) {
+        const companyCode = companies[companyName];
+        const base = 'https://www.alphavantage.co/query';
+        const apiKey = '2V4IGWVZ6W8XS8AI';
+        // TODO MAKE OUTPUTSIZE == full
+        const params = `?function=TIME_SERIES_DAILY&outputsize=compact&symbol=${companyCode}&apikey=${apiKey}`;
+        const url = base + params;
+        // console.log('FETCHING: ' + url);
+        fetch(url).then(response => {
+          if (response.ok) {
+            response.json().then(data => {
+              data = Object.values(data)[1];
+              let newData = [];
+              for (let date in data) {
+                if (data.hasOwnProperty(date)) {
+                  newData.unshift({
+                    date: date,
+                    "value": parseFloat(data[date]["4. close"]),
+                    "open": parseFloat(data[date]["1. open"]),
+                    "high": parseFloat(data[date]["2. high"]),
+                    "low": parseFloat(data[date]["3. low"]),
+                    "close": parseFloat(data[date]["4. close"]),
+                    "volume": parseFloat(data[date]["5. volume"])
+                  });
+                }
+              }
+              let stockJSON = this.state.stockJSON;
+              stockJSON[companyName] = newData;
+
+              companiesProcessed++;
+              if (companiesProcessed === Object.keys(companies).length) {
+                this.setState({ stockJSON: stockJSON, loadingStock: false });
+              }
+            })
+          }
+        });
+      } else if (!companies[companyName]) { // null stock code
+        companiesProcessed++;
+        if (companiesProcessed === Object.keys(companies).length) {
+          this.setState({ loadingStock: false });
+        }
+      }
+    }
+  }
+
   componentDidMount() {
-    this.getNews()
+    this.getNews();
+    this.getStockPrices();
     this.refs.iScroll.addEventListener("scroll", () => {
       if (this.refs.iScroll.scrollTop + this.refs.iScroll.clientHeight >=
       this.refs.iScroll.scrollHeight) {
@@ -73,14 +127,14 @@ class Event extends React.Component {
   }
 
   render () {
-    const { responseJSON, items, loading } = this.state
+    const { responseJSON, items, loading, stockJSON, loadingStock } = this.state
     const { classes, eventID } = this.props
     const EventData = Events[eventID]
     document.title = 'EventStock - ' + EventData.name
 
     return (
 
-      <div class="overlay" className={classes.root} ref="iScroll" style={{ height: document.documentElement.clientHeight-100,  overflow: "scroll" }}>
+      <div className={"overlay " + classes.root} ref="iScroll" style={{ height: document.documentElement.clientHeight-100,  overflow: "scroll" }}>
         <Grid container spacing={24}>
           <Grid item xs={12}>
             <Paper className={classes.paper}>
@@ -115,9 +169,11 @@ class Event extends React.Component {
           </Grid>
           <Grid item xs={6}>
             <Paper className={classes.paper}>
-                <Stock
-                    title="Stock"
-                />
+              { loadingStock ?
+                  <CircularProgress className={classes.margin} size={70} color="secondary" /> :
+                  stockJSON ?
+                    <Stock stockJSON={stockJSON} title="Stock" /> : null
+              }
             </Paper>
           </Grid>
           <Grid item xs={6}>
