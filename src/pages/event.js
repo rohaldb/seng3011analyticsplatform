@@ -27,7 +27,7 @@ class Event extends React.Component {
     super(props)
     document.getElementById('global').style.overflow = 'hidden'
     this.state = {loading: false, responseJSON: null, items: 10, pagination: false,
-      stockJSON: {}, loadingStock: true}
+      stockJSON: {}, loadingStock: true, startDate: null, endDate: null}
   }
 
   getNews() {
@@ -59,6 +59,15 @@ class Event extends React.Component {
   getStockPrices() {
     const eventInfo = Events[this.props.eventID];
     const companies = eventInfo.related_companies;
+    let startDate = moment.unix(eventInfo.start_date);
+    let endDate = eventInfo.end_date === 'ongoing' ? moment() : moment.unix(eventInfo.end_date); // Use today's date if ongoing
+    console.log("START DATE: " + startDate.format("dddd, MMMM Do YYYY, h:mm:ss a"));
+    console.log("END DATE: " + endDate.format("dddd, MMMM Do YYYY, h:mm:ss a"));
+
+    this.setState({
+      startDate,
+      endDate,
+    });
 
     let companiesProcessed = 0;
     for (let companyName in companies) {
@@ -68,7 +77,7 @@ class Event extends React.Component {
         const base = 'https://www.alphavantage.co/query';
         const apiKey = '2V4IGWVZ6W8XS8AI';
         // TODO MAKE OUTPUTSIZE == full
-        const params = `?function=TIME_SERIES_DAILY&outputsize=compact&symbol=${companyCode}&apikey=${apiKey}`;
+        const params = `?function=TIME_SERIES_DAILY&outputsize=full&symbol=${companyCode}&apikey=${apiKey}`;
         const url = base + params;
         // console.log('FETCHING: ' + url);
         fetch(url).then(response => {
@@ -172,7 +181,7 @@ class Event extends React.Component {
               { loadingStock ?
                   <CircularProgress className={classes.margin} size={70} color="secondary" /> :
                   stockJSON ?
-                    <Stock stockJSON={stockJSON} title="Stock" /> : null
+                    <Stock stockJSON={stockJSON} startDate={this.state.startDate} endDate={this.state.endDate} title="Stock" /> : null
               }
             </Paper>
           </Grid>

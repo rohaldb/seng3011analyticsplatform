@@ -121,7 +121,7 @@ class Stock extends React.Component {
           "label": "10 days"
         }, {
           "period": "MM",
-          "selected": true,
+          // "selected": true, // Remove if auto zooming on time period
           "count": 1,
           "label": "1 month"
         }, {
@@ -135,7 +135,7 @@ class Stock extends React.Component {
           "period": "MAX",
           "label": "MAX"
         } ]
-      }
+      },
     }
   }
 
@@ -164,7 +164,19 @@ class Stock extends React.Component {
       }
     }
 
-    this.state = { config: this.config_compare(companyDatasets) };
+
+    let config = this.config_compare(companyDatasets);
+    // Automatically zoom onto date range of event
+    config["listeners"] = [{
+      "event": "dataUpdated",
+      "method": function(e) {
+        let startDate = props.startDate.toDate();
+        let endDate = props.endDate.toDate(); // Uses today's date if ongoing
+
+        e.chart.zoom(startDate, endDate);
+      }
+    }];
+    this.state = { config };
   }
 
   render () {
