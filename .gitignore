@@ -27,3 +27,5 @@ yarn.lock
 *.tmp
 *.bak
 *~
+
+.idea/
