@@ -28,7 +28,7 @@ class Stock extends React.Component {
   };
 
   // Generate config object for AMCharts
-  config_compare (datasets) {
+  config_compare (props, datasets) {
     return {
       "type": "stock",
       "theme": "light",
@@ -44,7 +44,15 @@ class Stock extends React.Component {
         } ],
 
         "categoryAxis": {
-          "dashLength": 5
+          "dashLength": 5,
+          // Add a vertical band displaying the date range of the event
+          "guides": [{
+            "lineAlpha": 0,
+            "fillColor": "#cc0000",
+            "fillAlpha": 0.1,
+            "date": props.startDate.toDate(),
+            "toDate": props.endDate.toDate(),
+          }]
         },
 
         "stockGraphs": [ {
@@ -72,34 +80,6 @@ class Stock extends React.Component {
           "periodValueTextComparing": "[[percents.value.close]]%"
         }
       },
-
-        {
-          "title": "Volume",
-          "percentHeight": 30,
-          "marginTop": 1,
-          "showCategoryAxis": true,
-          "valueAxes": [ {
-            "dashLength": 5
-          } ],
-
-          "categoryAxis": {
-            "dashLength": 5
-          },
-
-          "stockGraphs": [ {
-            "valueField": "volume",
-            "type": "column",
-            "showBalloon": false,
-            "fillAlphas": 1
-          } ],
-
-          "stockLegend": {
-            "markerType": "none",
-            "markerSize": 0,
-            "labelText": "",
-            "periodValueTextRegular": "[[value.close]]"
-          }
-        }
       ],
 
       "chartScrollbarSettings": {
@@ -121,7 +101,7 @@ class Stock extends React.Component {
           "label": "10 days"
         }, {
           "period": "MM",
-          "selected": true,
+          // "selected": true, // Remove if auto zooming on time period
           "count": 1,
           "label": "1 month"
         }, {
@@ -135,7 +115,24 @@ class Stock extends React.Component {
           "period": "MAX",
           "label": "MAX"
         } ]
-      }
+      },
+      "listeners": [{
+        // Automatically zoom onto date range of event, with (1/2 days difference) buffer on each side
+        "event": "dataUpdated",
+        "method": function(e) {
+          let origStartDate = props.startDate;
+          let origEndDate = props.endDate; // Uses today's date if ongoing
+
+          // Number of days difference between origStartDate and origEndDate (moment.js calculation)
+          let timeDifference = origEndDate.diff(origStartDate, 'days');
+          let bufferDistance = timeDifference / 2;
+
+          let startDate = origStartDate.subtract(bufferDistance, 'days').toDate();
+          let endDate = origEndDate.add(bufferDistance, 'days').toDate();
+
+          e.chart.zoom(startDate, endDate);
+        }
+      }]
     }
   }
 
@@ -164,7 +161,10 @@ class Stock extends React.Component {
       }
     }
 
-    this.state = { config: this.config_compare(companyDatasets) };
+
+    let config = this.config_compare(props, companyDatasets);
+
+    this.state = { config };
   }
 
   render () {
