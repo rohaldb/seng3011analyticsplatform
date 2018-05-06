@@ -9,9 +9,7 @@ const styles = theme => ({
       padding: '4%'
     },
     name: {
-        color: 'white',
         textAlign: 'center',
-        // marginTop: '0'
     }
 })
 

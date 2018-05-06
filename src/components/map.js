@@ -9,7 +9,6 @@ const styles = theme => ({
       padding: '4%'
     },
     title: {
-        color: 'white',
         textAlign: 'center'
     }
 })

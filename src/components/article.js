@@ -11,7 +11,6 @@ const styles = theme => ({
       padding: '4%'
     },
     title: {
-        color: 'white',
         marginBottom: '0'
     },
     body: {
