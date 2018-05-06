@@ -2,13 +2,13 @@ import React from 'react'
 import { withStyles } from 'material-ui/styles'
 import withRoot from '../withRoot'
 import Events from '../eventData'
-// import { Grid, Row, Col } from 'react-flexbox-grid'
-import Grid from 'material-ui/Grid';
-import Paper from 'material-ui/Paper';
+import Grid from 'material-ui/Grid'
+import Paper from 'material-ui/Paper'
 import NewsCard from './newsCard'
 import moment from 'moment'
 import { CircularProgress } from 'material-ui/Progress'
-import { EventSummary, Article, Company, Stock, Map } from '../components'
+import { EventSummary, Company, Stock, Map } from '../components'
+import { getDate } from '../time'
 
 const styles = theme => ({
     root: {
@@ -24,9 +24,9 @@ const styles = theme => ({
 class Event extends React.Component {
 
   constructor(props) {
-    super(props);
-    document.getElementById('global').style.overflow = 'hidden';
-    this.state = {loading: false, responseJSON: null, items: 10, pagination: false};
+    super(props)
+    document.getElementById('global').style.overflow = 'hidden'
+    this.state = {loading: false, responseJSON: null, items: 10, pagination: false}
   }
 
   getNews() {
@@ -38,7 +38,7 @@ class Event extends React.Component {
     const keywords = eventInfo.keywords.toString().replace(/,/g, '%20AND%20')
 
     const base = 'https://content.guardianapis.com/search'
-    const params = 'page-size=50&show-blocks=main&show-fields=bodyText'
+    const params = 'page-size=100&show-blocks=main&show-fields=bodyText'
     const apiKey = 'api-key=35b90e54-3944-4e4f-9b0e-a511d0dda44d'
     const query = `q=${keywords}`
     const dates = `from-date=${start.format('YYYY-MM-DD')}&to-date=${end.format('YYYY-MM-DD')}`
@@ -58,17 +58,18 @@ class Event extends React.Component {
   componentDidMount() {
     this.getNews()
     this.refs.iScroll.addEventListener("scroll", () => {
-      if (this.refs.iScroll.scrollTop + this.refs.iScroll.clientHeight >=this.refs.iScroll.scrollHeight){
-        this.loadMoreItems();
+      if (this.refs.iScroll.scrollTop + this.refs.iScroll.clientHeight >=
+      this.refs.iScroll.scrollHeight) {
+        this.loadMoreItems()
       }
-    });
+    })
   }
 
   loadMoreItems() {
-    this.setState({ pagination: true });
+    this.setState({ pagination: true })
     setTimeout(() => {
-      this.setState({ items: this.state.items + 3, pagination: false });
-    }, 3000);
+      this.setState({ items: this.state.items + 3, pagination: false })
+    }, 3000)
   }
 
   render () {
@@ -87,7 +88,7 @@ class Event extends React.Component {
                     name={EventData.name}
                     description={EventData.description}
                     start_date={`${moment(EventData.start_date * 1000).format('DD MMM YY')}`}
-                    end_date={`${moment(EventData.end_date * 1000).format('DD MMM YY')}`}
+                    end_date={getDate(EventData.end_date)}
                   />
             </Paper>
           </Grid>

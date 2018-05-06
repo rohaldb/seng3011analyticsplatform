@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import GoogleMapReact from 'google-map-react';
+import React, { Component } from 'react'
+import GoogleMapReact from 'google-map-react'
 
 const AnyReactComponent = ({ text }) => (
   <div style={{
@@ -8,7 +8,7 @@ const AnyReactComponent = ({ text }) => (
   }}>
     {text}
   </div>
-);
+)
 
 class SimpleMap extends Component {
   static defaultProps = {
@@ -17,7 +17,7 @@ class SimpleMap extends Component {
       lng: 30.33
     },
     zoom: 11
-  };
+  }
 
   render() {
     return (
@@ -35,8 +35,8 @@ class SimpleMap extends Component {
           />
         </GoogleMapReact>
       </div>
-    );
+    )
   }
 }
 
-export default SimpleMap;
+export default SimpleMap

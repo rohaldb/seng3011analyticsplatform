@@ -1,15 +1,9 @@
 import React, { Component } from 'react'
 import { withStyles } from 'material-ui/styles'
 import PropTypes from 'prop-types'
-import Grid from 'material-ui/Grid'
-import Card, { CardHeader, CardContent } from 'material-ui/Card'
-import Typography from 'material-ui/Typography'
-import moment from 'moment'
-import _ from 'lodash'
-import Paper from 'material-ui/Paper'
 import { CircularProgress } from 'material-ui/Progress'
 import { Article } from '../components'
-import { prettyDate } from './time'
+import { prettyDate } from '../time'
 
 // Styles should go here CSS should go here
 const styles = theme => ({
@@ -19,7 +13,7 @@ const styles = theme => ({
   card: {
     margin: theme.spacing.unit
   }
-});
+})
 
 class NewsCard extends Component {
 
@@ -41,8 +35,9 @@ class NewsCard extends Component {
           />
         )
       }
+      return 0
     })
-    return items;
+    return items
   }
 
   render () {

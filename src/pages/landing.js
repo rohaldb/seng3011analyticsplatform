@@ -7,12 +7,8 @@ import _ from 'lodash'
 import Events from '../eventData'
 import { Link } from 'react-router-dom'
 import moment from 'moment'
-import {
-  Grid,
-  Chip,
-  Typography,
-  withStyles
-} from 'material-ui'
+import { Grid, Chip, Typography, withStyles } from 'material-ui'
+import { getDate } from '../time'
 
 const styles = theme => ({
   root: {
@@ -51,12 +47,14 @@ const bgCols = [
 
 class Landing extends React.Component {
 
+  constructor(props) {
+    super(props)
+    document.getElementById('global').style.overflow = 'scroll'
+  }
+
   render () {
     const { classes } = this.props
-
-    const date = (d) => {
-      return (d === 'ongoing') ? 'Present' : moment(d * 1000).format('DD MMM YY')
-    }
+    document.title = 'EventStock'
 
     return (
       <Grid container direction='column' className={classes.root}>
@@ -83,7 +81,7 @@ class Landing extends React.Component {
                 <VerticalTimelineElement
                   key={i}
                   className='vertical-timeline-element--work'
-                  date={`${moment(Events[k].start_date * 1000).format('DD MMM YY')} - ${date(Events[k].end_date)}`}
+                  date={`${moment(Events[k].start_date * 1000).format('DD MMM YY')} - ${getDate(Events[k].end_date)}`}
                   iconStyle={{ background: bgCols[i % bgCols.length], color: '#fff' }}
                   icon={<Event />}
               >
