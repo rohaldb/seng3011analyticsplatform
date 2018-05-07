@@ -17,7 +17,7 @@ const styles = theme => ({
     margin: theme.spacing.unit
   },
   button: {
-    background:  'linear-gradient(60deg, #66bb6a, #338a3e)',
+    backgroundColor: '#66bb6a',
     margin: theme.spacing.unit * 2
   }
 })
