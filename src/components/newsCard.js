@@ -48,7 +48,7 @@ class NewsCard extends Component {
     const data = responseJSON ? responseJSON.response.results : null
 
     return (
-      <Fade in={data} timeout={500}>
+      <Fade in timeout={500}>
         <Card>
           <CardHeader title="Related News" className={classes.cardHeader}/>
           <CardContent>

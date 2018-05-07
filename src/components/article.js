@@ -3,6 +3,7 @@ import { withStyles } from 'material-ui/styles'
 import withRoot from '../withRoot'
 import PropTypes from 'prop-types'
 import Grid from 'material-ui/Grid'
+import Fade from 'material-ui/transitions/Fade'
 
 const styles = theme => ({
     root: {
@@ -31,17 +32,19 @@ class Article extends React.Component {
     const { classes } = this.props
 
     return (
-      <Grid container>
-        <Grid item xs={12}>
-            <div>
-              <h2 className={classes.title}>{title}</h2>
-              <h4 className={classes.date}>{date}</h4>
-              <p className={classes.body}>{body}
-                <a target="_blank" href={url}>Read More</a>
-              </p>
-            </div>
+      <Fade in timeout={500}>
+        <Grid container>
+          <Grid item xs={12}>
+              <div>
+                <h2 className={classes.title}>{title}</h2>
+                <h4 className={classes.date}>{date}</h4>
+                <p className={classes.body}>{body}
+                  <a target="_blank" href={url}>Read More</a>
+                </p>
+              </div>
+          </Grid>
         </Grid>
-      </Grid>
+      </Fade>
     )
   }
 }

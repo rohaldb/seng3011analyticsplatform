@@ -13,7 +13,6 @@ const styles = theme => ({
 class Map extends React.Component {
 
   render () {
-    const { title } = this.props
     const { classes } = this.props
 
     return (

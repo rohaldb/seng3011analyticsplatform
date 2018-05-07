@@ -38,11 +38,10 @@ const styles = theme => ({
 })
 
 const bgCols = [
-  'rgb(33, 150, 243)',
-  'rgb(233, 30, 99)',
-  '#4caf50',
-  '#ff5722',
-  '#ab47bc'
+  '#AB47B8',
+  '#26c6da',
+  '#ef5350',
+  '#66bb6a'
 ]
 
 class Landing extends React.Component {
