@@ -34,14 +34,16 @@ class Company extends React.Component {
             {infoJSON ?
             (
               <Typography>
-                <b>{infoJSON[name]}</b>
-                Company Class: {infoJSON[category]}
-                Website: {infoJSON[website]}
-
-
+                <b>{infoJSON.name}</b>
+                <p></p>
+                <b>Operations:</b> {infoJSON.category}
+                <p></p>
+                <b>Followers:</b> {infoJSON.fan_count}
               </Typography>
             ):
-              <i> No information can be retrieved for this company at this point in time. We apologise for any inconvenience. </i>
+              <Typography>
+                <i> No information can be retrieved for this company at this point in time. We apologise for any inconvenience. </i>
+              </Typography>
             }
           </CardContent>
         </Card>
