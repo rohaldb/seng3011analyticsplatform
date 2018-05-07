@@ -28,10 +28,10 @@ class Event extends React.Component {
 
   constructor (props) {
     super(props)
-    document.getElementById('global').style.overflow = 'hidden'
+//    document.getElementById('global').style.overflow = 'hidden'
     this.state = {loading: false, responseJSON: null, items: 10, pagination: false,
       stockJSON: {}, loadingStock: true, startDate: null, endDate: null, infoJSON: {}, loadingInfo: true,
-      accessToken: 'EAACEdEose0cBAAZBHfqaPj1mtpaWmz8li8TaRfZANDbACHmnpDx2BpYat2zh6zrgUShgT8pCCZAq5NtdKO5CP4ok1VR5ZCOBGzjWsgH5MLeTeSccfpBUelJLBQmHCqocRm5PBEe9W2zeXZBt70E56P8OcAvmBCkP6pdSU89VbeZCxhHHs8UAjbSPodnluHsnIZD'}
+      accessToken: 'EAACEdEose0cBAEvC7NWF5ySlLOXHk32xR5TnMEKu2VkaJKCeCPCKI5EWoEaRqy5nAjyklRBNZA0fnESk9pXfZCJ6NSnv3kSBK6GorG7fTTRQFXipevCJHDiVabNFB6uR0uJZBwjDgFrkzXZAmUZAKZB4tYjhXl0qBAbiCVMOga2xt6IZBNWgxfZAoDZCHt9mfRQVFk0CT6uKiUQZDZD' }
   }
 
   getInfo () {
@@ -174,7 +174,7 @@ class Event extends React.Component {
     return (
       <div>
         <Navigation style={{color: 'blue'}} />
-        <div className={classes.root} ref='iScroll' style={{ height: document.documentElement.clientHeight - 100, overflow: 'scroll' }}>
+        <div className={classes.root}>
           <Grid container spacing={24}>
             <Grid item xs={12}>
               <EventSummary
