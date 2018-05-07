@@ -11,16 +11,21 @@ const styles = theme => ({
   }
 })
 
-class Companie extends React.Component {
+class Company extends React.Component {
 
   static propTypes = {
     name: PropTypes.string.isRequired,
+    loading: PropTypes.bool.isRequired,
+    infoJSON: PropTypes.object,
   }
 
-  render () {
-    const { name } = this.props
-    const { classes } = this.props
 
+  //console.log(infoJSON)
+
+  render () {
+    const { name, loading, infoJSON } = this.props
+    const { classes } = this.props
+    console.log(infoJSON)
     return (
       <Fade in timeout={500}>
         <Card>
@@ -34,4 +39,4 @@ class Companie extends React.Component {
   }
 }
 
-export default withRoot(withStyles(styles)(Companie))
+export default withRoot(withStyles(styles)(Company))
