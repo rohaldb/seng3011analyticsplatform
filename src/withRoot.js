@@ -16,18 +16,6 @@ const theme = createMuiTheme({
       main: '#ab47bc',
       dark: '#790e8b'
     }
-  },
-  overrides: {
-    MuiCardHeader: {
-      root: {
-        background: 'linear-gradient(60deg, #ab47bc , #790e8b)'
-      }
-    },
-    MuiCardContent: {
-      root: {
-        border: '1px solid #ab47bc'
-      }
-    }
   }
 })
 

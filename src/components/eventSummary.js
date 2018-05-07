@@ -6,6 +6,9 @@ import Card, { CardContent, CardHeader } from 'material-ui/Card'
 import Typography from 'material-ui/Typography'
 
 const styles = theme => ({
+  cardHeader: {
+    background: 'linear-gradient(60deg, #ab47bc , #790e8b)'
+  }
 })
 
 class EventSummary extends React.Component {
@@ -25,6 +28,7 @@ class EventSummary extends React.Component {
       <Card>
         <CardHeader
           title={name}
+          className={classes.cardHeader}
         />
         <CardContent>
           <Typography variant="subheading">

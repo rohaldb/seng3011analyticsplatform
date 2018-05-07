@@ -4,6 +4,9 @@ import withRoot from '../withRoot'
 import Card, { CardContent, CardHeader } from 'material-ui/Card'
 
 const styles = theme => ({
+  cardHeader: {
+    background: 'linear-gradient(60deg, #ef5350, #e53935)'
+  }
 })
 
 class Map extends React.Component {
@@ -16,6 +19,7 @@ class Map extends React.Component {
       <Card>
         <CardHeader
           title='Global Impact'
+          className={classes.cardHeader}
         />
         <CardContent>
           place heat map here

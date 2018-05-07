@@ -11,13 +11,9 @@ import AmCharts from '@amcharts/amcharts3-react'
 import 'amstock3/amcharts/themes/light.js'
 
 const styles = theme => ({
-    root: {
-      flexGrow: 1,
-      padding: '4%'
-    },
-    title: {
-        textAlign: 'center',
-    }
+  cardHeader: {
+    background: 'linear-gradient(60deg, #ef5350, #e53935)'
+  }
 })
 
 class Stock extends React.Component {
@@ -175,6 +171,7 @@ class Stock extends React.Component {
       <Card>
         <CardHeader
           title={title}
+          className={classes.cardHeader}
         />
         <CardContent>
           <AmCharts.React className="stockChart" style={{ width: "100%", height: "500px" }} options={this.state.config} />

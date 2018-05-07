@@ -8,8 +8,8 @@ import Card, { CardContent, CardHeader } from 'material-ui/Card'
 
 // Styles should go here CSS should go here
 const styles = theme => ({
-  jsonPane: {
-    textAlign: 'left',
+  cardHeader: {
+    background: 'linear-gradient(60deg, #66bb6a, #338a3e)'
   },
   card: {
     margin: theme.spacing.unit
@@ -48,7 +48,7 @@ class NewsCard extends Component {
 
     return (
       <Card>
-        <CardHeader title="Related News"/>
+        <CardHeader title="Related News" className={classes.cardHeader}/>
         <CardContent>
           {loading || !data ?
             <CircularProgress className={classes.margin}/>
