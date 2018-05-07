@@ -6,7 +6,12 @@ import Card, { CardContent, CardHeader } from 'material-ui/Card'
 import Fade from 'material-ui/transitions/Fade'
 import Typography from 'material-ui/Typography'
 import _ from 'lodash'
-import Dialog from 'material-ui/Dialog'
+import Dialog, {
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from 'material-ui/Dialog'
 import Button from 'material-ui/Button'
 
 
@@ -21,6 +26,9 @@ const styles = theme => ({
   input: {
     display: 'none',
   },
+  card: {
+    cursor: 'pointer'
+  }
 })
 
 class Company extends React.Component {
@@ -45,66 +53,56 @@ class Company extends React.Component {
 
 
   render () {
-    const actions = [
-      <Button variant="raised"
-        label="Cancel"
-        primary={true}
-        onClick={this.handleClose}
-      />,
-      <Button variant="raised"
-        label="Submit"
-        primary={true}
-        keyboardFocused={true}
-        onClick={this.handleClose}
-      />,
-    ];
     const { name, loading, infoJSON } = this.props
     const { classes } = this.props
-    //console.log(infoJSON)
+
     return (
-      <Fade in timeout={500}>
-        <Card>
-          <CardHeader title={name} className={classes.cardHeader}/>
-            {infoJSON ?
-            (
-            <CardContent>
-              <Typography>
-                <b>{infoJSON.name}</b>
-                <br></br>
-                <b>Operations:</b> {infoJSON.category}
-                <br></br>
-                <b>Followers:</b> {infoJSON.fan_count}
-                <br></br>
-                <b>Website:</b> {infoJSON.website}
-              </Typography>
-                <div>
-                  <Button variant="raised" label="More Info" onClick={this.handleOpen} />
-                    <Dialog
-                      title="Dialog With Actions"
-                      actions={actions}
-                      modal={false}
-                      open={this.state.open}
-                      onRequestClose={this.handleClose}
-                    >
-                    {_.map(_.keys(infoJSON), (key, i) =>
-                        key !== 'id'?
-                        (<Typography color="inherit" key={i}>
-                        <b>{key}: </b> {infoJSON[key]}
-                        </Typography>)
-                      : null
-                    )}
-                  </Dialog>
-                </div>
+      <div>
+        <Fade in timeout={500}>
+          <Card className={classes.card} onClick={() => this.handleOpen()}>
+            <CardHeader title={name} className={classes.cardHeader}/>
+              {infoJSON ?
+              (
+              <CardContent>
+                <Typography>
+                  <b>{infoJSON.name}</b>
+                  <br></br>
+                  <b>Operations:</b> {infoJSON.category}
+                  <br></br>
+                  <b>Followers:</b> {infoJSON.fan_count}
+                  <br></br>
+                  <b>Website:</b> {infoJSON.website}
+                </Typography>
+                </CardContent>
+              ):
+              <CardContent>
+                <Typography>
+                  <i> No information for {name} can be retrieved at this point in time. We apologise for any inconvenience. </i>
+                </Typography>
               </CardContent>
-            ):
-            <CardContent>
-              <Typography>
-                <i> No information for {name} can be retrieved at this point in time. We apologise for any inconvenience. </i>
-              </Typography>
-            </CardContent>
-            }
-        </Card>
-      </Fade>
+              }
+          </Card>
+        </Fade>
+
+      <Dialog
+          open={() => this.state.open()}
+          onClose={() => this.handleClose()}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+          open={this.state.open}
+        >
+          <DialogTitle id="alert-dialog-title">{"Fill me in will"}</DialogTitle>
+          <DialogContent>
+            {_.map(_.keys(infoJSON), (key, i) =>
+                key !== 'id'?
+                (<Typography color="inherit" key={i}>
+                <b>{key}: </b> {infoJSON[key]}
+                </Typography>)
+              : null
+            )}
+          </DialogContent>
+        </Dialog>
+      </div>
     )
   }
 }
