@@ -53,7 +53,7 @@ class NewsCard extends Component {
           <CardHeader title="Related News" className={classes.cardHeader}/>
           <CardContent>
             {!data ?
-              <CircularProgress className={classes.margin}/>
+              <CircularProgress/>
               :
               this.displayItems(data, items)
             }

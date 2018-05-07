@@ -4,7 +4,6 @@ import withRoot from '../withRoot'
 import Events from '../eventData'
 import Grid from 'material-ui/Grid'
 import moment from 'moment'
-import { CircularProgress } from 'material-ui/Progress'
 import { EventSummary, Company, Stock, Map, NewsCard } from '../components'
 import { getDate } from '../time'
 import _ from 'lodash'
@@ -166,11 +165,7 @@ class Event extends React.Component {
             </Grid>
           </Grid>
           <Grid item xs={6}>
-            { loadingStock ?
-              <CircularProgress className={classes.margin} size={70} color='secondary' /> :
-                stockJSON ?
-                  <Stock stockJSON={stockJSON} startDate={this.state.startDate} endDate={this.state.endDate} title='Stock' /> : null
-            }
+            <Stock stockJSON={stockJSON} startDate={this.state.startDate} endDate={this.state.endDate} loading={loadingStock} />
           </Grid>
           <Grid item xs={6}>
             <Map />

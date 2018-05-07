@@ -3,6 +3,7 @@ import { withStyles } from 'material-ui/styles'
 import withRoot from '../withRoot'
 import PropTypes from 'prop-types'
 import Card, { CardContent, CardHeader } from 'material-ui/Card'
+import { CircularProgress } from 'material-ui/Progress'
 
 import 'amstock3/amcharts/amcharts.js'
 import 'amstock3/amcharts/serial.js'
@@ -19,7 +20,7 @@ const styles = theme => ({
 class Stock extends React.Component {
 
   static propTypes = {
-    title: PropTypes.string.isRequired,
+    loading: PropTypes.bool.isRequired,
     stockJSON: PropTypes.object.isRequired,
   }
 
@@ -132,9 +133,7 @@ class Stock extends React.Component {
     }
   }
 
-  constructor (props) {
-    super(props)
-
+  declareConfig = () => {
     // Generate stock chart data
     let stockJSON = this.props.stockJSON
     let companyDatasets = []
@@ -158,23 +157,26 @@ class Stock extends React.Component {
     }
 
 
-    let config = this.config_compare(props, companyDatasets)
+    let config = this.config_compare(this.props, companyDatasets)
 
-    this.state = { config }
+    return config
   }
 
   render () {
-    const { title } = this.props
-    const { classes } = this.props
+    const { classes, loading } = this.props
 
     return (
       <Card>
         <CardHeader
-          title={title}
+          title="Stock Comparison"
           className={classes.cardHeader}
         />
         <CardContent>
-          <AmCharts.React className="stockChart" style={{ width: "100%", height: "500px" }} options={this.state.config} />
+          {loading ? 
+            <CircularProgress/>
+             : 
+            <AmCharts.React className="stockChart" style={{ width: "100%", height: "500px" }} options={this.declareConfig()} />
+          }
         </CardContent>
       </Card>
     )
