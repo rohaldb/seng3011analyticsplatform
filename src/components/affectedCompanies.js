@@ -11,7 +11,7 @@ const styles = theme => ({
   }
 })
 
-class Companie extends React.Component {
+class Companies extends React.Component {
 
   static propTypes = {
     name: PropTypes.string.isRequired,
@@ -34,4 +34,4 @@ class Companie extends React.Component {
   }
 }
 
-export default withRoot(withStyles(styles)(Companie))
+export default withRoot(withStyles(styles)(Companies))

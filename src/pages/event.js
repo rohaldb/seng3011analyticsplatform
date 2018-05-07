@@ -16,7 +16,11 @@ const styles = theme => ({
   },
   paper: {
     padding: theme.spacing.unit * 2
+  },
+  navBar: {
+      textAlign: 'center'
   }
+
 })
 
 class Event extends React.Component {
@@ -139,42 +143,45 @@ class Event extends React.Component {
   render () {
     const { responseJSON, items, loading, stockJSON, loadingStock } = this.state
     const { classes, eventID } = this.props
+
     const EventData = Events[eventID]
+    const eventInfo = Events[this.props.eventID]
     document.title = 'EventStock - ' + EventData.name
-
     return (
-      <div className={classes.root} ref='iScroll' style={{ height: document.documentElement.clientHeight - 100, overflow: 'scroll' }}>
-        <Grid container spacing={24}>
-          <Grid item xs={12}>
-            <EventSummary
-              name={EventData.name}
-              description={EventData.description}
-              start_date={`${moment(EventData.start_date * 1000).format('DD MMM YY')}`}
-              end_date={getDate(EventData.end_date)}
-                />
-          </Grid>
-          <Grid item xs={12}>
-            <Grid container spacing={16}>
-              {_.map(_.keys(EventData.related_companies), (company, i) => (
-                <Grid item xs={4} key={i}>
-                  <Company
-                    name={company}
+        <div>
+          <div className={classes.root} ref='iScroll' style={{ height: document.documentElement.clientHeight - 100, overflow: 'scroll' }}>
+            <Grid container spacing={24}>
+              <Grid item xs={12}>
+                <EventSummary
+                  name={EventData.name}
+                  description={EventData.description}
+                  start_date={`${moment(EventData.start_date * 1000).format('DD MMM YY')}`}
+                  end_date={getDate(EventData.end_date)}
                     />
+              </Grid>
+              <Grid item xs={12}>
+                <Grid container spacing={16}>
+                  {_.map(_.keys(EventData.related_companies), (company, i) => (
+                    <Grid item xs={4} key={i}>
+                      <Company
+                        name={company}
+                        />
+                    </Grid>
+                  ))}
                 </Grid>
-              ))}
+              </Grid>
+              <Grid item xs={6}>
+                <Stock stockJSON={stockJSON} startDate={this.state.startDate} endDate={this.state.endDate} loading={loadingStock} />
+              </Grid>
+              <Grid item xs={6}>
+                <Map
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <NewsCard responseJSON={responseJSON} items={items} loading={loading} />
+              </Grid>
             </Grid>
-          </Grid>
-          <Grid item xs={6}>
-            <Stock stockJSON={stockJSON} startDate={this.state.startDate} endDate={this.state.endDate} loading={loadingStock} />
-          </Grid>
-          <Grid item xs={6}>
-            <Map />
-          </Grid>
-
-          <Grid item xs={12}>
-            <NewsCard responseJSON={responseJSON} items={items} loading={loading} />
-          </Grid>
-        </Grid>
+          </div>
       </div>
     )
   }
