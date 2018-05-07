@@ -4,7 +4,8 @@ import PropTypes from 'prop-types'
 import { CircularProgress } from 'material-ui/Progress'
 import { Article } from '../components'
 import { prettyDate } from '../time'
-import Card, { CardContent, CardHeader } from 'material-ui/Card'
+import Card, { CardContent, CardHeader, CardActions } from 'material-ui/Card'
+import Button from 'material-ui/Button';
 import Fade from 'material-ui/transitions/Fade'
 
 // Styles should go here CSS should go here
@@ -14,18 +15,31 @@ const styles = theme => ({
   },
   card: {
     margin: theme.spacing.unit
+  },
+  button: {
+    background:  'linear-gradient(60deg, #66bb6a, #338a3e)',
+    margin: theme.spacing.unit * 2
   }
 })
 
 class NewsCard extends Component {
 
+  state = {
+    numItems: 7
+  }
+
   static propTypes = {
     responseJSON: PropTypes.object,
-    items: PropTypes.number.isRequired,
     loading: PropTypes.bool.isRequired,
   }
 
-  displayItems(data, num) {
+  addItems = () => {
+    this.setState({numItems: this.state.numItems + 5 })
+  }
+
+  displayItems(data) {
+
+    let num = this.state.numItems
     var items = []
     data.map(function(item, i) {
       const timestamp = prettyDate(new Date(item.webPublicationDate))
@@ -44,7 +58,7 @@ class NewsCard extends Component {
   }
 
   render () {
-    const { responseJSON, items, classes, loading } = this.props
+    const { responseJSON, classes, loading } = this.props
     const data = responseJSON ? responseJSON.response.results : null
 
     return (
@@ -57,9 +71,14 @@ class NewsCard extends Component {
                 <CircularProgress/>
               </div>
               :
-              this.displayItems(data, items)
+              this.displayItems(data)
             }
           </CardContent>
+          <CardActions>
+            <div style={{margin: 'auto'}}>
+              <Button variant="raised" className={classes.button} size="large" onClick={() => this.addItems()}>Show More</Button>
+            </div>
+          </CardActions>
         </Card>
       </Fade>
     )

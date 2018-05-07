@@ -126,19 +126,6 @@ class Event extends React.Component {
   componentDidMount () {
     this.getNews()
     this.getStockPrices()
-    this.refs.iScroll.addEventListener('scroll', () => {
-      if (this.refs.iScroll.scrollTop + this.refs.iScroll.clientHeight >=
-      this.refs.iScroll.scrollHeight) {
-        this.loadMoreItems()
-      }
-    })
-  }
-
-  loadMoreItems () {
-    this.setState({ pagination: true })
-    setTimeout(() => {
-      this.setState({ items: this.state.items + 3, pagination: false })
-    }, 3000)
   }
 
   render () {
@@ -180,7 +167,7 @@ class Event extends React.Component {
             />
             </Grid>
             <Grid item xs={12}>
-              <NewsCard responseJSON={responseJSON} items={items} loading={loading} />
+              <NewsCard responseJSON={responseJSON} loading={loading} />
             </Grid>
           </Grid>
         </div>
