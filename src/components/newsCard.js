@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import { CircularProgress } from 'material-ui/Progress'
 import { Article } from '../components'
 import { prettyDate } from '../time'
+import Card, { CardContent, CardHeader } from 'material-ui/Card'
 
 // Styles should go here CSS should go here
 const styles = theme => ({
@@ -18,8 +19,9 @@ const styles = theme => ({
 class NewsCard extends Component {
 
   static propTypes = {
-    responseJSON: PropTypes.object.isRequired,
+    responseJSON: PropTypes.object,
     items: PropTypes.number.isRequired,
+    loading: PropTypes.bool.isRequired,
   }
 
   displayItems(data, num) {
@@ -41,15 +43,20 @@ class NewsCard extends Component {
   }
 
   render () {
-    const { responseJSON, items, classes } = this.props
-    const data = responseJSON.response.results
+    const { responseJSON, items, classes, loading } = this.props
+    const data = responseJSON ? responseJSON.response.results : null
 
     return (
-      <div>
-        {this.displayItems(data, items)}
-         <CircularProgress className={classes.margin}
-         size={70} color="secondary" />
-      </div>
+      <Card>
+        <CardHeader title="Related News"/>
+        <CardContent>
+          {loading || !data ?
+            <CircularProgress className={classes.margin}/>
+            :
+            this.displayItems(data, items)
+          }
+        </CardContent>
+      </Card>
     )
 
   }

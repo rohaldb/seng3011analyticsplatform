@@ -27,10 +27,10 @@ class EventSummary extends React.Component {
           title={name}
         />
         <CardContent>
-          <Typography color="primary">
+          <Typography variant="subheading">
             {description}
           </Typography>
-          <Typography>
+          <Typography variant="body2">
             Date: {start_date} - {end_date}
           </Typography>
         </CardContent>

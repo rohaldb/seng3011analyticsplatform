@@ -2,12 +2,13 @@ import React from 'react'
 import { withStyles } from 'material-ui/styles'
 import withRoot from '../withRoot'
 import PropTypes from 'prop-types'
+import Card, { CardContent, CardHeader } from 'material-ui/Card'
 
-import 'amstock3/amcharts/amcharts.js';
-import 'amstock3/amcharts/serial.js';
-import 'amstock3/amcharts/amstock.js';
-import AmCharts from '@amcharts/amcharts3-react';
-import 'amstock3/amcharts/themes/light.js';
+import 'amstock3/amcharts/amcharts.js'
+import 'amstock3/amcharts/serial.js'
+import 'amstock3/amcharts/amstock.js'
+import AmCharts from '@amcharts/amcharts3-react'
+import 'amstock3/amcharts/themes/light.js'
 
 const styles = theme => ({
     root: {
@@ -24,7 +25,7 @@ class Stock extends React.Component {
   static propTypes = {
     title: PropTypes.string.isRequired,
     stockJSON: PropTypes.object.isRequired,
-  };
+  }
 
   // Generate config object for AMCharts
   config_compare (props, datasets) {
@@ -119,28 +120,28 @@ class Stock extends React.Component {
         // Automatically zoom onto date range of event, with (1/2 days difference) buffer on each side
         "event": "dataUpdated",
         "method": function(e) {
-          let origStartDate = props.startDate;
-          let origEndDate = props.endDate; // Uses today's date if ongoing
+          let origStartDate = props.startDate
+          let origEndDate = props.endDate // Uses today's date if ongoing
 
           // Number of days difference between origStartDate and origEndDate (moment.js calculation)
-          let timeDifference = origEndDate.diff(origStartDate, 'days');
-          let bufferDistance = timeDifference / 2;
+          let timeDifference = origEndDate.diff(origStartDate, 'days')
+          let bufferDistance = timeDifference / 2
 
-          let startDate = origStartDate.subtract(bufferDistance, 'days').toDate();
-          let endDate = origEndDate.add(bufferDistance, 'days').toDate();
+          let startDate = origStartDate.subtract(bufferDistance, 'days').toDate()
+          let endDate = origEndDate.add(bufferDistance, 'days').toDate()
 
-          e.chart.zoom(startDate, endDate);
+          e.chart.zoom(startDate, endDate)
         }
       }]
     }
   }
 
   constructor (props) {
-    super(props);
+    super(props)
 
     // Generate stock chart data
-    let stockJSON = this.props.stockJSON;
-    let companyDatasets = [];
+    let stockJSON = this.props.stockJSON
+    let companyDatasets = []
     for (let companyCode in stockJSON) {
       if (stockJSON.hasOwnProperty(companyCode)) {
         let companyJSON = {
@@ -154,27 +155,31 @@ class Stock extends React.Component {
           "title": companyCode,
           "categoryField": "date",
           "compared": true,
-        };
+        }
 
-        companyDatasets.push(companyJSON);
+        companyDatasets.push(companyJSON)
       }
     }
 
 
-    let config = this.config_compare(props, companyDatasets);
+    let config = this.config_compare(props, companyDatasets)
 
-    this.state = { config };
+    this.state = { config }
   }
 
   render () {
-    const { title } = this.props;
-    const { classes } = this.props;
+    const { title } = this.props
+    const { classes } = this.props
 
     return (
-      <div>
-        <h1 className={classes.title}>{title}</h1>
-        <AmCharts.React className="stockChart" style={{ width: "100%", height: "500px" }} options={this.state.config} />
-      </div>
+      <Card>
+        <CardHeader
+          title={title}
+        />
+        <CardContent>
+          <AmCharts.React className="stockChart" style={{ width: "100%", height: "500px" }} options={this.state.config} />
+        </CardContent>
+      </Card>
     )
   }
 }

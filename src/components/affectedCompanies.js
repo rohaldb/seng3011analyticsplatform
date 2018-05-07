@@ -2,6 +2,7 @@ import React from 'react'
 import { withStyles } from 'material-ui/styles'
 import withRoot from '../withRoot'
 import PropTypes from 'prop-types'
+import Card, { CardContent, CardHeader } from 'material-ui/Card'
 
 const styles = theme => ({
     root: {
@@ -24,9 +25,12 @@ class Companie extends React.Component {
     const { classes } = this.props
 
     return (
-      <div>
-        <h1 className={classes.name}>{name}</h1>
-      </div>
+      <Card>
+        <CardHeader title={name}/>
+        <CardContent>
+          Place brief company info here. Clicking on me should display a modal with full company info. @will
+        </CardContent>
+      </Card>
     )
   }
 }

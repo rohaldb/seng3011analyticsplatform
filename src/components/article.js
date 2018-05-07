@@ -3,7 +3,6 @@ import { withStyles } from 'material-ui/styles'
 import withRoot from '../withRoot'
 import PropTypes from 'prop-types'
 import Grid from 'material-ui/Grid'
-import Paper from 'material-ui/Paper'
 
 const styles = theme => ({
     root: {
@@ -32,16 +31,16 @@ class Article extends React.Component {
     const { classes } = this.props
 
     return (
-      <Grid item xs={12}>
-        <Paper className={classes.paper}>
-          <div>
-            <h2 className={classes.title}>{title}</h2>
-            <h4 className={classes.date}>{date}</h4>
-            <p className={classes.body}>{body}
-              <a target="_blank" href={url}>Read More</a>
-            </p>
-          </div>
-        </Paper>
+      <Grid container>
+        <Grid item xs={12}>
+            <div>
+              <h2 className={classes.title}>{title}</h2>
+              <h4 className={classes.date}>{date}</h4>
+              <p className={classes.body}>{body}
+                <a target="_blank" href={url}>Read More</a>
+              </p>
+            </div>
+        </Grid>
       </Grid>
     )
   }

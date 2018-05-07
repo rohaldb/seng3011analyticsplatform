@@ -8,6 +8,7 @@ import moment from 'moment'
 import { CircularProgress } from 'material-ui/Progress'
 import { EventSummary, Company, Stock, Map, NewsCard } from '../components'
 import { getDate } from '../time'
+import _ from 'lodash'
 
 const styles = theme => ({
   root: {
@@ -154,49 +155,30 @@ class Event extends React.Component {
               end_date={getDate(EventData.end_date)}
                 />
           </Grid>
-          <Grid item xs={4}>
-            <Paper className={classes.paper}>
-              <Company
-                name='Facebook'
-                />
-            </Paper>
-          </Grid>
-          <Grid item xs={4}>
-            <Paper className={classes.paper}>
-              <Company
-                name='Google'
-                />
-            </Paper>
-          </Grid>
-          <Grid item xs={4}>
-            <Paper className={classes.paper}>
-              <Company
-                name='Amazon'
-                />
-            </Paper>
+          <Grid item xs={12}>
+            <Grid container spacing={16}>
+              {_.map(_.keys(EventData.related_companies), (company, i) => (
+                <Grid item xs={4} key={i}>
+                  <Company
+                    name={company}
+                    />
+                </Grid>
+              ))}
+            </Grid>
           </Grid>
           <Grid item xs={6}>
-            <Paper className={classes.paper}>
-              { loadingStock ?
-                <CircularProgress className={classes.margin} size={70} color='secondary' /> :
-                  stockJSON ?
-                    <Stock stockJSON={stockJSON} startDate={this.state.startDate} endDate={this.state.endDate} title='Stock' /> : null
-              }
-            </Paper>
+            { loadingStock ?
+              <CircularProgress className={classes.margin} size={70} color='secondary' /> :
+                stockJSON ?
+                  <Stock stockJSON={stockJSON} startDate={this.state.startDate} endDate={this.state.endDate} title='Stock' /> : null
+            }
           </Grid>
           <Grid item xs={6}>
-            <Paper className={classes.paper}>
-              <Map
-                title='Map'
-                />
-            </Paper>
+            <Map />
           </Grid>
 
           <Grid item xs={12}>
-            { loading ? <CircularProgress className={classes.margin}
-              size={70} color='secondary' /> :
-              responseJSON ?
-                <NewsCard responseJSON={responseJSON} items={items} /> : null }
+            <NewsCard responseJSON={responseJSON} items={items} loading={loading} />
           </Grid>
         </Grid>
       </div>

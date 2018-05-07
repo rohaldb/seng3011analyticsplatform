@@ -6,7 +6,6 @@ import 'typeface-roboto'
 // It's optional.
 const theme = createMuiTheme({
   palette: {
-    type: 'dark',
     primary: {
       light: '#647786',
       main: '#394b59',
@@ -19,9 +18,14 @@ const theme = createMuiTheme({
     }
   },
   overrides: {
-    MuiPaper: {
+    MuiCardHeader: {
       root: {
-        backgroundColor: '#fff'
+        background: 'linear-gradient(60deg, #ab47bc , #790e8b)'
+      }
+    },
+    MuiCardContent: {
+      root: {
+        border: '1px solid #ab47bc'
       }
     }
   }
