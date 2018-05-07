@@ -31,7 +31,7 @@ class Event extends React.Component {
     document.getElementById('global').style.overflow = 'hidden'
     this.state = {loading: false, responseJSON: null, items: 10, pagination: false,
       stockJSON: {}, loadingStock: true, startDate: null, endDate: null, infoJSON: {}, loadingInfo: true,
-      accessToken: 'EAACEdEose0cBAGLdq9PVkFpVRhOPGosIqjFue8zHi44MeS9ZBhYPWMGSZBxJ4qKSmY7HUUzsBaLZADYyEKTanmy0XBZCpcXpdvYFlgLXphNCuEA0jFcxHEHImIk4eE9ceZCwmoaIkohsUGwOPT3ZBowXqKyQdKI4jvzQRr8cIDWulLdu9vYtHL0kWaks1kXDwZD'}
+      accessToken: 'EAACEdEose0cBAOLyrxZCl5Lz5ubP88XQFklO1wg7iSsX12FslCIX6sQCtNF4pqyLz1VXJk8JSBoeVUir4rVguK3pcaADKvkC7c60e9dbAZA7g2KwdZBbKvox1rlmd3BzNmmSUuhAoFSWYNcgOk1iWt5ZBPLqiBKzkLQepesAPzhqdZBExUT6DPdJrWn1gAHoZD'}
   }
 
   getInfo() {
@@ -117,6 +117,7 @@ class Event extends React.Component {
       // console.log("COMPANY: " + companyName);
       if (companies.hasOwnProperty(companyName) && companies[companyName]) {
         const companyCode = companies[companyName]
+        console.log(companyCode)
         const base = 'https://www.alphavantage.co/query'
         const apiKey = '2V4IGWVZ6W8XS8AI'
         // TODO MAKE OUTPUTSIZE == full
