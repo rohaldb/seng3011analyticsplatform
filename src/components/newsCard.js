@@ -53,7 +53,9 @@ class NewsCard extends Component {
           <CardHeader title="Related News" className={classes.cardHeader}/>
           <CardContent>
             {!data ?
-              <CircularProgress/>
+              <div style={{textAlign: 'center'}}>
+                <CircularProgress/>
+              </div>
               :
               this.displayItems(data, items)
             }
