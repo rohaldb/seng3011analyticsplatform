@@ -25,7 +25,7 @@ class Company extends React.Component {
   render () {
     const { name, loading, infoJSON } = this.props
     const { classes } = this.props
-    console.log(infoJSON)
+    //console.log(infoJSON)
     return (
       <Fade in timeout={500}>
         <Card>
@@ -37,12 +37,12 @@ class Company extends React.Component {
                 <b>{infoJSON.name}</b>
                 <p></p>
                 <b>Operations:</b> {infoJSON.category}
-                <p></p>
+                <br></br>
                 <b>Followers:</b> {infoJSON.fan_count}
               </Typography>
             ):
               <Typography>
-                <i> No information can be retrieved for this company at this point in time. We apologise for any inconvenience. </i>
+                <i> No information for {name} can be retrieved at this point in time. We apologise for any inconvenience. </i>
               </Typography>
             }
           </CardContent>
