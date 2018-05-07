@@ -4,6 +4,8 @@ import withRoot from '../withRoot'
 import PropTypes from 'prop-types'
 import Card, { CardContent, CardHeader } from 'material-ui/Card'
 import Fade from 'material-ui/transitions/Fade'
+import Typography from 'material-ui/Typography'
+import _ from 'lodash'
 
 const styles = theme => ({
   cardHeader: {
@@ -20,18 +22,26 @@ class Company extends React.Component {
   }
 
 
-  //console.log(infoJSON)
-
   render () {
     const { name, loading, infoJSON } = this.props
     const { classes } = this.props
-    console.log(infoJSON)
+    //console.log(infoJSON)
     return (
       <Fade in timeout={500}>
         <Card>
           <CardHeader title={name} className={classes.cardHeader}/>
           <CardContent>
-            Place brief company info here. Clicking on me should display a modal with full company info. @will
+            {infoJSON ?
+                {_.map(_.keys(infoJSON), (key, i) =>
+                key !== 'description' && key !== 'id'?
+                  (<Typography color="inherit" key={i}>
+                    <b>{key}: </b> {infoJSON[key]}
+                  </Typography>)
+                  : null
+              )}
+            :
+              No information can be retrieved for this company at this point in time. We apologise for any inconvenience.
+            }
           </CardContent>
         </Card>
       </Fade>

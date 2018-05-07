@@ -31,7 +31,7 @@ class Event extends React.Component {
     document.getElementById('global').style.overflow = 'hidden'
     this.state = {loading: false, responseJSON: null, items: 10, pagination: false,
       stockJSON: {}, loadingStock: true, startDate: null, endDate: null, infoJSON: {}, loadingInfo: true,
-      accessToken: 'EAACEdEose0cBAGATBAjSOgHl7VDTYM7xUWHamJHJxWMDwdORDtpiBZCYfZAJq8qVAddi3dYyIMSK2ta9poC5sfQ0Bxunmn0QY7KScAaoUZBqVWSKenZBtvHQjTGE6JM6uSm0pfgSP9yKFZAy3XbZBxByLntx6IAurF0s3uWGNuoOTsaLxZArUuILkniMkumMNYZD'}
+      accessToken: 'EAACEdEose0cBAGLdq9PVkFpVRhOPGosIqjFue8zHi44MeS9ZBhYPWMGSZBxJ4qKSmY7HUUzsBaLZADYyEKTanmy0XBZCpcXpdvYFlgLXphNCuEA0jFcxHEHImIk4eE9ceZCwmoaIkohsUGwOPT3ZBowXqKyQdKI4jvzQRr8cIDWulLdu9vYtHL0kWaks1kXDwZD'}
   }
 
   getInfo() {
@@ -203,7 +203,7 @@ class Event extends React.Component {
             <Grid container spacing={16}>
               {_.map(_.keys(EventData.related_companies), (company, i) => (
                 <Grid item xs={4} key={i}>
-                  <Company infoJSON={infoJSON} name={company} loading={loadingInfo} />
+                  <Company infoJSON={infoJSON[company]} name={company} loading={loadingInfo} />
                 </Grid>
               ))}
               </Grid>
