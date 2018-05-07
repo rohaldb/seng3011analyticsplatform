@@ -7,12 +7,8 @@ import _ from 'lodash'
 import Events from '../eventData'
 import { Link } from 'react-router-dom'
 import moment from 'moment'
-import {
-  Grid,
-  Chip,
-  Typography,
-  withStyles
-} from 'material-ui'
+import { Grid, Chip, Typography, withStyles } from 'material-ui'
+import { getDate } from '../time'
 
 const styles = theme => ({
   root: {
@@ -42,17 +38,22 @@ const styles = theme => ({
 })
 
 const bgCols = [
-  'rgb(33, 150, 243)',
-  'rgb(233, 30, 99)',
-  '#4caf50',
-  '#ff5722',
-  '#ab47bc'
+  '#AB47B8',
+  '#26c6da',
+  '#ef5350',
+  '#66bb6a'
 ]
 
 class Landing extends React.Component {
 
+  constructor (props) {
+    super(props)
+    document.getElementById('global').style.overflow = 'scroll'
+  }
+
   render () {
     const { classes } = this.props
+    document.title = 'EventStock'
 
     return (
       <Grid container direction='column' className={classes.root}>
@@ -61,7 +62,7 @@ class Landing extends React.Component {
             <Grid container alignItems='center' direction='column'>
               <Grid item>
                 <Typography variant='display3' gutterBottom className={classes.title}>
-                  Website Title
+                  EventStock
                 </Typography>
               </Grid>
               <Grid item>
@@ -79,7 +80,7 @@ class Landing extends React.Component {
                 <VerticalTimelineElement
                   key={i}
                   className='vertical-timeline-element--work'
-                  date={`${moment(Events[k].start_date).format('DD MMM YY')} - ${moment(Events[k].end_date).format('DD MMM YY')}`}
+                  date={`${moment(Events[k].start_date * 1000).format('DD MMM YY')} - ${getDate(Events[k].end_date)}`}
                   iconStyle={{ background: bgCols[i % bgCols.length], color: '#fff' }}
                   icon={<Event />}
               >
@@ -93,7 +94,7 @@ class Landing extends React.Component {
                   </Typography>
                   <div>
                     {_.map(Events[k].related_companies, (c, i) =>
-                      <Chip label={c} className={classes.chip} key={i} />
+                      <Chip label={i} className={classes.chip} key={i} />
                 )}
                   </div>
                 </VerticalTimelineElement>

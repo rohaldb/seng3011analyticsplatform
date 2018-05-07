@@ -6,7 +6,6 @@ import 'typeface-roboto'
 // It's optional.
 const theme = createMuiTheme({
   palette: {
-    type: 'dark',
     primary: {
       light: '#647786',
       main: '#394b59',
