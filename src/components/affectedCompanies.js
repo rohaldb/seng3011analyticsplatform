@@ -59,7 +59,7 @@ class Company extends React.Component {
     return (
       <div>
         <Fade in timeout={500}>
-          <Card className={classes.card} onClick={() => this.handleOpen()}>
+          <Card className={infoJSON ? classes.card : null} onClick={() => infoJSON ? this.handleOpen() : null}>
             <CardHeader title={name} className={classes.cardHeader}/>
               {infoJSON ?
               (
@@ -91,7 +91,7 @@ class Company extends React.Component {
           aria-describedby="alert-dialog-description"
           open={this.state.open}
         >
-          <DialogTitle id="alert-dialog-title">{"Fill me in will"}</DialogTitle>
+          <DialogTitle id="alert-dialog-title">{"Company Information"}</DialogTitle>
           <DialogContent>
             {_.map(_.keys(infoJSON), (key, i) =>
                 key !== 'id'?
