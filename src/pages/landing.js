@@ -67,7 +67,8 @@ class Landing extends React.Component {
               </Grid>
               <Grid item>
                 <Typography variant='subheading' gutterBottom className={classes.subTitle}>
-                  This is where a website summary can go. We can put any info a user may want to see on arrival
+                  Welcome to EventStock! Here to answer the Who, Why and How of the Financial Markets.
+                  Please browse the timeline below to see the events that have, and continue to, significantly impact major listed stocks.
                 </Typography>
               </Grid>
             </Grid>
