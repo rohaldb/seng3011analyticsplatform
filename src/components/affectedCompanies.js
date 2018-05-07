@@ -10,14 +10,13 @@ import Dialog from 'material-ui/Dialog'
 import Button from 'material-ui/Button'
 
 
-
-
 const styles = theme => ({
   cardHeader: {
     background: 'linear-gradient(60deg, #26c6da, #00acc1)'
   },
   button: {
     margin: theme.spacing.unit,
+    color: 'linear-gradient(60deg, #26c6da, #00acc1)'
   },
   input: {
     display: 'none',
@@ -47,12 +46,12 @@ class Company extends React.Component {
 
   render () {
     const actions = [
-      <Button raised
+      <Button variant="raised"
         label="Cancel"
         primary={true}
         onClick={this.handleClose}
       />,
-      <button
+      <Button variant="raised"
         label="Submit"
         primary={true}
         keyboardFocused={true}
@@ -71,7 +70,7 @@ class Company extends React.Component {
             <CardContent>
               <Typography>
                 <b>{infoJSON.name}</b>
-                <p></p>
+                <br></br>
                 <b>Operations:</b> {infoJSON.category}
                 <br></br>
                 <b>Followers:</b> {infoJSON.fan_count}
@@ -79,7 +78,7 @@ class Company extends React.Component {
                 <b>Website:</b> {infoJSON.website}
               </Typography>
                 <div>
-                  <Button variant="raised" color="primary" label="More Info" onClick={this.handleOpen} />
+                  <Button variant="raised" label="More Info" onClick={this.handleOpen} />
                     <Dialog
                       title="Dialog With Actions"
                       actions={actions}
