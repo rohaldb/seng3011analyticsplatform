@@ -12,6 +12,7 @@ const styles = theme => ({
   root: {
     flexGrow: 1,
     padding: '4%',
+    backgroundColor: 'rgb(227,227,227)',
     overlay: true
   },
   paper: {
