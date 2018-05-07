@@ -291,7 +291,7 @@ class Map extends React.Component {
     {'code': 'CF', 'name': 'Central African Rep.', 'value': 4486837, 'color': '#de4c4f'},
     {'code': 'TD', 'name': 'Chad', 'value': 11525496, 'color': '#de4c4f'},
     {'code': 'CL', 'name': 'Chile', 'value': 17269525, 'color': '#86a965'},
-    {'code': 'CN', 'name': 'China', 'value': 1347565324, 'color': '#eea638'},
+    {'code': 'CN', 'name': 'China', 'value': 67757577, 'color': '#eea638'},
     {'code': 'CO', 'name': 'Colombia', 'value': 46927125, 'color': '#86a965'},
     {'code': 'KM', 'name': 'Comoros', 'value': 753943, 'color': '#de4c4f'},
     {'code': 'CD', 'name': 'Congo, Dem. Rep.', 'value': 67757577, 'color': '#de4c4f'},
@@ -330,7 +330,7 @@ class Map extends React.Component {
     {'code': 'HK', 'name': 'Hong Kong, China', 'value': 7122187, 'color': '#eea638'},
     {'code': 'HU', 'name': 'Hungary', 'value': 9966116, 'color': '#d8854f'},
     {'code': 'IS', 'name': 'Iceland', 'value': 324366, 'color': '#d8854f'},
-    {'code': 'IN', 'name': 'India', 'value': 1241491960, 'color': '#eea638'},
+    {'code': 'IN', 'name': 'India', 'value': 74798599, 'color': '#eea638'},
     {'code': 'ID', 'name': 'Indonesia', 'value': 242325638, 'color': '#eea638'},
     {'code': 'IR', 'name': 'Iran', 'value': 74798599, 'color': '#eea638'},
     {'code': 'IQ', 'name': 'Iraq', 'value': 32664942, 'color': '#eea638'},
@@ -433,7 +433,7 @@ class Map extends React.Component {
 
 // get min and max values
     var minBulletSize = 3
-    var maxBulletSize = 70
+    var maxBulletSize = 50
     var min = Infinity
     var max = -Infinity
     for (var i = 0; i < mapData.length; i++) {
@@ -481,13 +481,6 @@ class Map extends React.Component {
     const config = {
       'type': 'map',
       'projection': 'eckert6',
-      'titles': [ {
-        'text': 'Population of the World in 2011',
-        'size': 14
-      }, {
-        'text': 'source: Gapminder',
-        'size': 11
-      } ],
       'areasSettings': {
     // "unlistedAreasColor": "#000000",
     // "unlistedAreasAlpha": 0.1
@@ -505,7 +498,7 @@ class Map extends React.Component {
       <Fade in timeout={500}>
         <Card>
           <CardHeader
-            title='Global Impact: Articles on Companies'
+            title='Global Impact'
             className={classes.cardHeader}
           />
           <CardContent className={classes.map}>
