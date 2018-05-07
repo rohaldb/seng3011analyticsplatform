@@ -4,6 +4,7 @@ import withRoot from '../withRoot'
 import PropTypes from 'prop-types'
 import Card, { CardContent, CardHeader } from 'material-ui/Card'
 import { CircularProgress } from 'material-ui/Progress'
+import Fade from 'material-ui/transitions/Fade'
 
 import 'amstock3/amcharts/amcharts.js'
 import 'amstock3/amcharts/serial.js'
@@ -166,19 +167,23 @@ class Stock extends React.Component {
     const { classes, loading } = this.props
 
     return (
-      <Card>
-        <CardHeader
-          title="Stock Comparison"
-          className={classes.cardHeader}
-        />
-        <CardContent>
-          {loading ? 
-            <CircularProgress/>
-             : 
-            <AmCharts.React className="stockChart" style={{ width: "100%", height: "500px" }} options={this.declareConfig()} />
-          }
-        </CardContent>
-      </Card>
+      <Fade in timeout={500}>
+        <Card>
+          <CardHeader
+            title="Stock Comparison"
+            className={classes.cardHeader}
+          />
+          <CardContent>
+            {loading ? 
+              <CircularProgress/>
+               : 
+              <Fade in timeout={500}>
+                <AmCharts.React className="stockChart" style={{ width: "100%", height: "500px" }} options={this.declareConfig()} />
+              </Fade>
+            }
+          </CardContent>
+        </Card>
+      </Fade>
     )
   }
 }
