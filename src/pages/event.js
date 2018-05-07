@@ -30,7 +30,44 @@ class Event extends React.Component {
     super(props)
     document.getElementById('global').style.overflow = 'hidden'
     this.state = {loading: false, responseJSON: null, items: 10, pagination: false,
-      stockJSON: {}, loadingStock: true, startDate: null, endDate: null}
+      stockJSON: {}, loadingStock: true, startDate: null, endDate: null, infoJSON: {}, loadingInfo: true,
+      accessToken: 'EAACEdEose0cBAGATBAjSOgHl7VDTYM7xUWHamJHJxWMDwdORDtpiBZCYfZAJq8qVAddi3dYyIMSK2ta9poC5sfQ0Bxunmn0QY7KScAaoUZBqVWSKenZBtvHQjTGE6JM6uSm0pfgSP9yKFZAy3XbZBxByLntx6IAurF0s3uWGNuoOTsaLxZArUuILkniMkumMNYZD'}
+  }
+
+  getInfo() {
+      const accessToken = this.state.accessToken
+      const companies = Events[this.props.eventID].related_companies
+      //console.log(companies)
+      let companiesProcessed = 0
+      for (let companyName in companies) {
+          //console.log("COMPANY: " + companyName);
+          if (companies.hasOwnProperty(companyName) && companies[companyName]) {
+
+              let apiBase = `${companyName}?statistics=id,name,website,description,category,fan_count`
+              fetch(`https://unassigned-api.herokuapp.com/api/${apiBase}&access_token=${accessToken}`)
+              .then((response) => {
+                  if (response.ok) {
+                      response.json().then(data => {
+                          let infoJSON = this.state.infoJSON
+                          infoJSON[companyName] = data.data
+                          console.log(infoJSON)
+                          companiesProcessed++
+                          if (companiesProcessed === Object.keys(companies).length) {
+                            this.setState({ infoJSON: infoJSON, loadingInfo: false })
+                          }
+
+                      })
+                  }
+              })
+              .catch(error => console.error(error)) // ??
+
+          } else if (!companies[companyName]) { // null stock code
+              companiesProcessed++
+              if (companiesProcessed === Object.keys(companies).length) {
+                this.setState({ loadingInfo: false })
+              }
+          }
+      }
   }
 
   getNews () {
@@ -50,12 +87,12 @@ class Event extends React.Component {
       dates += `&to-date=${end.format('YYYY-MM-DD')}`
     }
 
-    console.log(`fetching ${base}?${query}&${dates}&${params}&${apiKey}`)
+    //console.log(`fetching ${base}?${query}&${dates}&${params}&${apiKey}`)
     fetch(`${base}?${query}&${dates}&${params}&${apiKey}`)
     .then((response) => {
       if (response.ok) {
         response.json().then(data => {
-          console.log(data)
+          //console.log(data)
           this.setState({ responseJSON: data, loading: false })
         })
       }
@@ -124,6 +161,7 @@ class Event extends React.Component {
   }
 
   componentDidMount () {
+    this.getInfo()
     this.getNews()
     this.getStockPrices()
     this.refs.iScroll.addEventListener('scroll', () => {
@@ -142,7 +180,7 @@ class Event extends React.Component {
   }
 
   render () {
-    const { responseJSON, items, loading, stockJSON, loadingStock } = this.state
+    const { responseJSON, items, loading, stockJSON, loadingStock, infoJSON, loadingInfo } = this.state
     const { classes, eventID } = this.props
 
     const EventData = Events[eventID]
@@ -160,15 +198,13 @@ class Event extends React.Component {
                 start_date={`${moment(EventData.start_date * 1000).format('DD MMM YY')}`}
                 end_date={getDate(EventData.end_date)}
                 />
-            </Grid>
-            <Grid item xs={12}>
-              <Grid container spacing={16}>
-                {_.map(_.keys(EventData.related_companies), (company, i) => (
-                  <Grid item xs={4} key={i}>
-                    <Company
-                      name={company}
-                    />
-                  </Grid>
+          </Grid>
+          <Grid item xs={12}>
+            <Grid container spacing={16}>
+              {_.map(_.keys(EventData.related_companies), (company, i) => (
+                <Grid item xs={4} key={i}>
+                  <Company infoJSON={infoJSON} name={company} loading={loadingInfo} />
+                </Grid>
               ))}
               </Grid>
             </Grid>
