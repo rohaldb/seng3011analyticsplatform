@@ -2,6 +2,7 @@ import React from 'react'
 import { withStyles } from 'material-ui/styles'
 import withRoot from '../withRoot'
 import Card, { CardContent, CardHeader } from 'material-ui/Card'
+import Fade from 'material-ui/transitions/Fade'
 
 const styles = theme => ({
   cardHeader: {
@@ -16,15 +17,17 @@ class Map extends React.Component {
     const { classes } = this.props
 
     return (
-      <Card>
-        <CardHeader
-          title='Global Impact'
-          className={classes.cardHeader}
-        />
-        <CardContent>
-          place heat map here
-        </CardContent>
-      </Card>
+      <Fade in timeout={500}>
+        <Card>
+          <CardHeader
+            title='Global Impact'
+            className={classes.cardHeader}
+          />
+          <CardContent>
+            place heat map here
+          </CardContent>
+        </Card>
+      </Fade>
     )
   }
 }

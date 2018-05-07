@@ -3,6 +3,7 @@ import { withStyles } from 'material-ui/styles'
 import withRoot from '../withRoot'
 import PropTypes from 'prop-types'
 import Card, { CardContent, CardHeader } from 'material-ui/Card'
+import Fade from 'material-ui/transitions/Fade'
 
 const styles = theme => ({
   cardHeader: {
@@ -21,12 +22,14 @@ class Companie extends React.Component {
     const { classes } = this.props
 
     return (
-      <Card>
-        <CardHeader title={name} className={classes.cardHeader}/>
-        <CardContent>
-          Place brief company info here. Clicking on me should display a modal with full company info. @will
-        </CardContent>
-      </Card>
+      <Fade in timeout={500}>
+        <Card>
+          <CardHeader title={name} className={classes.cardHeader}/>
+          <CardContent>
+            Place brief company info here. Clicking on me should display a modal with full company info. @will
+          </CardContent>
+        </Card>
+      </Fade>
     )
   }
 }

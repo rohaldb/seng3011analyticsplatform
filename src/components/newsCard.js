@@ -5,6 +5,7 @@ import { CircularProgress } from 'material-ui/Progress'
 import { Article } from '../components'
 import { prettyDate } from '../time'
 import Card, { CardContent, CardHeader } from 'material-ui/Card'
+import Fade from 'material-ui/transitions/Fade'
 
 // Styles should go here CSS should go here
 const styles = theme => ({
@@ -47,16 +48,18 @@ class NewsCard extends Component {
     const data = responseJSON ? responseJSON.response.results : null
 
     return (
-      <Card>
-        <CardHeader title="Related News" className={classes.cardHeader}/>
-        <CardContent>
-          {loading || !data ?
-            <CircularProgress className={classes.margin}/>
-            :
-            this.displayItems(data, items)
-          }
-        </CardContent>
-      </Card>
+      <Fade in={data} timeout={500}>
+        <Card>
+          <CardHeader title="Related News" className={classes.cardHeader}/>
+          <CardContent>
+            {!data ?
+              <CircularProgress className={classes.margin}/>
+              :
+              this.displayItems(data, items)
+            }
+          </CardContent>
+        </Card>
+      </Fade>
     )
 
   }

@@ -4,6 +4,7 @@ import withRoot from '../withRoot'
 import PropTypes from 'prop-types'
 import Card, { CardContent, CardHeader } from 'material-ui/Card'
 import Typography from 'material-ui/Typography'
+import Fade from 'material-ui/transitions/Fade'
 
 const styles = theme => ({
   cardHeader: {
@@ -25,20 +26,22 @@ class EventSummary extends React.Component {
     const { classes } = this.props
 
     return (
-      <Card>
-        <CardHeader
-          title={name}
-          className={classes.cardHeader}
-        />
-        <CardContent>
-          <Typography variant="subheading">
-            {description}
-          </Typography>
-          <Typography variant="body2">
-            Date: {start_date} - {end_date}
-          </Typography>
-        </CardContent>
-      </Card>
+      <Fade in timeout={500}>
+        <Card>
+          <CardHeader
+            title={name}
+            className={classes.cardHeader}
+          />
+          <CardContent>
+            <Typography variant="subheading">
+              {description}
+            </Typography>
+            <Typography variant="body2">
+              Date: {start_date} - {end_date}
+            </Typography>
+          </CardContent>
+        </Card>
+      </Fade>
     )
   }
 }
