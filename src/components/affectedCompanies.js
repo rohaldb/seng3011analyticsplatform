@@ -25,22 +25,23 @@ class Company extends React.Component {
   render () {
     const { name, loading, infoJSON } = this.props
     const { classes } = this.props
-    //console.log(infoJSON)
+    console.log(infoJSON)
     return (
       <Fade in timeout={500}>
         <Card>
           <CardHeader title={name} className={classes.cardHeader}/>
           <CardContent>
             {infoJSON ?
-                {_.map(_.keys(infoJSON), (key, i) =>
-                key !== 'description' && key !== 'id'?
-                  (<Typography color="inherit" key={i}>
-                    <b>{key}: </b> {infoJSON[key]}
-                  </Typography>)
-                  : null
-              )}
-            :
-              No information can be retrieved for this company at this point in time. We apologise for any inconvenience.
+            (
+              <Typography>
+                <b>{infoJSON[name]}</b>
+                Company Class: {infoJSON[category]}
+                Website: {infoJSON[website]}
+
+
+              </Typography>
+            ):
+              <i> No information can be retrieved for this company at this point in time. We apologise for any inconvenience. </i>
             }
           </CardContent>
         </Card>
@@ -50,3 +51,16 @@ class Company extends React.Component {
 }
 
 export default withRoot(withStyles(styles)(Company))
+
+
+// {infoJSON ?
+//     {_.map(_.keys(infoJSON), (key, i) =>
+//     key !== 'description' && key !== 'id'?
+//       (<Typography color="inherit" key={i}>
+//         <b>{key}: </b> {infoJSON[key]}
+//       </Typography>)
+//       : null
+//   )}
+// :
+//   No information can be retrieved for this company at this point in time. We apologise for any inconvenience.
+// }
