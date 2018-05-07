@@ -31,7 +31,7 @@ class Event extends React.Component {
     document.getElementById('global').style.overflow = 'hidden'
     this.state = {loading: false, responseJSON: null, items: 10, pagination: false,
       stockJSON: {}, loadingStock: true, startDate: null, endDate: null, infoJSON: {}, loadingInfo: true,
-      accessToken: 'EAACEdEose0cBAOLyrxZCl5Lz5ubP88XQFklO1wg7iSsX12FslCIX6sQCtNF4pqyLz1VXJk8JSBoeVUir4rVguK3pcaADKvkC7c60e9dbAZA7g2KwdZBbKvox1rlmd3BzNmmSUuhAoFSWYNcgOk1iWt5ZBPLqiBKzkLQepesAPzhqdZBExUT6DPdJrWn1gAHoZD'}
+      accessToken: 'EAACEdEose0cBAAZBHfqaPj1mtpaWmz8li8TaRfZANDbACHmnpDx2BpYat2zh6zrgUShgT8pCCZAq5NtdKO5CP4ok1VR5ZCOBGzjWsgH5MLeTeSccfpBUelJLBQmHCqocRm5PBEe9W2zeXZBt70E56P8OcAvmBCkP6pdSU89VbeZCxhHHs8UAjbSPodnluHsnIZD'}
   }
 
   getInfo() {
