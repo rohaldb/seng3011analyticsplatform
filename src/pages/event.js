@@ -28,10 +28,18 @@ class Event extends React.Component {
 
   constructor (props) {
     super(props)
-//    document.getElementById('global').style.overflow = 'hidden'
-    this.state = {loading: false, responseJSON: null, items: 10, pagination: false,
-      stockJSON: {}, loadingStock: true, startDate: null, endDate: null, infoJSON: {}, loadingInfo: true,
-      accessToken: 'EAACEdEose0cBAEvC7NWF5ySlLOXHk32xR5TnMEKu2VkaJKCeCPCKI5EWoEaRqy5nAjyklRBNZA0fnESk9pXfZCJ6NSnv3kSBK6GorG7fTTRQFXipevCJHDiVabNFB6uR0uJZBwjDgFrkzXZAmUZAKZB4tYjhXl0qBAbiCVMOga2xt6IZBNWgxfZAoDZCHt9mfRQVFk0CT6uKiUQZDZD' }
+    this.state = {
+      loading: false,
+      responseJSON: null,
+      items: 10,
+      pagination: false,
+      stockJSON: {},
+      loadingStock: true,
+      startDate: null,
+      endDate: null, infoJSON: {},
+      loadingInfo: true,
+      accessToken: 'should be uneeded'
+    }
   }
 
   getInfo () {
@@ -43,7 +51,7 @@ class Event extends React.Component {
           // console.log("COMPANY: " + companyName);
       if (companies.hasOwnProperty(companyName) && companies[companyName]) {
         let apiBase = `${companyName}?statistics=id,name,website,description,category,fan_count`
-        fetch(`https://unassigned-api.herokuapp.com/api/${apiBase}&access_token=${accessToken}`)
+        fetch(`https://unassigned-api.herokuapp.com/api/${apiBase}&access_token=${accessToken}&workaround=true`)
               .then((response) => {
                 if (response.ok) {
                   response.json().then(data => {
