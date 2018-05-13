@@ -4,16 +4,15 @@ import withRoot from '../withRoot'
 import PropTypes from 'prop-types'
 import Card, { CardContent, CardHeader } from 'material-ui/Card'
 import Fade from 'material-ui/transitions/Fade'
+import { CircularProgress } from 'material-ui/Progress'
 import Typography from 'material-ui/Typography'
+import ReactDOM from 'react-dom'
+import NumericLabel from 'react-pretty-numbers'
 import _ from 'lodash'
 import Dialog, {
-  DialogActions,
   DialogContent,
-  DialogContentText,
-  DialogTitle,
+  DialogTitle
 } from 'material-ui/Dialog'
-import Button from 'material-ui/Button'
-
 
 const styles = theme => ({
   cardHeader: {
@@ -40,17 +39,16 @@ class Company extends React.Component {
   }
 
   state = {
-    open: false,
-  };
+    open: false
+  }
 
   handleOpen = () => {
-    this.setState({open: true});
-  };
+    this.setState({open: true})
+  }
 
   handleClose = () => {
-    this.setState({open: false});
-  };
-
+    this.setState({open: false})
+  }
 
   render () {
     const { name, loading, infoJSON } = this.props
@@ -61,45 +59,65 @@ class Company extends React.Component {
         <Fade in timeout={500}>
           <Card className={infoJSON ? classes.card : null} onClick={() => infoJSON ? this.handleOpen() : null}>
             <CardHeader title={name} className={classes.cardHeader}/>
-              {infoJSON ?
-              (
-              <CardContent>
-                <Typography>
-                  <b>{infoJSON.name}</b>
-                  <br></br>
-                  <b>Operations:</b> {infoJSON.category}
-                  <br></br>
-                  <b>Followers:</b> {infoJSON.fan_count}
-                  <br></br>
-                  <b>Website:</b> {infoJSON.website}
-                </Typography>
+              {loading ?
+                <div style={{textAlign: 'center'}}>
+                  <CircularProgress/>
+                </div>
+              :
+                [infoJSON ?
+                (
+                <CardContent>
+                  <Typography>
+                    <b>{infoJSON.name}</b>
+                    <br></br>
+                    <b>Operations:</b> {infoJSON.category}
+                    <br></br>
+                    <b>Followers:</b> <NumericLabel>{infoJSON.fan_count}</NumericLabel>
+                    <br></br>
+                    <b>Website:</b> <a target="_blank" href={infoJSON.website}>{infoJSON.website}</a>
+                  </Typography>
                 </CardContent>
-              ):
-              <CardContent>
-                <Typography>
-                  <i> No information for {name} can be retrieved at this point in time. We apologise for any inconvenience. </i>
-                </Typography>
-              </CardContent>
+                ):
+                <CardContent>
+                  <Typography>
+                    <i> No information for {name} can be retrieved at this point in time. We apologise for any inconvenience. </i>
+                  </Typography>
+                </CardContent>
+                ]
               }
           </Card>
         </Fade>
 
       <Dialog
-          open={() => this.state.open()}
+          open={this.state.open}
           onClose={() => this.handleClose()}
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
-          open={this.state.open}
-        >
+      >
           <DialogTitle id="alert-dialog-title">{"Company Information"}</DialogTitle>
           <DialogContent>
-            {_.map(_.keys(infoJSON), (key, i) =>
-                key !== 'id'?
-                (<Typography color="inherit" key={i}>
-                <b>{key}: </b> {infoJSON[key]}
-                </Typography>)
-              : null
-            )}
+                {infoJSON ?
+                (
+                <CardContent>
+                  <Typography>
+                    <b>{infoJSON.name}</b>
+                    <br></br>
+                    <b>Operations:</b> {infoJSON.category}
+                    <br></br>
+                    <b>Followers:</b> <NumericLabel>{infoJSON.fan_count}</NumericLabel>
+                    <br></br>
+                    <b>Website:</b> <a target="_blank" href={infoJSON.website}>{infoJSON.website}</a>
+                    <br></br>
+                    <b>Description:</b> {infoJSON.description}
+                  </Typography>
+                </CardContent>
+                ):
+                <CardContent>
+                  <Typography>
+                    <i> No information for {name} can be retrieved at this point in time. We apologise for any inconvenience. </i>
+                  </Typography>
+                </CardContent>
+                }
           </DialogContent>
         </Dialog>
       </div>

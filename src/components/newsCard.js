@@ -5,7 +5,7 @@ import { CircularProgress } from 'material-ui/Progress'
 import { Article } from '../components'
 import { prettyDate } from '../time'
 import Card, { CardContent, CardHeader, CardActions } from 'material-ui/Card'
-import Button from 'material-ui/Button';
+import Button from 'material-ui/Button'
 import Fade from 'material-ui/transitions/Fade'
 
 // Styles should go here CSS should go here
@@ -30,7 +30,6 @@ class NewsCard extends Component {
 
   static propTypes = {
     responseJSON: PropTypes.object,
-    loading: PropTypes.bool.isRequired,
   }
 
   addItems = () => {
@@ -58,7 +57,7 @@ class NewsCard extends Component {
   }
 
   render () {
-    const { responseJSON, classes, loading } = this.props
+    const { responseJSON, classes } = this.props
     const data = responseJSON ? responseJSON.response.results : null
 
     return (

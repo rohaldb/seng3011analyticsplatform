@@ -48,7 +48,7 @@ class Event extends React.Component {
       // console.log(companies)
     let companiesProcessed = 0
     for (let companyName in companies) {
-          // console.log("COMPANY: " + companyName);
+          // console.log("COMPANY: " + companyName)
       if (companies.hasOwnProperty(companyName) && companies[companyName]) {
         let apiBase = `${companyName}?statistics=id,name,website,description,category,fan_count`
         fetch(`https://unassigned-api.herokuapp.com/api/${apiBase}&access_token=${accessToken}&workaround=true`)
@@ -56,6 +56,8 @@ class Event extends React.Component {
                 if (response.ok) {
                   response.json().then(data => {
                     let infoJSON = this.state.infoJSON
+                    if (data.data.website && !data.data.website.match(/^http/)) data.data.website = "http://" + data.data.website
+                    if (!data.data.description) data.data.description = 'No description available'
                     infoJSON[companyName] = data.data
                     console.log(infoJSON)
                     companiesProcessed++
@@ -119,7 +121,7 @@ class Event extends React.Component {
 
     let companiesProcessed = 0
     for (let companyName in companies) {
-      // console.log("COMPANY: " + companyName);
+      // console.log("COMPANY: " + companyName)
       if (companies.hasOwnProperty(companyName) && companies[companyName]) {
         const companyCode = companies[companyName]
         console.log(companyCode)
@@ -128,7 +130,7 @@ class Event extends React.Component {
         // TODO MAKE OUTPUTSIZE == full
         const params = `?function=TIME_SERIES_DAILY&outputsize=full&symbol=${companyCode}&apikey=${apiKey}`
         const url = base + params
-        // console.log('FETCHING: ' + url);
+        // console.log('FETCHING: ' + url)
         fetch(url).then(response => {
           if (response.ok) {
             response.json().then(data => {
@@ -173,11 +175,10 @@ class Event extends React.Component {
   }
 
   render () {
-    const { responseJSON, items, loading, stockJSON, loadingStock, infoJSON, loadingInfo } = this.state
+    const { responseJSON, loading, stockJSON, loadingStock, infoJSON, loadingInfo } = this.state
     const { classes, eventID } = this.props
 
     const EventData = Events[eventID]
-    const eventInfo = Events[this.props.eventID]
     document.title = 'EventStock - ' + EventData.name
     return (
       <div>
