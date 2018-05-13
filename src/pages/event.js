@@ -86,7 +86,7 @@ class Event extends React.Component {
     const keywords = eventInfo.keywords.toString().replace(/,/g, '%20AND%20')
 
     const base = 'https://content.guardianapis.com/search'
-    const params = 'page-size=100&show-blocks=main&show-fields=bodyText'
+    const params = 'page-size=100&show-blocks=main&show-fields=bodyText,thumbnail'
     const apiKey = 'api-key=35b90e54-3944-4e4f-9b0e-a511d0dda44d'
     const query = `q=${keywords}`
     var dates = `from-date=${start.format('YYYY-MM-DD')}`
@@ -172,6 +172,7 @@ class Event extends React.Component {
     this.getInfo()
     this.getNews()
     this.getStockPrices()
+    window.scrollTo(0, 0)
   }
 
   render () {

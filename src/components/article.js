@@ -21,14 +21,15 @@ const styles = theme => ({
 class Article extends React.Component {
 
   render () {
-    const { title, date, body, url } = this.props
+    const { title, date, body, url, img } = this.props
     const { classes } = this.props
     return (
       <Grid container>
         <Grid item xs={12} style={{borderBottom: '2px solid #66bb6a'}}>
           <h2 className={classes.title}>{title}</h2>
           <h4 className={classes.date}>{date}</h4>
-          <p className={classes.body} >{body}
+          <img className={classes.img} src={img} alt="" style={{float: 'left', 'margin-top': '0px', 'margin-right': '25px', 'margin-bottom': '10px'}}></img>
+          <p className={classes.body}>{body}
             <a target='_blank' href={url}>Read More</a>
           </p>
         </Grid>

@@ -37,7 +37,6 @@ class NewsCard extends Component {
   }
 
   displayItems(data) {
-
     let num = this.state.numItems
     var items = []
     data.map(function(item, i) {
@@ -46,8 +45,9 @@ class NewsCard extends Component {
         items.push(<Article key={num}
           title={item.webTitle}
           date={timestamp}
-          body={item.fields.bodyText.substring(0, 350).replace(/\s[^\s]*$/, '').replace(/\s*[^a-z]+$/i, '') + ' ... '}
+          body={item.fields.bodyText.substring(0, 850).replace(/\s[^\s]*$/, '').replace(/\s*[^a-z]+$/i, '') + ' ... '}
           url={item.webUrl}
+          img={item.fields.thumbnail}
           />
         )
       }

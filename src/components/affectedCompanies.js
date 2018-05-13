@@ -6,9 +6,7 @@ import Card, { CardContent, CardHeader } from 'material-ui/Card'
 import Fade from 'material-ui/transitions/Fade'
 import { CircularProgress } from 'material-ui/Progress'
 import Typography from 'material-ui/Typography'
-import ReactDOM from 'react-dom'
 import NumericLabel from 'react-pretty-numbers'
-import _ from 'lodash'
 import Dialog, {
   DialogContent,
   DialogTitle
