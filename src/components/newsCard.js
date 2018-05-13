@@ -36,18 +36,39 @@ class NewsCard extends Component {
     this.setState({numItems: this.state.numItems + 5 })
   }
 
-  displayItems(data) {
+  displayItems = (data) => {
     let num = this.state.numItems
     var items = []
     data.map(function(item, i) {
       const timestamp = prettyDate(new Date(item.webPublicationDate))
       if (num-- >= 0) {
-        items.push(<Article key={num}
+        var bodyText = item.blocks.body[0].bodyHtml
+
+        /* remove hyperlinks from body */
+        bodyText = bodyText.replace(/<\s*\/?\s*a\s[^>]*>/gi, '')
+
+        /* make headings smaller */
+        bodyText = bodyText.replace(/<\s*(\/?)\s*h[0-9]\s*>/gi, '<$1h5>');
+
+        /* make images half-scale */
+        bodyText = bodyText.replace(/<\s*img\s([^>]+)>/g, function(match, capture) {
+          var ret = capture.replace(/\sheight\s*=\s*"\s*([0-9]+)\s*"\s/gi, function(m, cap) {
+            return ' height="' + cap / 2 + '" '
+          })
+          ret = ret.replace(/\swidth\s*=\s*"\s*([0-9]+)\s*"\s/gi, function(m, cap) {
+            return ' width="' + cap / 2 + '" '
+          })
+          return '<img ' + ret + '>'
+        })
+
+        items.push(
+          <Article key={num}
           title={item.webTitle}
           date={timestamp}
           body={item.fields.bodyText.substring(0, 850).replace(/\s[^\s]*$/, '').replace(/\s*[^a-z]+$/i, '') + ' ... '}
           url={item.webUrl}
           img={item.fields.thumbnail}
+          bodyText={bodyText}
           />
         )
       }

@@ -46,10 +46,6 @@ const bgCols = [
 
 class Landing extends React.Component {
 
-  constructor (props) {
-    super(props)
-  }
-
   componentDidMount () {
     window.scrollTo(0, 0)
   }
