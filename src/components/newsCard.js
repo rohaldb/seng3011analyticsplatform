@@ -65,7 +65,7 @@ class NewsCard extends Component {
           <Article key={num}
           title={item.webTitle}
           date={timestamp}
-          body={item.fields.bodyText.substring(0, 850).replace(/\s[^\s]*$/, '').replace(/\s*[^a-z]+$/i, '') + ' ... '}
+          body={item.fields.bodyText.substring(0, 1000).replace(/\s[^\s]*$/, '').replace(/\s*[^a-z]+$/i, '') + ' ... '}
           url={item.webUrl}
           img={item.fields.thumbnail}
           bodyText={bodyText}

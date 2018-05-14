@@ -3,7 +3,9 @@ import { withStyles } from 'material-ui/styles'
 import withRoot from '../withRoot'
 import Grid from 'material-ui/Grid'
 import Typography from 'material-ui/Typography'
-import Button from 'material-ui/Button'
+import IconButton from 'material-ui/IconButton'
+import OpenInNewIcon from 'react-material-icon-svg/dist/OpenInNewIcon'
+import FormatAlignJustifyIcon from 'react-material-icon-svg/dist/FormatAlignJustifyIcon'
 import { CardContent } from 'material-ui/Card'
 import Dialog, {
   DialogContent,
@@ -22,6 +24,15 @@ const styles = theme => ({
   body: {
     marginTop: '1px',
     fontFamily: 'Roboto'
+  },
+  largeIcon: {
+    width: 60,
+    height: 60,
+  },
+  large: {
+    width: 120,
+    height: 120,
+    padding: 30,
   }
 })
 
@@ -63,9 +74,23 @@ class Article extends React.Component {
             <h4 className={classes.date}>{date}</h4>
             <img className={classes.img} src={img} alt="" style={{float: 'left', 'margin-top': '0px', 'margin-right': '25px', 'margin-bottom': '10px'}}></img>
             <p className={classes.body}>{body}</p>
-            <div style={{margin: 'auto'}}>
-              <Button variant="raised" className={classes.button} size="large" onClick={() => this.handleOpen()}>View Article</Button>
-              <Button variant="raised" className={classes.button} size="large" onClick={()=> this.showArticle(url)}>Full Article</Button>
+            <div style={{margin: 'auto', 'text-align': 'right'}}>
+              <IconButton
+                tooltip="View article body"
+                onClick={() => this.handleOpen()}
+                iconStyle={styles.largeIcon}
+                style={styles.large}
+              >
+                <FormatAlignJustifyIcon />
+              </IconButton>
+              <IconButton
+                tooltip="View external source"
+                onClick={() => this.showArticle(url)}
+                iconStyle={styles.largeIcon}
+                style={styles.large}
+              >
+                <OpenInNewIcon />
+              </IconButton>
             </div>
           </Grid>
         </Grid>
