@@ -31,6 +31,7 @@ class Navigation extends React.Component {
                 <Home />
               </IconButton>
             </Link>
+           EventStock
           </Toolbar>
         </AppBar>
       </div>
