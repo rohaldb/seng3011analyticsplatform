@@ -15,10 +15,10 @@ class Login extends React.Component {
     return (
       <div className='form'>
         <div className='form_logo'>
-          Lo<span>g</span>o
+          Logon
         </div>
         <div className='form_title'>
-          Log<span>I</span>n
+          Login
         </div>
         <form className='form_items'>
           <div className='form_inputs'>
