@@ -34,7 +34,7 @@ class Login extends React.Component {
         this.database.on('value', snap => {
             snap.forEach(childNodes => {
                 if (childNodes.key == this.refs.name.value) {
-                    console.log(childNodes)
+                    // console.log(childNodes)
                 }
             })
         })
