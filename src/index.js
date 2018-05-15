@@ -7,15 +7,6 @@ import 'typeface-roboto'
 import './assets/timeline.css'
 import * as firebase from 'firebase'
 
-var config = {
-  apiKey: "AIzaSyBSd_5dRD0LcLCK89q0wX23nEVrDkG93H0",
-  authDomain: "seng3-2c510.firebaseapp.com",
-  databaseURL: "https://seng3-2c510.firebaseio.com",
-  projectId: "seng3-2c510",
-  storageBucket: "",
-  messagingSenderId: "792824470132"
-};
-firebase.initializeApp(config);
 
 const Root = () => (
   <Router>
@@ -27,6 +18,8 @@ const Root = () => (
   </Router>
 )
 
+// this.props.history.push()
+// component.Didmount => put asinc code in here
 // <Route exact path='/' component={timelineParams} />
 
 const EventParams = ({ match, history }) => <Event eventID={match.params.eventID} history={history} />
