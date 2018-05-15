@@ -5,6 +5,7 @@ import PropTypes from 'prop-types'
 import Card, { CardContent, CardHeader } from 'material-ui/Card'
 import Fade from 'material-ui/transitions/Fade'
 import Typography from 'material-ui/Typography'
+import '../assets/login.css'
 import _ from 'lodash'
 import Dialog, {
   DialogActions,
