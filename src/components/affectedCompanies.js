@@ -56,10 +56,10 @@ class Company extends React.Component {
       <div>
         <Fade in timeout={500}>
           <Card className={infoJSON ? classes.card : null} onClick={() => infoJSON ? this.handleOpen() : null}>
-            <CardHeader title={name} className={classes.cardHeader}/>
+            <CardHeader title={name} className={classes.cardHeader} />
               {loading ?
                 <div style={{textAlign: 'center'}}>
-                  <CircularProgress/>
+                  <CircularProgress />
                 </div>
               :
                 [infoJSON ?

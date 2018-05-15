@@ -29,7 +29,8 @@ class NewsCard extends Component {
   }
 
   static propTypes = {
-    responseJSON: PropTypes.object,
+    newsJSON: PropTypes.object.isRequired,
+    loading: PropTypes.bool.isRequired
   }
 
   addItems = () => {
@@ -48,7 +49,7 @@ class NewsCard extends Component {
         bodyText = bodyText.replace(/<\s*\/?\s*a\s[^>]*>/gi, '')
 
         /* make headings smaller */
-        bodyText = bodyText.replace(/<\s*(\/?)\s*h[0-9]\s*>/gi, '<$1h5>');
+        bodyText = bodyText.replace(/<\s*(\/?)\s*h[0-9]\s*>/gi, '<$1h5>')
 
         /* make images half-scale */
         bodyText = bodyText.replace(/<\s*img\s([^>]+)>/g, function(match, capture) {
@@ -78,20 +79,19 @@ class NewsCard extends Component {
   }
 
   render () {
-    const { responseJSON, classes } = this.props
-    const data = responseJSON ? responseJSON.response.results : null
+    const { newsJSON, loading, classes } = this.props
 
     return (
       <Fade in timeout={500}>
         <Card>
-          <CardHeader title="Related News" className={classes.cardHeader}/>
+          <CardHeader title="Related News" className={classes.cardHeader} />
           <CardContent>
-            {!data ?
+            {loading ?
               <div style={{textAlign: 'center'}}>
-                <CircularProgress/>
+                <CircularProgress />
               </div>
-              :
-              this.displayItems(data)
+            :
+              this.displayItems(newsJSON.response.results)
             }
           </CardContent>
           <CardActions>

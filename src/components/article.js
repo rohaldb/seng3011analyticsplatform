@@ -78,7 +78,6 @@ class Article extends React.Component {
               <IconButton
                 tooltip="View article body"
                 onClick={() => this.handleOpen()}
-                iconStyle={styles.largeIcon}
                 style={styles.large}
               >
                 <FormatAlignJustifyIcon />
@@ -86,7 +85,6 @@ class Article extends React.Component {
               <IconButton
                 tooltip="View external source"
                 onClick={() => this.showArticle(url)}
-                iconStyle={styles.largeIcon}
                 style={styles.large}
               >
                 <OpenInNewIcon />

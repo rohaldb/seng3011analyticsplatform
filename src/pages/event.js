@@ -29,45 +29,44 @@ class Event extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      loading: false,
-      responseJSON: null,
-      items: 10,
       pagination: false,
+      infoJSON: {},
       stockJSON: {},
-      loadingStock: true,
-      startDate: null,
-      endDate: null, infoJSON: {},
+      newsJSON: {},
       loadingInfo: true,
-      accessToken: 'should be uneeded'
+      loadingStock: true,
+      loadingNews: true,
+      startDate: null,
+      endDate: null
     }
   }
 
   getInfo () {
-    const accessToken = this.state.accessToken
     const companies = Events[this.props.eventID].related_companies
-      // console.log(companies)
+    // console.log(companies)
     let companiesProcessed = 0
     for (let companyName in companies) {
-          // console.log("COMPANY: " + companyName)
+      // console.log("COMPANY: " + companyName)
       if (companies.hasOwnProperty(companyName) && companies[companyName]) {
-        let apiBase = `${companyName}?statistics=id,name,website,description,category,fan_count`
-        fetch(`https://unassigned-api.herokuapp.com/api/${apiBase}&access_token=${accessToken}&workaround=true`)
-              .then((response) => {
-                if (response.ok) {
-                  response.json().then(data => {
-                    let infoJSON = this.state.infoJSON
-                    if (data.data.website && !data.data.website.match(/^http/)) data.data.website = "http://" + data.data.website
-                    if (!data.data.description) data.data.description = 'No description available'
-                    infoJSON[companyName] = data.data
-                    console.log(infoJSON)
-                    companiesProcessed++
-                    if (companiesProcessed === Object.keys(companies).length) {
-                      this.setState({ infoJSON: infoJSON, loadingInfo: false })
-                    }
-                  })
+        const companyCode = companies[companyName]
+        let apiBase = `${companyCode}?statistics=id,name,website,description,category,fan_count`
+        fetch(`https://unassigned-api.herokuapp.com/api/${apiBase}&workaround=true`)
+          //eslint-disable-next-line
+          .then((response) => {
+            if (response.ok) {
+              response.json().then(data => {
+                let infoJSON = this.state.infoJSON
+                if (data.data.website && !data.data.website.match(/^http/)) data.data.website = "http://" + data.data.website
+                if (!data.data.description) data.data.description = 'No description available'
+                infoJSON[companyName] = data.data
+                console.log(infoJSON)
+                companiesProcessed++
+                if (companiesProcessed === Object.keys(companies).length) {
+                  this.setState({ infoJSON: infoJSON, loadingInfo: false })
                 }
               })
-              .catch(error => console.error(error)) // ??
+            }
+          }).catch(error => console.error(error))
       } else if (!companies[companyName]) { // null stock code
         companiesProcessed++
         if (companiesProcessed === Object.keys(companies).length) {
@@ -78,8 +77,6 @@ class Event extends React.Component {
   }
 
   getNews () {
-    this.setState({ loading: true })
-
     const eventInfo = Events[this.props.eventID]
     const start = new moment(eventInfo.start_date * 1000)
     const end = new moment(eventInfo.end_date * 1000)
@@ -100,7 +97,7 @@ class Event extends React.Component {
       if (response.ok) {
         response.json().then(data => {
           // console.log(data)
-          this.setState({ responseJSON: data, loading: false })
+          this.setState({ newsJSON: data, loadingNews: false })
         })
       }
     }).catch(error => console.error(error))
@@ -131,7 +128,9 @@ class Event extends React.Component {
         const params = `?function=TIME_SERIES_DAILY&outputsize=full&symbol=${companyCode}&apikey=${apiKey}`
         const url = base + params
         // console.log('FETCHING: ' + url)
-        fetch(url).then(response => {
+        fetch(url)
+          //eslint-disable-next-line
+          .then((response) => {
           if (response.ok) {
             response.json().then(data => {
               data = Object.values(data)[1]
@@ -170,13 +169,13 @@ class Event extends React.Component {
 
   componentDidMount () {
     this.getInfo()
-    this.getNews()
     this.getStockPrices()
+    this.getNews()
     window.scrollTo(0, 0)
   }
 
   render () {
-    const { responseJSON, loading, stockJSON, loadingStock, infoJSON, loadingInfo } = this.state
+    const { infoJSON, stockJSON, newsJSON, loadingInfo, loadingStock, loadingNews } = this.state
     const { classes, eventID } = this.props
 
     const EventData = Events[eventID]
@@ -197,8 +196,8 @@ class Event extends React.Component {
             <Grid item xs={12}>
               <Grid container spacing={16}>
                 {_.map(_.keys(EventData.related_companies), (company, i) => (
-                  <Grid item xs={4} key={i}>
-                    <Company infoJSON={infoJSON[company]} name={company} loading={loadingInfo} key={company} />
+                  <Grid item xs={4} key={Company}>
+                    <Company infoJSON={infoJSON[company]} name={company} loading={loadingInfo} key={i} />
                   </Grid>
               ))}
               </Grid>
@@ -211,7 +210,7 @@ class Event extends React.Component {
             />
             </Grid>
             <Grid item xs={12}>
-              <NewsCard responseJSON={responseJSON} loading={loading} />
+              <NewsCard newsJSON={newsJSON} loading={loadingNews} />
             </Grid>
           </Grid>
         </div>

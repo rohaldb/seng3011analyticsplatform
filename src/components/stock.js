@@ -175,9 +175,9 @@ class Stock extends React.Component {
           <CardContent>
             {loading ?
               <div style={{textAlign: 'center'}}>
-                <CircularProgress/>
+                <CircularProgress />
               </div>
-               :
+            :
               <Fade in timeout={500}>
                 <AmCharts.React className="stockChart" style={{ width: "100%", height: "500px" }} options={this.declareConfig()} />
               </Fade>
