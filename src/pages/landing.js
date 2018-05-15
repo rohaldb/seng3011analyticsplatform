@@ -46,9 +46,8 @@ const bgCols = [
 
 class Landing extends React.Component {
 
-  constructor (props) {
-    super(props)
-    document.getElementById('global').style.overflow = 'scroll'
+  componentDidMount () {
+    window.scrollTo(0, 0)
   }
 
   render () {

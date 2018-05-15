@@ -29,43 +29,44 @@ class Event extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      loading: false,
-      responseJSON: null,
-      items: 10,
       pagination: false,
+      infoJSON: {},
       stockJSON: {},
-      loadingStock: true,
-      startDate: null,
-      endDate: null, infoJSON: {},
+      newsJSON: {},
       loadingInfo: true,
-      accessToken: 'should be uneeded'
+      loadingStock: true,
+      loadingNews: true,
+      startDate: null,
+      endDate: null
     }
   }
 
   getInfo () {
-    const accessToken = this.state.accessToken
     const companies = Events[this.props.eventID].related_companies
-      // console.log(companies)
+    // console.log(companies)
     let companiesProcessed = 0
     for (let companyName in companies) {
-          // console.log("COMPANY: " + companyName);
+      // console.log("COMPANY: " + companyName)
       if (companies.hasOwnProperty(companyName) && companies[companyName]) {
-        let apiBase = `${companyName}?statistics=id,name,website,description,category,fan_count`
-        fetch(`https://unassigned-api.herokuapp.com/api/${apiBase}&access_token=${accessToken}&workaround=true`)
-              .then((response) => {
-                if (response.ok) {
-                  response.json().then(data => {
-                    let infoJSON = this.state.infoJSON
-                    infoJSON[companyName] = data.data
-                    console.log(infoJSON)
-                    companiesProcessed++
-                    if (companiesProcessed === Object.keys(companies).length) {
-                      this.setState({ infoJSON: infoJSON, loadingInfo: false })
-                    }
-                  })
+        const companyCode = companies[companyName]
+        let apiBase = `${companyCode}?statistics=id,name,website,description,category,fan_count`
+        fetch(`https://unassigned-api.herokuapp.com/api/${apiBase}&workaround=true`)
+          //eslint-disable-next-line
+          .then((response) => {
+            if (response.ok) {
+              response.json().then(data => {
+                let infoJSON = this.state.infoJSON
+                if (data.data.website && !data.data.website.match(/^http/)) data.data.website = "http://" + data.data.website
+                if (!data.data.description) data.data.description = 'No description available'
+                infoJSON[companyName] = data.data
+                console.log(infoJSON)
+                companiesProcessed++
+                if (companiesProcessed === Object.keys(companies).length) {
+                  this.setState({ infoJSON: infoJSON, loadingInfo: false })
                 }
               })
-              .catch(error => console.error(error)) // ??
+            }
+          }).catch(error => console.error(error))
       } else if (!companies[companyName]) { // null stock code
         companiesProcessed++
         if (companiesProcessed === Object.keys(companies).length) {
@@ -76,15 +77,13 @@ class Event extends React.Component {
   }
 
   getNews () {
-    this.setState({ loading: true })
-
     const eventInfo = Events[this.props.eventID]
     const start = new moment(eventInfo.start_date * 1000)
     const end = new moment(eventInfo.end_date * 1000)
     const keywords = eventInfo.keywords.toString().replace(/,/g, '%20AND%20')
 
     const base = 'https://content.guardianapis.com/search'
-    const params = 'page-size=100&show-blocks=main&show-fields=bodyText'
+    const params = 'page-size=100&show-blocks=main,body&show-fields=bodyText,thumbnail'
     const apiKey = 'api-key=35b90e54-3944-4e4f-9b0e-a511d0dda44d'
     const query = `q=${keywords}`
     var dates = `from-date=${start.format('YYYY-MM-DD')}`
@@ -98,7 +97,7 @@ class Event extends React.Component {
       if (response.ok) {
         response.json().then(data => {
           // console.log(data)
-          this.setState({ responseJSON: data, loading: false })
+          this.setState({ newsJSON: data, loadingNews: false })
         })
       }
     }).catch(error => console.error(error))
@@ -119,7 +118,7 @@ class Event extends React.Component {
 
     let companiesProcessed = 0
     for (let companyName in companies) {
-      // console.log("COMPANY: " + companyName);
+      // console.log("COMPANY: " + companyName)
       if (companies.hasOwnProperty(companyName) && companies[companyName]) {
         const companyCode = companies[companyName]
         console.log(companyCode)
@@ -128,8 +127,10 @@ class Event extends React.Component {
         // TODO MAKE OUTPUTSIZE == full
         const params = `?function=TIME_SERIES_DAILY&outputsize=full&symbol=${companyCode}&apikey=${apiKey}`
         const url = base + params
-        // console.log('FETCHING: ' + url);
-        fetch(url).then(response => {
+        // console.log('FETCHING: ' + url)
+        fetch(url)
+          //eslint-disable-next-line
+          .then((response) => {
           if (response.ok) {
             response.json().then(data => {
               data = Object.values(data)[1]
@@ -168,16 +169,16 @@ class Event extends React.Component {
 
   componentDidMount () {
     this.getInfo()
-    this.getNews()
     this.getStockPrices()
+    this.getNews()
+    window.scrollTo(0, 0)
   }
 
   render () {
-    const { responseJSON, items, loading, stockJSON, loadingStock, infoJSON, loadingInfo } = this.state
+    const { infoJSON, stockJSON, newsJSON, loadingInfo, loadingStock, loadingNews } = this.state
     const { classes, eventID } = this.props
 
     const EventData = Events[eventID]
-    const eventInfo = Events[this.props.eventID]
     document.title = 'EventStock - ' + EventData.name
     return (
       <div>
@@ -195,8 +196,8 @@ class Event extends React.Component {
             <Grid item xs={12}>
               <Grid container spacing={16}>
                 {_.map(_.keys(EventData.related_companies), (company, i) => (
-                  <Grid item xs={4} key={i}>
-                    <Company infoJSON={infoJSON[company]} name={company} loading={loadingInfo} />
+                  <Grid item xs={4} key={Company}>
+                    <Company infoJSON={infoJSON[company]} name={company} loading={loadingInfo} key={i} />
                   </Grid>
               ))}
               </Grid>
@@ -209,7 +210,7 @@ class Event extends React.Component {
             />
             </Grid>
             <Grid item xs={12}>
-              <NewsCard responseJSON={responseJSON} loading={loading} />
+              <NewsCard newsJSON={newsJSON} loading={loadingNews} />
             </Grid>
           </Grid>
         </div>

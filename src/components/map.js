@@ -1,7 +1,6 @@
 import React from 'react'
 import { withStyles } from 'material-ui/styles'
 import withRoot from '../withRoot'
-import PropTypes from 'prop-types'
 import Card, { CardContent, CardHeader } from 'material-ui/Card'
 import Fade from 'material-ui/transitions/Fade'
 import AmCharts from '@amcharts/amcharts3-react'
@@ -452,9 +451,9 @@ class Map extends React.Component {
 
 // create circle for each country
     var images = []
-    for (var i = 0; i < mapData.length; i++) {
+    for (i = 0; i < mapData.length; i++) {
       var dataItem = mapData[ i ]
-      var value = dataItem.value
+      value = dataItem.value
   // calculate size of a bubble
       var square = (value - min) / (max - min) * (maxSquare - minSquare) + minSquare
       if (square < minSquare) {
