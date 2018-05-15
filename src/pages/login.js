@@ -16,22 +16,28 @@ class Login extends React.Component {
 
       this.publish = this.publish.bind(this);
       this.app = firebase.initializeApp(DB_CONFIG)
-      this.database = this.app.database().ref().child('speed')
+      this.database = this.app.database().ref().child('users')
       this.state = {
-          speed: 10
+          name: null
       }
     }
 
-    componentDidMount() {
+    publish(username) {
+        console.log(this.refs.name.value)
+        // this.database.on('value', snap => {
+        //     this.setState({
+        //         speed: snap.val()
+        //     })
+        // })
+        // this.database.set({speed: this.refs.name.value});
+
         this.database.on('value', snap => {
-            this.setState({
-                speed: snap.val()
+            snap.forEach(childNodes => {
+                if (childNodes.key == this.refs.name.value) {
+                    console.log(childNodes)
+                }
             })
         })
-    }
-
-    publish(topicBox) {
-        console.log(this.refs.name.value)
     }
 
   render() {
@@ -39,9 +45,6 @@ class Login extends React.Component {
       <div className='form'>
         <div className='form_logo'>
           Logo Goes Here...
-        </div>
-        <div>
-            <h1>The value is {this.state.speed}</h1>
         </div>
         <div className='form_title'>
           Login

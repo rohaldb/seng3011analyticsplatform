@@ -6,6 +6,3 @@ export const DB_CONFIG = {
   storageBucket: "",
   messagingSenderId: "792824470132"
 }
-
-// export default withRoot(withStyles(styles)(Login))
-// export default DB_CONFIG
