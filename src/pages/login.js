@@ -1,126 +1,50 @@
 import React from 'react'
 import withRoot from '../withRoot'
-import { VerticalTimeline, VerticalTimelineElement } from 'react-vertical-timeline-component'
-import 'react-vertical-timeline-component/style.min.css'
-import { Event } from 'material-ui-icons'
-import _ from 'lodash'
-import Events from '../eventData'
-import { Link } from 'react-router-dom'
-import moment from 'moment'
-import { Grid, Chip, Typography, withStyles } from 'material-ui'
-import { getDate } from '../time'
+import { withStyles } from 'material-ui'
+import '../assets/login.css'
 
 const styles = theme => ({
 
 })
 
-class Header extends React.Component {
-  constructor(props) {
-    super(props)
-  }
-  render() {
-    return (
-      <div>
-        <h1>{this.props.text}</h1>
-      </div>
-    )
-  }
-}
+/* Sidebar.jsx */
 
-class Footer extends React.Component {
-  constructor(props) {
-    super(props)
-  }
-
-  render() {
-    return <div><h3>{this.props.text}</h3></div>
-  }
-}
-
-class Input extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      inputVal: ""
-    }
-    this.changeHandler = this.changeHandler.bind(this)
-  }
-
-  changeHandler(e) {
-    this.props.parentFunction(e.target.value)
-  }
-
-  render() {
-    return (
-      <div>
-        <label>{this.props.labelName}</label>
-        <input type={this.props.inputType} id={this.props.id} onChange={this.changeHandler} />
-      </div>
-    )
-  }
-}
-
-class LoginForm extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      username: "",
-      password: ""
-    }
-    this.clickHandler = this.clickHandler.bind(this)
-    this.setUsername = this.setUsername.bind(this)
-    this.setPassword = this.setPassword.bind(this)
-  }
-
-  setUsername(username) {
-    this.setState({username: username})
-  }
-
-  setPassword(password) {
-    this.setState({password: password})
-  }
-
-  clickHandler() {
-    // put your own code here
-    alert(`Username: ${this.state.username} Password: ${this.state.password}`)
-  }
-
-  render() {
-    return (
-      <div>
-        <Input id ="username" labelName="Username: " inputType="text" parentFunction={this.setUsername}  />
-        <Input id ="password" labelName="Password: " inputType="password" parentFunction={this.setPassword} />
-        <button onClick={this.clickHandler}>{this.props.buttonName}</button>
-      </div>
-    )
-  }
-}
-
-class Content extends React.Component {
-  constructor(props) {
-    super(props)
-  }
-
-  render() {
-    return (
-      <div>
-        <h2>{this.props.title}</h2>
-        <LoginForm buttonName="Submit"/>
-      </div>
-    )
-  }
-}
-
+/* App.jsx */
 class Login extends React.Component {
   render() {
     return (
-      <div>
-        <Header text="React Login Example"/>
-        <Content title="Enter your credentials"/>
-        <Footer text="Put some style on it"/>
+      <div className='form'>
+        <div className='form_logo'>
+          Lo<span>g</span>o
+        </div>
+        <div className='form_title'>
+          Log<span>I</span>n
+        </div>
+        <form className='form_items'>
+          <div className='form_inputs'>
+            <input
+              type='text'
+              required
+              />
+            <label>username or email</label>
+          </div>
+          <div className='form_inputs'>
+            <input
+              type='password'
+              required
+              />
+            <label>password</label>
+          </div>
+          <button className='form_button'>Log In</button>
+        </form>
+        <div className='form_other'>
+          <a href='#'>forgot password?</a>
+          <a href='#'>Join Now</a>
+        </div>
       </div>
-    )
+    );
   }
+
 }
 
 export default withRoot(withStyles(styles)(Login))
