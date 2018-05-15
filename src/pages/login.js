@@ -31,11 +31,10 @@ class Login extends React.Component {
         // })
         // this.database.set({speed: this.refs.name.value});
 
-        this.database.on('value', snap => {
-            snap.forEach(childNodes => {
-                if (childNodes.key == this.refs.name.value) {
-                    // console.log(childNodes)
-                }
+        this.app.database().ref().child('users').child(this.refs.name.value).on('value', snap => {
+            console.log(snap.key)
+            snap.forEach(data => {
+                console.log(data.key, data.val())
             })
         })
     }
