@@ -53,6 +53,7 @@ class Timeline extends React.Component {
   }
 
   componentDidMount() {
+    console.log(this.props.userID)
     // make api call
     // this.setState({currentUser: api_response})
   }
