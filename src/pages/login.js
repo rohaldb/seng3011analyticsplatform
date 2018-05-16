@@ -14,7 +14,6 @@ class Login extends React.Component {
     constructor() {
       super();
       this.publish = this.publish.bind(this);
-      // this.database = fb.database().ref().child('users')
       this.database = fb.database().ref()
       this.state = {
           name: null,
@@ -67,9 +66,11 @@ class Login extends React.Component {
               required
               />
           </div>
+          <Link to={`/timeline`} params={{ testvalue: this.state.name }} style={{color: 'white'}}>
             <button className='form_button' onClick={(e) => this.publish(e, this.refs.name.value)}>
                 Log In
             </button>
+          </Link>
             { this.state.isValid ? null : <p> Invalid credentials </p> }
         </form>
         <div className='form_other'>
@@ -80,6 +81,4 @@ class Login extends React.Component {
   }
 }
 
-// <Link to={`/timeline`} params={{ testvalue: this.state.name }} style={{color: 'white'}}>
-// </Link>
 export default withRoot(withStyles(styles)(Login))
