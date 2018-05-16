@@ -43,18 +43,25 @@ class Event extends React.Component {
 
   getInfo () {
     const companies = Events[this.props.eventID].related_companies
-    // console.log(companies)
+    const eventInfo = Events[this.props.eventID]
+    const start = new moment(eventInfo.start_date * 1000)
+    const end = new moment(eventInfo.end_date * 1000)
+    var dates = `start_date=${start.format('YYYY-MM-DD')}`
+    if (eventInfo.end_date !== 'ongoing') {
+      dates += `&end_date=${end.format('YYYY-MM-DD')}`
+    }
     let companiesProcessed = 0
     for (let companyName in companies) {
-      // console.log("COMPANY: " + companyName)
       if (companies.hasOwnProperty(companyName) && companies[companyName]) {
         const companyCode = companies[companyName]
-        let apiBase = `${companyCode}?statistics=id,name,website,description,category,fan_count`
-        fetch(`https://unassigned-api.herokuapp.com/api/${apiBase}&workaround=true`)
-          //eslint-disable-next-line
+        let params = `statistics=id,name,website,description,category,fan_count,posts{likes,comments,created_time}&${dates}&workaround=true`
+        console.log(`https://unassigned-api.herokuapp.com/api/${companyCode}?${params}`)
+        fetch(`https://unassigned-api.herokuapp.com/api/${companyCode}?${params}`)
+          // eslint-disable-next-line
           .then((response) => {
             if (response.ok) {
               response.json().then(data => {
+                // console.log(data)
                 let infoJSON = this.state.infoJSON
                 if (data.data.website && !data.data.website.match(/^http/)) data.data.website = "http://" + data.data.website
                 if (!data.data.description) data.data.description = 'No description available'
@@ -129,7 +136,7 @@ class Event extends React.Component {
         const url = base + params
         // console.log('FETCHING: ' + url)
         fetch(url)
-          //eslint-disable-next-line
+          // eslint-disable-next-line
           .then((response) => {
           if (response.ok) {
             response.json().then(data => {
@@ -206,8 +213,7 @@ class Event extends React.Component {
               <Stock stockJSON={stockJSON} startDate={this.state.startDate} endDate={this.state.endDate} loading={loadingStock} />
             </Grid>
             <Grid item xs={6}>
-              <Map
-            />
+              <Map />
             </Grid>
             <Grid item xs={12}>
               <NewsCard newsJSON={newsJSON} loading={loadingNews} />

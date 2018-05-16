@@ -7,6 +7,7 @@ import Fade from 'material-ui/transitions/Fade'
 import { CircularProgress } from 'material-ui/Progress'
 import Typography from 'material-ui/Typography'
 import NumericLabel from 'react-pretty-numbers'
+import Social from './social'
 import Dialog, {
   DialogContent,
   DialogTitle
@@ -108,6 +109,7 @@ class Company extends React.Component {
                     <br></br>
                     <b>Description:</b> {infoJSON.description}
                   </Typography>
+                  <Social posts={infoJSON.posts} />
                 </CardContent>
                 ):
                 <CardContent>
