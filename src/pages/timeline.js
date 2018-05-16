@@ -58,9 +58,11 @@ class Timeline extends React.Component {
     // this.setState({currentUser: api_response})
   }
 
-
   render () {
     const { classes } = this.props
+    var sortedEvents = Object.keys(Events).map(function(k) {
+      return Events[k]
+    }).sort((a, b) => a.start_date < b.start_date)
     document.title = 'EventStock'
 
     return (
@@ -85,24 +87,24 @@ class Timeline extends React.Component {
         <Grid item container direction='row'>
           <Grid item xs={12}>
             <VerticalTimeline>
-              { _.map(_.keys(Events), (k, i) =>
+              { _.map(_.keys(sortedEvents), (k, i) =>
                 <VerticalTimelineElement
                   key={i}
                   className='vertical-timeline-element--work'
-                  date={`${moment(Events[k].start_date * 1000).format('DD MMM YY')} - ${getDate(Events[k].end_date)}`}
+                  date={`${moment(sortedEvents[k].start_date * 1000).format('DD MMM YY')} - ${getDate(sortedEvents[k].end_date)}`}
                   iconStyle={{ background: bgCols[i % bgCols.length], color: '#fff' }}
                   icon={<Event />}
               >
                   <Link to={`event/${k}`} className={classes.link}>
                     <Typography variant='title' className='vertical-timeline-element-title' gutterBottom>
-                      {Events[k].name}
+                      {sortedEvents[k].name}
                     </Typography>
                   </Link>
                   <Typography gutterBottom>
-                    {Events[k].description}
+                    {sortedEvents[k].description}
                   </Typography>
                   <div>
-                    {_.map(Events[k].related_companies, (c, i) =>
+                    {_.map(sortedEvents[k].related_companies, (c, i) =>
                       <Chip label={i} className={classes.chip} key={i} />
                 )}
                   </div>
