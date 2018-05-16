@@ -5,7 +5,6 @@ import { BrowserRouter as Router, Route } from 'react-router-dom'
 import 'typeface-roboto'
 // eslint-disable-next-line
 import './assets/timeline.css'
-import * as firebase from 'firebase'
 
 
 const Root = () => (
@@ -18,15 +17,10 @@ const Root = () => (
   </Router>
 )
 
-// this.props.history.push()
-// component.Didmount => put asinc code in here
-// <Route exact path='/' component={timelineParams} />
-
 const EventParams = ({ match, history }) => <Event eventID={match.params.eventID} history={history} />
 
 const TimelineParams = ({ history }) => <Timeline history={history} />
 
 const LoginParams = ({ history }) => <Login history={history} />
-
 
 ReactDOM.render(<Root />, document.querySelector('#root'))

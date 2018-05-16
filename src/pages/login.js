@@ -2,8 +2,8 @@ import React from 'react'
 import withRoot from '../withRoot'
 import { withStyles } from 'material-ui'
 import '../assets/login.css'
-import firebase from 'firebase'
-import { DB_CONFIG } from '../config'
+import { fb } from '../config'
+import { Link } from 'react-router-dom'
 
 const styles = theme => ({
 
@@ -13,30 +13,34 @@ class Login extends React.Component {
 
     constructor() {
       super();
-
       this.publish = this.publish.bind(this);
-      this.app = firebase.initializeApp(DB_CONFIG)
-      this.database = this.app.database().ref().child('users')
+      // this.database = fb.database().ref().child('users')
+      this.database = fb.database().ref()
       this.state = {
-          name: null
+          name: null,
+          userId: null,
+          isValid: true
       }
     }
 
     publish(username) {
-        console.log(this.refs.name.value)
-        // this.database.on('value', snap => {
-        //     this.setState({
-        //         speed: snap.val()
-        //     })
-        // })
-        // this.database.set({speed: this.refs.name.value});
 
-        this.app.database().ref().child('users').child(this.refs.name.value).on('value', snap => {
-            console.log(snap.key)
-            snap.forEach(data => {
-                console.log(data.key, data.val())
-            })
-        })
+
+        this.database.child('users').orderByChild('firstname').equalTo(this.refs.name.value).on("value", snap => {
+            if (snap.val() != null) {
+                snap.forEach(data => {
+                    this.setState({ userId: data.child('id').val() })
+                    // this.props.history.push({
+                    //     pathname: `/timeline`,
+                    //     state: {
+                    //         userId: data.child('id').val()
+                    //     }
+                    // })
+                })
+            } else {
+                this.setState({ isValid: false })
+            }
+        });
     }
 
   render() {
@@ -64,17 +68,19 @@ class Login extends React.Component {
               required
               />
           </div>
-          <button className='form_button' onClick={(e) => this.publish(e, this.refs.name.value)}>
-            Log In
+            <button className='form_button' onClick={(e) => this.publish(e, this.refs.name.value)}>
+                Log In
             </button>
+            { this.state.isValid ? null : <p> Invalid credentials </p> }
         </form>
         <div className='form_other'>
-          <a href='/#'>forgot password?</a>
-          <a href='/#'>Join Now</a>
+          <a href='/timeline'>Continue without logging in</a>
         </div>
       </div>
     );
   }
 }
 
+// <Link to={`/timeline`} params={{ testvalue: this.state.name }} style={{color: 'white'}}>
+// </Link>
 export default withRoot(withStyles(styles)(Login))
