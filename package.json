@@ -6,6 +6,7 @@
     "@amcharts/amcharts3-react": "^3.1.0",
     "ammap3": "amcharts/ammap3",
     "amstock3": "github:amcharts/amstock3",
+    "firebase": "^5.0.2",
     "google-map-react": "^1.0.0",
     "highcharts": "^6.1.0",
     "lodash": "^4.17.10",
