@@ -49,7 +49,14 @@ class Timeline extends React.Component {
   constructor (props) {
     super(props)
     document.getElementById('global').style.overflow = 'scroll'
+
   }
+
+  componentDidMount() {
+    // make api call
+    // this.setState({currentUser: api_response})
+  }
+
 
   render () {
     const { classes } = this.props

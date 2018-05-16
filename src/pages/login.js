@@ -25,17 +25,16 @@ class Login extends React.Component {
 
     publish(username) {
 
-
         this.database.child('users').orderByChild('firstname').equalTo(this.refs.name.value).on("value", snap => {
             if (snap.val() != null) {
                 snap.forEach(data => {
                     this.setState({ userId: data.child('id').val() })
-                    // this.props.history.push({
-                    //     pathname: `/timeline`,
-                    //     state: {
-                    //         userId: data.child('id').val()
-                    //     }
-                    // })
+                    this.props.history.push({
+                      pathname: `/timeline`,
+                      state: {
+                          userId: this.state.userId
+                      }
+                    })
                 })
             } else {
                 this.setState({ isValid: false })

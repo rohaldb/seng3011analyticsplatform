@@ -19,8 +19,10 @@ const Root = () => (
 
 const EventParams = ({ match, history }) => <Event eventID={match.params.eventID} history={history} />
 
-const TimelineParams = ({ history }) => <Timeline history={history} />
+const TimelineParams = ({ location, history }) => <Timeline userID={location.state.userId} history={history} />
 
 const LoginParams = ({ history }) => <Login history={history} />
+
+
 
 ReactDOM.render(<Root />, document.querySelector('#root'))
