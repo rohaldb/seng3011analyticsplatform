@@ -71,9 +71,6 @@ class Login extends React.Component {
             </button>
             { this.state.isValid ? null : <p> Invalid credentials </p> }
         </form>
-        <div className='form_other'>
-          <a href='/timeline'>Continue without logging in</a>
-        </div>
       </div>
     );
   }
