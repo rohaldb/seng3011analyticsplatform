@@ -6,7 +6,6 @@ import 'typeface-roboto'
 // eslint-disable-next-line
 import './assets/timeline.css'
 
-
 const Root = () => (
   <Router>
     <div style={{fontFamily: 'Roboto'}}>
@@ -22,7 +21,5 @@ const EventParams = ({ match, history }) => <Event eventID={match.params.eventID
 const TimelineParams = ({ location, history }) => <Timeline userID={location.state.userId} history={history} />
 
 const LoginParams = ({ history }) => <Login history={history} />
-
-
 
 ReactDOM.render(<Root />, document.querySelector('#root'))
