@@ -157,7 +157,6 @@ class Stock extends React.Component {
       }
     }
 
-
     let config = this.config_compare(this.props, companyDatasets)
 
     return config
@@ -174,11 +173,11 @@ class Stock extends React.Component {
             className={classes.cardHeader}
           />
           <CardContent>
-            {loading ? 
+            {loading ?
               <div style={{textAlign: 'center'}}>
-                <CircularProgress/>
+                <CircularProgress />
               </div>
-               : 
+            :
               <Fade in timeout={500}>
                 <AmCharts.React className="stockChart" style={{ width: "100%", height: "500px" }} options={this.declareConfig()} />
               </Fade>
