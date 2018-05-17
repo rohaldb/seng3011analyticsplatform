@@ -1,4 +1,5 @@
 import React from 'react'
+import { withRouter } from 'react-router'
 import PropTypes from 'prop-types'
 import { withStyles } from 'material-ui/styles'
 import withRoot from '../withRoot'
@@ -222,4 +223,4 @@ class Event extends React.Component {
   }
 }
 
-export default withRoot(withStyles(styles)(Event))
+export default withRouter(withRoot(withStyles(styles)(Event)))

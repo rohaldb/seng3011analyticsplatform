@@ -9,27 +9,23 @@ import './assets/timeline.css'
 const Root = () => (
   <Router>
     <div style={{fontFamily: 'Roboto'}}>
-      <Route exact path='/' component={LoginParams} />
+      <Route exact path='/' component={() => <Login />} />
       <Route path='/event/:eventID' component={EventParams} />
       <Route exact path='/timeline' component={TimelineParams} />
     </div>
   </Router>
 )
 
-const EventParams = ({ location, match, history }) => {
+const EventParams = ({ location, match }) => {
   return (<Event
     currentUser={location.state.currentUser}
     eventID={match.params.eventID}
-    history={history}
   />)
 }
 
-const TimelineParams = ({ location, history }) =>
+const TimelineParams = ({ location }) =>
   <Timeline
     currentUser={location.state.currentUser}
-    history={history}
   />
-
-const LoginParams = ({ history }) => <Login history={history} />
 
 ReactDOM.render(<Root />, document.querySelector('#root'))

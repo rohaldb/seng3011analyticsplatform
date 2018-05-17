@@ -1,4 +1,5 @@
 import React from 'react'
+import { withRouter } from 'react-router'
 import withRoot from '../withRoot'
 import {withStyles} from 'material-ui'
 import '../assets/login.css'
@@ -63,4 +64,4 @@ class Login extends React.Component {
     );
   }
 }
-export default withRoot(withStyles(styles)(Login))
+export default withRouter(withRoot(withStyles(styles)(Login)))

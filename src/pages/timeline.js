@@ -1,4 +1,5 @@
 import React from 'react'
+import { withRouter } from 'react-router'
 import PropTypes from 'prop-types'
 import withRoot from '../withRoot'
 import { VerticalTimeline, VerticalTimelineElement } from 'react-vertical-timeline-component'
@@ -64,7 +65,7 @@ class Timeline extends React.Component {
   render () {
     const { classes } = this.props
     const { currentUser } = this.state
-    
+
     var sortedEvents = Object.keys(Events).map(function (k) {
       var ev = Events[k]
       ev['key'] = k
@@ -107,7 +108,7 @@ class Timeline extends React.Component {
                     <Link to={{
                       pathname: `event/${sortedEvents[k].key}`,
                       state: {currentUser: currentUser}
-                      }} 
+                      }}
                       className={classes.link}>
                       <Typography variant='title' className='vertical-timeline-element-title' gutterBottom>
                         {sortedEvents[k].name}
@@ -132,4 +133,4 @@ class Timeline extends React.Component {
   }
 }
 
-export default withRoot(withStyles(styles)(Timeline))
+export default withRouter(withRoot(withStyles(styles)(Timeline)))

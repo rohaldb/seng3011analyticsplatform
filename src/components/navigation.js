@@ -8,6 +8,7 @@ import Button from 'material-ui/Button'
 import IconButton from 'material-ui/IconButton'
 import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
+import { withRouter } from 'react-router'
 
 const styles = {
   root: {
@@ -37,10 +38,9 @@ class Navigation extends React.Component {
         <AppBar position='static' color='primary'>
           <Toolbar>
             <div style={{flex: 1}}>
-            <IconButton className={classes.menuIcon} color='inherit' aria-label='Menu' onClick={() => this.props.history.pop()}>
+            <IconButton className={classes.menuIcon} color='inherit' aria-label='Menu'>
               <Home />
             </IconButton>
-             EventStock
            </div>
            { this.props.isAdmin ? <Button color="inherit">Add Event</Button> : null }
            <Link to={`/`} style={{color: 'white', textDecoration: 'none'}} className={classes.menuButton}>
@@ -53,4 +53,4 @@ class Navigation extends React.Component {
   }
 }
 
-export default withRoot(withStyles(styles)(Navigation))
+export default withRouter(withRoot(withStyles(styles)(Navigation)))
