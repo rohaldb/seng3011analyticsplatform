@@ -4,6 +4,7 @@ import withRoot from '../withRoot'
 import AppBar from 'material-ui/AppBar'
 import Toolbar from 'material-ui/Toolbar'
 import { Home } from 'material-ui-icons'
+import Button from 'material-ui/Button'
 import IconButton from 'material-ui/IconButton'
 import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
@@ -13,9 +14,12 @@ const styles = {
     flexGrow: 1,
     color: 'blue'
   },
-  menuButton: {
+  menuIcon: {
     marginLeft: -12,
     marginRight: 20
+  },
+  menuButton: {
+    magin: 20
   }
 }
 
@@ -33,14 +37,15 @@ class Navigation extends React.Component {
         <AppBar position='static' color='primary'>
           <Toolbar>
             <div style={{flex: 1}}>
-              <Link to={`/`} style={{color: 'white'}}>
-                <IconButton className={classes.menuButton} color='inherit' aria-label='Menu'>
-                  <Home />
-                </IconButton>
-              </Link>
+            <IconButton className={classes.menuIcon} color='inherit' aria-label='Menu' onClick={() => this.props.history.pop()}>
+              <Home />
+            </IconButton>
              EventStock
            </div>
-           { this.props.isAdmin ? 'New Sign Out' : null }
+           { this.props.isAdmin ? <Button color="inherit">Add Event</Button> : null }
+           <Link to={`/`} style={{color: 'white', textDecoration: 'none'}} className={classes.menuButton}>
+            <Button color="inherit">Log Out</Button>
+           </Link>
           </Toolbar>
         </AppBar>
       </div>

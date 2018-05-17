@@ -62,7 +62,7 @@ class Company extends React.Component {
                   <CircularProgress />
                 </div>
               :
-                [infoJSON ?
+                infoJSON ?
                 (
                 <CardContent>
                   <Typography>
@@ -81,7 +81,6 @@ class Company extends React.Component {
                     <i> No information for {name} can be retrieved at this point in time. We apologise for any inconvenience. </i>
                   </Typography>
                 </CardContent>
-                ]
               }
           </Card>
         </Fade>
