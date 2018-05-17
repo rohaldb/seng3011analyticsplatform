@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { withStyles } from 'material-ui/styles'
 import withRoot from '../withRoot'
 import Events from '../eventData'
@@ -26,19 +27,21 @@ const styles = theme => ({
 
 class Event extends React.Component {
 
-  constructor (props) {
-    super(props)
-    this.state = {
-      pagination: false,
-      infoJSON: {},
-      stockJSON: {},
-      newsJSON: {},
-      loadingInfo: true,
-      loadingStock: true,
-      loadingNews: true,
-      startDate: null,
-      endDate: null
-    }
+  static propTypes = {
+    currentUser: PropTypes.object.isRequired
+  }
+
+  state = {
+    pagination: false,
+    infoJSON: {},
+    stockJSON: {},
+    newsJSON: {},
+    loadingInfo: true,
+    loadingStock: true,
+    loadingNews: true,
+    startDate: null,
+    endDate: null,
+    currentUser: this.props.currentUser
   }
 
   getInfo () {
@@ -56,7 +59,7 @@ class Event extends React.Component {
             if (response.ok) {
               response.json().then(data => {
                 let infoJSON = this.state.infoJSON
-                if (data.data.website && !data.data.website.match(/^http/)) data.data.website = "http://" + data.data.website
+                if (data.data.website && !data.data.website.match(/^http/)) data.data.website = 'http://' + data.data.website
                 if (!data.data.description) data.data.description = 'No description available'
                 infoJSON[companyName] = data.data
                 console.log(infoJSON)
@@ -131,33 +134,33 @@ class Event extends React.Component {
         fetch(url)
           //eslint-disable-next-line
           .then((response) => {
-          if (response.ok) {
-            response.json().then(data => {
-              data = Object.values(data)[1]
-              let newData = []
-              for (let date in data) {
-                if (data.hasOwnProperty(date)) {
-                  newData.unshift({
-                    date: date,
-                    'value': parseFloat(data[date]['4. close']),
-                    'open': parseFloat(data[date]['1. open']),
-                    'high': parseFloat(data[date]['2. high']),
-                    'low': parseFloat(data[date]['3. low']),
-                    'close': parseFloat(data[date]['4. close']),
-                    'volume': parseFloat(data[date]['5. volume'])
-                  })
+            if (response.ok) {
+              response.json().then(data => {
+                data = Object.values(data)[1]
+                let newData = []
+                for (let date in data) {
+                  if (data.hasOwnProperty(date)) {
+                    newData.unshift({
+                      date: date,
+                      'value': parseFloat(data[date]['4. close']),
+                      'open': parseFloat(data[date]['1. open']),
+                      'high': parseFloat(data[date]['2. high']),
+                      'low': parseFloat(data[date]['3. low']),
+                      'close': parseFloat(data[date]['4. close']),
+                      'volume': parseFloat(data[date]['5. volume'])
+                    })
+                  }
                 }
-              }
-              let stockJSON = this.state.stockJSON
-              stockJSON[companyName] = newData
+                let stockJSON = this.state.stockJSON
+                stockJSON[companyName] = newData
 
-              companiesProcessed++
-              if (companiesProcessed === Object.keys(companies).length) {
-                this.setState({ stockJSON: stockJSON, loadingStock: false })
-              }
-            })
-          }
-        })
+                companiesProcessed++
+                if (companiesProcessed === Object.keys(companies).length) {
+                  this.setState({ stockJSON: stockJSON, loadingStock: false })
+                }
+              })
+            }
+          })
       } else if (!companies[companyName]) { // null stock code
         companiesProcessed++
         if (companiesProcessed === Object.keys(companies).length) {
@@ -175,14 +178,14 @@ class Event extends React.Component {
   }
 
   render () {
-    const { infoJSON, stockJSON, newsJSON, loadingInfo, loadingStock, loadingNews } = this.state
+    const { infoJSON, stockJSON, newsJSON, loadingInfo, loadingStock, loadingNews, currentUser } = this.state
     const { classes, eventID } = this.props
 
     const EventData = Events[eventID]
     document.title = 'EventStock - ' + EventData.name
     return (
       <div>
-        <Navigation style={{color: 'blue'}} />
+        <Navigation isAdmin={currentUser.admin}/>
         <div className={classes.root}>
           <Grid container spacing={24}>
             <Grid item xs={12}>
@@ -196,7 +199,7 @@ class Event extends React.Component {
             <Grid item xs={12}>
               <Grid container spacing={16}>
                 {_.map(_.keys(EventData.related_companies), (company, i) => (
-                  <Grid item xs={4} key={Company}>
+                  <Grid item xs={4} key={i}>
                     <Company infoJSON={infoJSON[company]} name={company} loading={loadingInfo} key={i} />
                   </Grid>
               ))}

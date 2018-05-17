@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import withRoot from '../withRoot'
 import { VerticalTimeline, VerticalTimelineElement } from 'react-vertical-timeline-component'
 import 'react-vertical-timeline-component/style.min.css'
@@ -9,6 +10,7 @@ import { Link } from 'react-router-dom'
 import moment from 'moment'
 import { Grid, Chip, Typography, withStyles } from 'material-ui'
 import { getDate } from '../time'
+import { Navigation } from '../components'
 
 const styles = theme => ({
   root: {
@@ -46,21 +48,24 @@ const bgCols = [
 
 class Timeline extends React.Component {
 
+  static propTypes = {
+    currentUser: PropTypes.object.isRequired
+  }
+
+  state = {
+    currentUser: this.props.currentUser
+  }
+
   constructor (props) {
     super(props)
     document.getElementById('global').style.overflow = 'scroll'
-
-  }
-
-  componentDidMount() {
-    console.log(this.props.userID)
-    // make api call
-    // this.setState({currentUser: api_response})
   }
 
   render () {
     const { classes } = this.props
-    var sortedEvents = Object.keys(Events).map(function(k) {
+    const { currentUser } = this.state
+    
+    var sortedEvents = Object.keys(Events).map(function (k) {
       var ev = Events[k]
       ev['key'] = k
       return ev
@@ -68,54 +73,61 @@ class Timeline extends React.Component {
     document.title = 'EventStock'
 
     return (
-      <Grid container direction='column' className={classes.root}>
-        <Grid item container justify='center' direction='row'>
-          <Grid item xs={8}>
-            <Grid container alignItems='center' direction='column'>
-              <Grid item>
-                <Typography variant='display3' gutterBottom className={classes.title}>
-                  EventStock
-                </Typography>
-              </Grid>
-              <Grid item>
-                <Typography variant='subheading' gutterBottom className={classes.subTitle}>
-                  Welcome to EventStock! Here to answer the Who, Why and How of the Financial Markets.
-                  Please browse the timeline below to see the events that have, and continue to, significantly impact major listed stocks.
-                </Typography>
+      <div>
+        <Navigation isAdmin={currentUser.admin}/>
+        <Grid container direction='column' className={classes.root}>
+          <Grid item container justify='center' direction='row'>
+            <Grid item xs={8}>
+              <Grid container alignItems='center' direction='column'>
+                <Grid item>
+                  <Typography variant='display3' gutterBottom className={classes.title}>
+                    EventStock
+                  </Typography>
+                </Grid>
+                <Grid item>
+                  <Typography variant='subheading' gutterBottom className={classes.subTitle}>
+                    Welcome to EventStock! Here to answer the Who, Why and How of the Financial Markets.
+                    Please browse the timeline below to see the events that have, and continue to, significantly impact major listed stocks.
+                  </Typography>
+                </Grid>
               </Grid>
             </Grid>
           </Grid>
-        </Grid>
-        <Grid item container direction='row'>
-          <Grid item xs={12}>
-            <VerticalTimeline>
-              { _.map(_.keys(sortedEvents), (k, i) =>
-                <VerticalTimelineElement
-                  key={i}
-                  className='vertical-timeline-element--work'
-                  date={`${moment(sortedEvents[k].start_date * 1000).format('DD MMM YY')} - ${getDate(sortedEvents[k].end_date)}`}
-                  iconStyle={{ background: bgCols[i % bgCols.length], color: '#fff' }}
-                  icon={<Event />}
-              >
-                  <Link to={`event/${sortedEvents[k].key}`} className={classes.link}>
-                    <Typography variant='title' className='vertical-timeline-element-title' gutterBottom>
-                      {sortedEvents[k].name}
+          <Grid item container direction='row'>
+            <Grid item xs={12}>
+              <VerticalTimeline>
+                { _.map(_.keys(sortedEvents), (k, i) =>
+                  <VerticalTimelineElement
+                    key={i}
+                    className='vertical-timeline-element--work'
+                    date={`${moment(sortedEvents[k].start_date * 1000).format('DD MMM YY')} - ${getDate(sortedEvents[k].end_date)}`}
+                    iconStyle={{ background: bgCols[i % bgCols.length], color: '#fff' }}
+                    icon={<Event />}
+                >
+                    <Link to={{
+                      pathname: `event/${sortedEvents[k].key}`,
+                      state: {currentUser: currentUser}
+                      }} 
+                      className={classes.link}>
+                      <Typography variant='title' className='vertical-timeline-element-title' gutterBottom>
+                        {sortedEvents[k].name}
+                      </Typography>
+                    </Link>
+                    <Typography gutterBottom>
+                      {sortedEvents[k].description}
                     </Typography>
-                  </Link>
-                  <Typography gutterBottom>
-                    {sortedEvents[k].description}
-                  </Typography>
-                  <div>
-                    {_.map(sortedEvents[k].related_companies, (c, i) =>
-                      <Chip label={i} className={classes.chip} key={i} />
+                    <div>
+                      {_.map(sortedEvents[k].related_companies, (c, i) =>
+                        <Chip label={i} className={classes.chip} key={i} />
+                  )}
+                    </div>
+                  </VerticalTimelineElement>
                 )}
-                  </div>
-                </VerticalTimelineElement>
-              )}
-            </VerticalTimeline>
+              </VerticalTimeline>
+            </Grid>
           </Grid>
         </Grid>
-      </Grid>
+      </div>
     )
   }
 }

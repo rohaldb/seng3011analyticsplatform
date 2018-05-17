@@ -9,16 +9,26 @@ import './assets/timeline.css'
 const Root = () => (
   <Router>
     <div style={{fontFamily: 'Roboto'}}>
-      <Route path='/login' component={LoginParams} />
+      <Route exact path='/' component={LoginParams} />
       <Route path='/event/:eventID' component={EventParams} />
       <Route exact path='/timeline' component={TimelineParams} />
     </div>
   </Router>
 )
 
-const EventParams = ({ match, history }) => <Event eventID={match.params.eventID} history={history} />
+const EventParams = ({ location, match, history }) => {
+  return (<Event
+    currentUser={location.state.currentUser}
+    eventID={match.params.eventID}
+    history={history}
+  />)
+}
 
-const TimelineParams = ({ location, history }) => <Timeline userID={location.state.userId} history={history} />
+const TimelineParams = ({ location, history }) =>
+  <Timeline
+    currentUser={location.state.currentUser}
+    history={history}
+  />
 
 const LoginParams = ({ history }) => <Login history={history} />
 
