@@ -179,7 +179,7 @@ class Event extends React.Component {
 
   render () {
     const { infoJSON, stockJSON, newsJSON, loadingInfo, loadingStock, loadingNews, currentUser } = this.state
-    const { classes, eventID, eventData } = this.props
+    const { classes, eventData } = this.props
 
     document.title = 'EventStock - ' + eventData.name
     return (

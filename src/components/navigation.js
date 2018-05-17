@@ -9,6 +9,7 @@ import IconButton from 'material-ui/IconButton'
 import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { withRouter } from 'react-router'
+import NewEventForm from './newEventForm'
 
 const styles = {
   root: {
@@ -30,8 +31,13 @@ class Navigation extends React.Component {
     isAdmin: PropTypes.bool.isRequired
   }
 
+  state = {
+    modalOpen: false
+  }
+
   render () {
     const { classes } = this.props
+    const { modalOpen } = this.state
 
     return (
       <div className={classes.root}>
@@ -42,12 +48,20 @@ class Navigation extends React.Component {
               <Home />
             </IconButton>
            </div>
-           { this.props.isAdmin ? <Button color="inherit">Add Event</Button> : null }
-           <Link to={`/`} style={{color: 'white', textDecoration: 'none'}} className={classes.menuButton}>
-            <Button color="inherit">Log Out</Button>
-           </Link>
+           { this.props.isAdmin ?
+             <div>
+               <Button color="inherit" onClick={() => this.setState({modalOpen: true})}>
+                 Add Event
+               </Button>
+               <Link to={`/`} style={{color: 'white', textDecoration: 'none'}} className={classes.menuButton}>
+                <Button color="inherit">Log Out</Button>
+               </Link>
+             </div>
+             : null }
           </Toolbar>
         </AppBar>
+
+        <NewEventForm isOpen={modalOpen} closeCallback={() => this.setState({modalOpen: false})}/>
       </div>
     )
   }
