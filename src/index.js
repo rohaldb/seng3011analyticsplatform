@@ -19,6 +19,7 @@ const Root = () => (
 const EventParams = ({ location, match }) => {
   return (<Event
     currentUser={location.state.currentUser}
+    eventData={location.state.eventData}
     eventID={match.params.eventID}
   />)
 }

@@ -125,8 +125,8 @@ class Timeline extends React.Component {
                       icon={<Event />}
                   >
                       <Link to={{
-                        pathname: `event/${sortedEvents[k].key}`,
-                        state: {currentUser: currentUser}
+                        pathname: `event/${k}`,
+                        state: {currentUser: currentUser, eventData: sortedEvents[k]}
                         }}
                         className={classes.link}>
                         <Typography variant='title' className='vertical-timeline-element-title' gutterBottom>

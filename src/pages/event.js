@@ -3,7 +3,6 @@ import { withRouter } from 'react-router'
 import PropTypes from 'prop-types'
 import { withStyles } from 'material-ui/styles'
 import withRoot from '../withRoot'
-import Events from '../eventData'
 import Grid from 'material-ui/Grid'
 import moment from 'moment'
 import { EventSummary, Company, Stock, Map, NewsCard, Navigation } from '../components'
@@ -29,7 +28,8 @@ const styles = theme => ({
 class Event extends React.Component {
 
   static propTypes = {
-    currentUser: PropTypes.object.isRequired
+    currentUser: PropTypes.object.isRequired,
+    eventData: PropTypes.object.isRequired
   }
 
   state = {
@@ -46,7 +46,7 @@ class Event extends React.Component {
   }
 
   getInfo () {
-    const companies = Events[this.props.eventID].related_companies
+    const companies = this.props.eventData.related_companies
     // console.log(companies)
     let companiesProcessed = 0
     for (let companyName in companies) {
@@ -81,7 +81,7 @@ class Event extends React.Component {
   }
 
   getNews () {
-    const eventInfo = Events[this.props.eventID]
+    const eventInfo = this.props.eventData
     const start = new moment(eventInfo.start_date * 1000)
     const end = new moment(eventInfo.end_date * 1000)
     const keywords = eventInfo.keywords.toString().replace(/,/g, '%20AND%20')
@@ -108,12 +108,12 @@ class Event extends React.Component {
   }
 
   getStockPrices () {
-    const eventInfo = Events[this.props.eventID]
+    const eventInfo = this.props.eventData
     const companies = eventInfo.related_companies
     let startDate = moment.unix(eventInfo.start_date)
     let endDate = eventInfo.end_date === 'ongoing' ? moment() : moment.unix(eventInfo.end_date) // Use today's date if ongoing
-    console.log('START DATE: ' + startDate.format('dddd, MMMM Do YYYY, h:mm:ss a'))
-    console.log('END DATE: ' + endDate.format('dddd, MMMM Do YYYY, h:mm:ss a'))
+    // console.log('START DATE: ' + startDate.format('dddd, MMMM Do YYYY, h:mm:ss a'))
+    // console.log('END DATE: ' + endDate.format('dddd, MMMM Do YYYY, h:mm:ss a'))
 
     this.setState({
       startDate,
@@ -125,7 +125,6 @@ class Event extends React.Component {
       // console.log("COMPANY: " + companyName)
       if (companies.hasOwnProperty(companyName) && companies[companyName]) {
         const companyCode = companies[companyName]
-        console.log(companyCode)
         const base = 'https://www.alphavantage.co/query'
         const apiKey = '2V4IGWVZ6W8XS8AI'
         // TODO MAKE OUTPUTSIZE == full
@@ -180,10 +179,9 @@ class Event extends React.Component {
 
   render () {
     const { infoJSON, stockJSON, newsJSON, loadingInfo, loadingStock, loadingNews, currentUser } = this.state
-    const { classes, eventID } = this.props
+    const { classes, eventID, eventData } = this.props
 
-    const EventData = Events[eventID]
-    document.title = 'EventStock - ' + EventData.name
+    document.title = 'EventStock - ' + eventData.name
     return (
       <div>
         <Navigation isAdmin={currentUser.admin}/>
@@ -191,15 +189,15 @@ class Event extends React.Component {
           <Grid container spacing={24}>
             <Grid item xs={12}>
               <EventSummary
-                name={EventData.name}
-                description={EventData.description}
-                start_date={`${moment(EventData.start_date * 1000).format('DD MMM YY')}`}
-                end_date={getDate(EventData.end_date)}
+                name={eventData.name}
+                description={eventData.description}
+                start_date={`${moment(eventData.start_date * 1000).format('DD MMM YY')}`}
+                end_date={getDate(eventData.end_date)}
                 />
             </Grid>
             <Grid item xs={12}>
               <Grid container spacing={16}>
-                {_.map(_.keys(EventData.related_companies), (company, i) => (
+                {_.map(_.keys(eventData.related_companies), (company, i) => (
                   <Grid item xs={4} key={i}>
                     <Company infoJSON={infoJSON[company]} name={company} loading={loadingInfo} key={i} />
                   </Grid>
