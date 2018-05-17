@@ -2,11 +2,12 @@ import React from 'react'
 import { withRouter } from 'react-router'
 import PropTypes from 'prop-types'
 import withRoot from '../withRoot'
+import { CircularProgress } from 'material-ui/Progress'
 import { VerticalTimeline, VerticalTimelineElement } from 'react-vertical-timeline-component'
 import 'react-vertical-timeline-component/style.min.css'
 import { Event } from 'material-ui-icons'
+import { base } from '../config'
 import _ from 'lodash'
-import Events from '../eventData'
 import { Link } from 'react-router-dom'
 import moment from 'moment'
 import { Grid, Chip, Typography, withStyles } from 'material-ui'
@@ -37,6 +38,10 @@ const styles = theme => ({
   },
   subTitle: {
     color: theme.palette.secondary.main
+  },
+  loader: {
+    marginTop: 20,
+    textAlign: 'center'
   }
 })
 
@@ -54,7 +59,15 @@ class Timeline extends React.Component {
   }
 
   state = {
-    currentUser: this.props.currentUser
+    currentUser: this.props.currentUser,
+    eventData: {}
+  }
+
+  componentDidMount() {
+    this.ref = base.syncState(`timeline`, {
+      context: this,
+      state: 'eventData'
+    })
   }
 
   constructor (props) {
@@ -64,13 +77,14 @@ class Timeline extends React.Component {
 
   render () {
     const { classes } = this.props
-    const { currentUser } = this.state
+    const { currentUser, eventData } = this.state
 
-    var sortedEvents = Object.keys(Events).map(function (k) {
-      var ev = Events[k]
-      ev['key'] = k
-      return ev
-    }).sort((a, b) => a.start_date < b.start_date)
+    //need to clean data up a bit
+    let sortedEvents = {}
+    _.map(_.pickBy(eventData, _.identity), (x,i) => sortedEvents[i] = x)
+    sortedEvents = _.sortBy(sortedEvents, x => x.start_date)
+
+
     document.title = 'EventStock'
 
     return (
@@ -96,35 +110,41 @@ class Timeline extends React.Component {
           </Grid>
           <Grid item container direction='row'>
             <Grid item xs={12}>
-              <VerticalTimeline>
-                { _.map(_.keys(sortedEvents), (k, i) =>
-                  <VerticalTimelineElement
-                    key={i}
-                    className='vertical-timeline-element--work'
-                    date={`${moment(sortedEvents[k].start_date * 1000).format('DD MMM YY')} - ${getDate(sortedEvents[k].end_date)}`}
-                    iconStyle={{ background: bgCols[i % bgCols.length], color: '#fff' }}
-                    icon={<Event />}
-                >
-                    <Link to={{
-                      pathname: `event/${sortedEvents[k].key}`,
-                      state: {currentUser: currentUser}
-                      }}
-                      className={classes.link}>
-                      <Typography variant='title' className='vertical-timeline-element-title' gutterBottom>
-                        {sortedEvents[k].name}
+              { _.isEmpty(sortedEvents) ?
+                <div className={classes.loader}>
+                  <CircularProgress size={60}/>
+                </div>
+                :
+                <VerticalTimeline>
+                  { _.map(_.keys(sortedEvents), (k, i) =>
+                    <VerticalTimelineElement
+                      key={i}
+                      className='vertical-timeline-element--work'
+                      date={`${moment(sortedEvents[k].start_date * 1000).format('DD MMM YY')} - ${getDate(sortedEvents[k].end_date)}`}
+                      iconStyle={{ background: bgCols[i % bgCols.length], color: '#fff' }}
+                      icon={<Event />}
+                  >
+                      <Link to={{
+                        pathname: `event/${sortedEvents[k].key}`,
+                        state: {currentUser: currentUser}
+                        }}
+                        className={classes.link}>
+                        <Typography variant='title' className='vertical-timeline-element-title' gutterBottom>
+                          {sortedEvents[k].name}
+                        </Typography>
+                      </Link>
+                      <Typography gutterBottom>
+                        {sortedEvents[k].description}
                       </Typography>
-                    </Link>
-                    <Typography gutterBottom>
-                      {sortedEvents[k].description}
-                    </Typography>
-                    <div>
-                      {_.map(sortedEvents[k].related_companies, (c, i) =>
-                        <Chip label={i} className={classes.chip} key={i} />
+                      <div>
+                        {_.map(sortedEvents[k].related_companies, (c, i) =>
+                          <Chip label={i} className={classes.chip} key={i} />
+                    )}
+                      </div>
+                    </VerticalTimelineElement>
                   )}
-                    </div>
-                  </VerticalTimelineElement>
-                )}
-              </VerticalTimeline>
+                </VerticalTimeline>
+              }
             </Grid>
           </Grid>
         </Grid>

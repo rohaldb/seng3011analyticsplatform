@@ -1,9 +1,9 @@
 import React from 'react'
 import { withRouter } from 'react-router'
 import withRoot from '../withRoot'
-import {withStyles} from 'material-ui'
+import { withStyles } from 'material-ui'
 import '../assets/login.css'
-import {fb} from '../config'
+import { fb } from '../config'
 const styles = theme => ({})
 
 class Login extends React.Component {
