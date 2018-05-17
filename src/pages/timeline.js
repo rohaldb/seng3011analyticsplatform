@@ -61,7 +61,9 @@ class Timeline extends React.Component {
   render () {
     const { classes } = this.props
     var sortedEvents = Object.keys(Events).map(function(k) {
-      return Events[k]
+      var ev = Events[k]
+      ev['key'] = k
+      return ev
     }).sort((a, b) => a.start_date < b.start_date)
     document.title = 'EventStock'
 
@@ -95,7 +97,7 @@ class Timeline extends React.Component {
                   iconStyle={{ background: bgCols[i % bgCols.length], color: '#fff' }}
                   icon={<Event />}
               >
-                  <Link to={`event/${k}`} className={classes.link}>
+                  <Link to={`event/${sortedEvents[k].key}`} className={classes.link}>
                     <Typography variant='title' className='vertical-timeline-element-title' gutterBottom>
                       {sortedEvents[k].name}
                     </Typography>
