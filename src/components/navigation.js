@@ -1,16 +1,18 @@
 import React from 'react'
 import { withStyles } from 'material-ui/styles'
 import withRoot from '../withRoot'
-import { base } from '../config';
+import { base } from '../config'
 import AppBar from 'material-ui/AppBar'
 import Toolbar from 'material-ui/Toolbar'
-import { Home } from 'material-ui-icons'
+import { Home, Help } from 'material-ui-icons'
 import Button from 'material-ui/Button'
 import IconButton from 'material-ui/IconButton'
 import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { withRouter } from 'react-router'
 import NewEventForm from './newEventForm'
+//import hopscotch from 'hopscotch'
+import Tour from "react-user-tour"
 
 const styles = {
   root: {
@@ -26,14 +28,36 @@ const styles = {
   }
 }
 
+/*
+const tour = {
+  id: 'hello-hopscotch',
+  steps: [
+    {
+      title: 'My content',
+      content: 'Here is where I put my content.',
+      target: document.getElementById('test'),
+      placement: 'bottom'
+    }
+  ]
+}
+*/
+
 class Navigation extends React.Component {
 
   static propTypes = {
-    isAdmin: PropTypes.bool.isRequired
+    isAdmin: PropTypes.bool.isRequired,
+    //tour: PropTypes.object
   }
 
   state = {
-    modalOpen: false
+    modalOpen: false,
+    isTourActive: false,
+    tourStep: 1
+  }
+
+  constructor (props) {
+    super(props)
+    this.startTour = this.startTour.bind(this)
   }
 
   componentDidMount () {
@@ -41,8 +65,17 @@ class Navigation extends React.Component {
     base.fetch('categories_and_icons', {
       context: this,
     }).then((categories) => {
-      this.setState({ categories: Object.keys(categories) });
-    });
+      this.setState({ categories: Object.keys(categories) })
+    })
+  }
+
+  startTour() {
+    //console.log('starting tour...')
+    //hopscotch.listen('error', function(err) {
+      //console.log('undefined' + err)
+    //})
+    //hopscotch.startTour(tour)
+    this.setState({isTourActive: true})
   }
 
   render () {
@@ -54,8 +87,11 @@ class Navigation extends React.Component {
         <AppBar position='static' color='primary'>
           <Toolbar>
             <div style={{flex: 1}}>
-            <IconButton className={classes.menuIcon} color='inherit' aria-label='Menu'>
+            <IconButton classname={classes.menuicon} color='inherit' aria-label='menu'>
               <Home />
+            </IconButton>
+            <IconButton classname={classes.menuicon} color='inherit' aria-label='menu' onClick={this.startTour}>
+              <Help />
             </IconButton>
            </div>
            <div>
@@ -70,8 +106,15 @@ class Navigation extends React.Component {
            </div>
           </Toolbar>
         </AppBar>
-
         <NewEventForm categories={this.state.categories} isOpen={modalOpen} closeCallback={() => this.setState({modalOpen: false})}/>
+        <Tour
+          active={this.state.isTourActive}
+          step={this.state.tourStep}
+          onNext={(step) => this.setState({tourStep: step})}
+          onBack={(step) => this.setState({tourStep: step})}
+          onCancel={() => this.setState({isTourActive: false})}
+          steps={this.props.tour}
+        />
       </div>
     )
   }

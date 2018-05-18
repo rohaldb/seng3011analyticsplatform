@@ -14,6 +14,7 @@ import jsPDF from 'jspdf'
 import IconButton from 'material-ui/IconButton'
 import PrintIcon from 'react-material-icon-svg/dist/PrinterIcon'
 import { Line } from 'rc-progress'
+import { EventTour } from '../tour'
 
 const styles = theme => ({
   root: {
@@ -356,7 +357,8 @@ class Event extends React.Component {
     document.title = 'EventStock - ' + eventData.name
     return (
       <div>
-        <Navigation isAdmin={currentUser.admin}/>
+        <Navigation isAdmin={currentUser.admin} tour={EventTour} />
+        <div className="overview"></div>
         <div className={classes.root}>
           <Grid container spacing={24}>
             <Grid item xs={12}>
@@ -388,8 +390,10 @@ class Event extends React.Component {
                 </Grid>
               </Grid>
             </Grid>
+            <div className="report"></div>
             <Grid item xs={12}>
               <Grid container spacing={16}>
+                <div className="company-card"></div>
                 {_.map(_.keys(eventData.related_companies), (company, i) => (
                   <Grid item xs={4} key={Company}>
                     <span id={company}>
@@ -407,16 +411,19 @@ class Event extends React.Component {
               </Grid>
             </Grid>
             <Grid item xs={6}>
+              <div className="stock-chart"></div>
               <div id="stock">
               <Stock stockJSON={stockJSON} startDate={this.state.startDate} endDate={this.state.endDate} loading={loadingStock} />
               </div>
             </Grid>
             <Grid item xs={6}>
+              <div className="heat-map"></div>
               <div id="map">
               <Map />
               </div>
             </Grid>
             <Grid item xs={12}>
+              <div className="news-articles"></div>
               <NewsCard newsJSON={newsJSON} loading={loadingNews} />
             </Grid>
           </Grid>

@@ -11,26 +11,25 @@ import _ from 'lodash'
 import { Link } from 'react-router-dom'
 import moment from 'moment'
 import { Grid, Chip, Typography, withStyles } from 'material-ui'
+import Drawer from '@material-ui/core/Drawer'
+import Divider from '@material-ui/core/Divider'
+import { ExpandMore } from 'material-ui-icons'
 
-import Drawer from '@material-ui/core/Drawer';
-import Divider from '@material-ui/core/Divider';
-import { ExpandMore } from 'material-ui-icons';
+import ExpansionPanel from '@material-ui/core/ExpansionPanel'
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
+import TextField from '@material-ui/core/TextField'
+import Switch from '@material-ui/core/Switch'
 
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-import TextField from '@material-ui/core/TextField';
-import Switch from '@material-ui/core/Switch';
+import List from '@material-ui/core/List'
+import ListItem from '@material-ui/core/ListItem'
+import ListItemIcon from '@material-ui/core/ListItemIcon'
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
+import ListItemText from '@material-ui/core/ListItemText'
 
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import ListItemText from '@material-ui/core/ListItemText';
-
+import { TimelineTour } from '../tour'
 import { getDate } from '../time'
 import { Navigation } from '../components'
-
 
 const styles = theme => ({
   root: {
@@ -112,24 +111,25 @@ class Timeline extends React.Component {
     base.fetch('categories_and_icons', {
       context: this,
     }).then((categories) => {
-      let filterCategories = {};
+      let filterCategories = {}
       for (let key in categories) {
         if (categories.hasOwnProperty(key)) {
-          filterCategories[key] = true;
+          filterCategories[key] = true
         }
       }
-      this.setState({ filterCategories, categoryIcons: categories });
+      this.setState({ filterCategories, categoryIcons: categories })
     }).then(() => {
       this.ref = base.syncState(`timeline`, {
         context: this,
         state: 'eventData',
-      });
-    });
+      })
+    })
   }
 
   constructor (props) {
     super(props)
     document.getElementById('global').style.overflow = 'scroll'
+this.fn = this.fn.bind(this)
   }
 
   handleChange = name => event => {
@@ -139,9 +139,9 @@ class Timeline extends React.Component {
   }
 
   handleCategoryChange = name => event => {
-    let filterCategories = this.state.filterCategories;
-    filterCategories[name] = event.target.checked;
-    this.setState({ filterCategories });
+    let filterCategories = this.state.filterCategories
+    filterCategories[name] = event.target.checked
+    this.setState({ filterCategories })
   }
 
   render () {
@@ -161,6 +161,7 @@ class Timeline extends React.Component {
         <ExpansionPanel defaultExpanded>
           <ExpansionPanelSummary expandIcon={<ExpandMore />}>
             <Typography className={classes.heading}>Start Date Range</Typography>
+            <div className="filter-date"></div>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails>
             <TextField
@@ -194,6 +195,7 @@ class Timeline extends React.Component {
             <Typography className={classes.heading}>Categories</Typography>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails>
+            <div className="filter-category"></div>
             <List style={{width: '100%'}}>
               { _.map(_.keys(filterCategories), (k, i) =>
                 <ListItem key={i}>
@@ -222,39 +224,38 @@ class Timeline extends React.Component {
         </ExpansionPanel>
         <Divider />
       </Drawer>
-    );
+    )
 
     //need to clean data up a bit
-    let sortedEvents = {};
+    let sortedEvents = {}
     _.map(_.pickBy(eventData, _.identity), (x,i) => sortedEvents[i] = x)
 
     // Filter by date
     sortedEvents = _.filter(sortedEvents, x => {
-      let startDate = moment.unix(x.start_date);
-      let filterStart = moment(filterStartDate, 'YYYY-MM-DD');
-      let filterEnd = moment(filterEndDate, 'YYYY-MM-DD');
-      return startDate.isBetween(filterStart, filterEnd, null, '[]'); // Inclusive date range match
-    });
+      let startDate = moment.unix(x.start_date)
+      let filterStart = moment(filterStartDate, 'YYYY-MM-DD')
+      let filterEnd = moment(filterEndDate, 'YYYY-MM-DD')
+      return startDate.isBetween(filterStart, filterEnd, null, '[]') // Inclusive date range match
+    })
 
     // Filter by category
     sortedEvents = _.filter(sortedEvents, x => {
       // Handle events with no category/category is not on Firebase list
-      const categoryNotOnFirebase = !filterCategories.hasOwnProperty(_.toLower(x.category));
-      const uncategorisedSelected = filterCategories['uncategorised'] === true;
-      let categoryToggled = filterCategories[_.toLower(x.category)] === true;
+      const categoryNotOnFirebase = !filterCategories.hasOwnProperty(_.toLower(x.category))
+      const uncategorisedSelected = filterCategories['uncategorised'] === true
+      let categoryToggled = filterCategories[_.toLower(x.category)] === true
 
-      return categoryToggled || (categoryNotOnFirebase && uncategorisedSelected);
-    });
+      return categoryToggled || (categoryNotOnFirebase && uncategorisedSelected)
+    })
 
     // Sort by start date
     sortedEvents = _.sortBy(sortedEvents, x => x.start_date)
-
 
     document.title = 'EventStock'
 
     return (
       <div>
-        <Navigation isAdmin={currentUser.admin}/>
+        <Navigation isAdmin={currentUser.admin} tour={TimelineTour} />
         <Grid container direction='row'>
           <Grid container direction='column' className={classes.root}>
             <div className={classes.appFrame}>
@@ -264,9 +265,10 @@ class Timeline extends React.Component {
                   <Grid item xs={8}>
                     <Grid container alignItems='center' direction='column'>
                       <Grid item>
+                        <div className="welcome">
                         <Typography variant='display3' gutterBottom className={classes.title}>
                           EventStock
-                        </Typography>
+                        </Typography></div>
                       </Grid>
                       <Grid item>
                         <Typography variant='subheading' gutterBottom className={classes.subTitle}>
@@ -278,6 +280,7 @@ class Timeline extends React.Component {
                   </Grid>
                 </Grid>
                 <Grid item container direction='row'>
+                  <div className="browse"></div>
                   <Grid item xs={12}>
                     { _.isEmpty(sortedEvents) ?
                       <div className={classes.loader}>
