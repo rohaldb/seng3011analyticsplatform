@@ -185,7 +185,7 @@ class Timeline extends React.Component {
       let startDate = moment.unix(x.start_date);
       let filterStart = moment(filterStartDate, 'YYYY-MM-DD');
       let filterEnd = moment(filterEndDate, 'YYYY-MM-DD');
-      return startDate.isBetween(filterStart, filterEnd);
+      return startDate.isBetween(filterStart, filterEnd, null, '[]'); // Inclusive date range match
     });
 
     // Sort by start date
