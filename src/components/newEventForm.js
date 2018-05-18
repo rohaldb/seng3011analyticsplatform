@@ -18,6 +18,12 @@ import ChipInput from 'material-ui-chip-input'
 import Button from 'material-ui/Button'
 import TextField from 'material-ui/TextField'
 
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+import NativeSelect from '@material-ui/core/NativeSelect';
+
 const styles = theme => ({
   textField: {
     marginLeft: theme.spacing.unit,
@@ -26,6 +32,10 @@ const styles = theme => ({
   },
   button: {
     margin: theme.spacing.unit,
+  },
+  formControl: {
+    margin: theme.spacing.unit,
+    minWidth: 120,
   },
 })
 
@@ -43,6 +53,7 @@ class NewEventForm extends React.Component {
     end_date: '',
     related_companies: {},
     keywords: [],
+    category: 'other',
     companyCode: '',
     companyName: ''
   }
@@ -56,7 +67,8 @@ class NewEventForm extends React.Component {
       start_date,
       end_date,
       related_companies,
-      keywords
+      keywords,
+      category
     } = this.state
 
     let keywordsHash = {}
@@ -67,6 +79,7 @@ class NewEventForm extends React.Component {
       start_date: new moment(start_date).unix(),
       end_date : new moment(end_date).unix(),
       keywords: keywordsHash,
+      category,
       name,
       related_companies,
     })
@@ -159,6 +172,22 @@ class NewEventForm extends React.Component {
                 shrink: true,
               }}
             />
+
+            <FormControl className={classes.formControl}>
+              <InputLabel htmlFor="category-simple">Category</InputLabel>
+              <Select
+                native
+                value={this.state.category}
+                onChange={this.handleChange('category')}
+                inputProps={{
+                  id: 'category-simple',
+                }}
+              >
+                <option value='other'>Other</option>
+                <option value='banking'>Banking</option>
+                <option value='technology'>Technology</option>
+              </Select>
+            </FormControl>
 
             <ChipInput
               label="Keywords"
