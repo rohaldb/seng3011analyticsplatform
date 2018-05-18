@@ -94,8 +94,8 @@ class Timeline extends React.Component {
   state = {
     currentUser: this.props.currentUser,
     eventData: {},
-    filterStartDate: null,
-    filterEndDate: null,
+    filterStartDate: moment().subtract(5, 'y').format('YYYY-MM-DD'),
+    filterEndDate: moment().format('YYYY-MM-DD'),
   }
 
   componentDidMount() {
@@ -118,7 +118,7 @@ class Timeline extends React.Component {
 
   render () {
     const { classes } = this.props
-    const { currentUser, eventData } = this.state
+    const { currentUser, eventData, filterStartDate, filterEndDate } = this.state
 
     const drawer = (
       <Drawer
@@ -132,13 +132,13 @@ class Timeline extends React.Component {
         <Divider />
         <ExpansionPanel defaultExpanded>
           <ExpansionPanelSummary expandIcon={<ExpandMore />}>
-            <Typography className={classes.heading}>Date Range</Typography>
+            <Typography className={classes.heading}>Start Date Range</Typography>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails>
             <TextField
               label="Start Date"
               type="date"
-              value={this.state.filterStartDate}
+              value={filterStartDate}
               onChange={this.handleChange('filterStartDate')}
               className={classes.textField}
               InputLabelProps={{
@@ -150,7 +150,7 @@ class Timeline extends React.Component {
               required
               label="End Date"
               type="date"
-              value={this.state.filterEndDate}
+              value={filterEndDate}
               onChange={this.handleChange('filterEndDate')}
               className={classes.textField}
               InputLabelProps={{
@@ -179,6 +179,16 @@ class Timeline extends React.Component {
     //need to clean data up a bit
     let sortedEvents = {}
     _.map(_.pickBy(eventData, _.identity), (x,i) => sortedEvents[i] = x)
+
+    // Filter by date
+    sortedEvents = _.filter(sortedEvents, x => {
+      let startDate = moment.unix(x.start_date);
+      let filterStart = moment(filterStartDate, 'YYYY-MM-DD');
+      let filterEnd = moment(filterEndDate, 'YYYY-MM-DD');
+      return startDate.isBetween(filterStart, filterEnd);
+    });
+
+    // Sort by start date
     sortedEvents = _.sortBy(sortedEvents, x => x.start_date)
 
 
