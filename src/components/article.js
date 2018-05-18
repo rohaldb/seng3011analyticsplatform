@@ -101,7 +101,7 @@ class Article extends React.Component {
         >
           <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
           <DialogContent>
-            <b>{date}</b>
+            <Typography>{date}</Typography>
             <CardContent>
               <Typography>
                <span dangerouslySetInnerHTML={this.rawMarkup(bodyText)} />

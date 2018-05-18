@@ -1,7 +1,8 @@
 import React from 'react'
+import { withRouter } from 'react-router'
+import PropTypes from 'prop-types'
 import { withStyles } from 'material-ui/styles'
 import withRoot from '../withRoot'
-import Events from '../eventData'
 import Grid from 'material-ui/Grid'
 import moment from 'moment'
 import { EventSummary, Company, Stock, Map, NewsCard, Navigation } from '../components'
@@ -37,6 +38,11 @@ const styles = theme => ({
 
 class Event extends React.Component {
 
+  static propTypes = {
+    currentUser: PropTypes.object.isRequired,
+    eventData: PropTypes.object.isRequired
+  }
+  
   constructor (props) {
     super(props)
     this.state = {
@@ -49,7 +55,8 @@ class Event extends React.Component {
       loadingNews: true,
       startDate: null,
       endDate: null,
-      percent: 0
+      percent: 0,
+      currentUser: this.props.currentUser
     }
     this.printDocument = this.printDocument.bind(this)
     this.renderNextCompany = this.renderNextCompany.bind(this)
@@ -246,7 +253,7 @@ class Event extends React.Component {
   }
 
   getNews () {
-    const eventInfo = Events[this.props.eventID]
+    const eventInfo = this.props.eventData
     const start = new moment(eventInfo.start_date * 1000)
     const end = new moment(eventInfo.end_date * 1000)
     const keywords = eventInfo.keywords.toString().replace(/,/g, '%20AND%20')
@@ -273,12 +280,12 @@ class Event extends React.Component {
   }
 
   getStockPrices () {
-    const eventInfo = Events[this.props.eventID]
+    const eventInfo = this.props.eventData
     const companies = eventInfo.related_companies
     let startDate = moment.unix(eventInfo.start_date)
     let endDate = eventInfo.end_date === 'ongoing' ? moment() : moment.unix(eventInfo.end_date) // Use today's date if ongoing
-    console.log('START DATE: ' + startDate.format('dddd, MMMM Do YYYY, h:mm:ss a'))
-    console.log('END DATE: ' + endDate.format('dddd, MMMM Do YYYY, h:mm:ss a'))
+    // console.log('START DATE: ' + startDate.format('dddd, MMMM Do YYYY, h:mm:ss a'))
+    // console.log('END DATE: ' + endDate.format('dddd, MMMM Do YYYY, h:mm:ss a'))
 
     this.setState({
       startDate,
@@ -290,7 +297,6 @@ class Event extends React.Component {
       // console.log("COMPANY: " + companyName)
       if (companies.hasOwnProperty(companyName) && companies[companyName]) {
         const companyCode = companies[companyName]
-        console.log(companyCode)
         const base = 'https://www.alphavantage.co/query'
         const apiKey = '2V4IGWVZ6W8XS8AI'
         // TODO MAKE OUTPUTSIZE == full
@@ -300,33 +306,33 @@ class Event extends React.Component {
         fetch(url)
           // eslint-disable-next-line
           .then((response) => {
-          if (response.ok) {
-            response.json().then(data => {
-              data = Object.values(data)[1]
-              let newData = []
-              for (let date in data) {
-                if (data.hasOwnProperty(date)) {
-                  newData.unshift({
-                    date: date,
-                    'value': parseFloat(data[date]['4. close']),
-                    'open': parseFloat(data[date]['1. open']),
-                    'high': parseFloat(data[date]['2. high']),
-                    'low': parseFloat(data[date]['3. low']),
-                    'close': parseFloat(data[date]['4. close']),
-                    'volume': parseFloat(data[date]['5. volume'])
-                  })
+            if (response.ok) {
+              response.json().then(data => {
+                data = Object.values(data)[1]
+                let newData = []
+                for (let date in data) {
+                  if (data.hasOwnProperty(date)) {
+                    newData.unshift({
+                      date: date,
+                      'value': parseFloat(data[date]['4. close']),
+                      'open': parseFloat(data[date]['1. open']),
+                      'high': parseFloat(data[date]['2. high']),
+                      'low': parseFloat(data[date]['3. low']),
+                      'close': parseFloat(data[date]['4. close']),
+                      'volume': parseFloat(data[date]['5. volume'])
+                    })
+                  }
                 }
-              }
-              let stockJSON = this.state.stockJSON
-              stockJSON[companyName] = newData
+                let stockJSON = this.state.stockJSON
+                stockJSON[companyName] = newData
 
-              companiesProcessed++
-              if (companiesProcessed === Object.keys(companies).length) {
-                this.setState({ stockJSON: stockJSON, loadingStock: false })
-              }
-            })
-          }
-        })
+                companiesProcessed++
+                if (companiesProcessed === Object.keys(companies).length) {
+                  this.setState({ stockJSON: stockJSON, loadingStock: false })
+                }
+              })
+            }
+          })
       } else if (!companies[companyName]) { // null stock code
         companiesProcessed++
         if (companiesProcessed === Object.keys(companies).length) {
@@ -344,14 +350,13 @@ class Event extends React.Component {
   }
 
   render () {
-    const { infoJSON, stockJSON, newsJSON, loadingInfo, loadingStock, loadingNews } = this.state
-    const { classes, eventID } = this.props
+    const { infoJSON, stockJSON, newsJSON, loadingInfo, loadingStock, loadingNews, currentUser } = this.state
+    const { classes, eventData } = this.props
 
-    const EventData = Events[eventID]
-    document.title = 'EventStock - ' + EventData.name
+    document.title = 'EventStock - ' + eventData.name
     return (
       <div>
-        <Navigation style={{color: 'blue'}} />
+        <Navigation isAdmin={currentUser.admin}/>
         <div className={classes.root}>
           <Grid container spacing={24}>
             <Grid item xs={12}>
@@ -421,4 +426,4 @@ class Event extends React.Component {
   }
 }
 
-export default withRoot(withStyles(styles)(Event))
+export default withRouter(withRoot(withStyles(styles)(Event)))
