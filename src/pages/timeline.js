@@ -124,7 +124,6 @@ class Timeline extends React.Component {
         context: this,
         state: 'eventData',
       });
-
     });
   }
 

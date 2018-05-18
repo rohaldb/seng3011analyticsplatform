@@ -64,8 +64,8 @@ class NewEventForm extends React.Component {
 
     fb.database().ref('timeline/' + Math.random().toString(36).substr(2, 5)).set({
       description,
-      start_date: new moment(start_date).valueOf(),
-      end_date : new moment(end_date).valueOf(),
+      start_date: new moment(start_date).unix(),
+      end_date : new moment(end_date).unix(),
       keywords: keywordsHash,
       name,
       related_companies,
