@@ -244,6 +244,9 @@ class Timeline extends React.Component {
                                 {sortedEvents[k].name}
                               </Typography>
                             </Link>
+                            <Typography variant='subheading' className='vertical-timeline-element-subtitle' gutterBottom>
+                              {sortedEvents[k].category}
+                            </Typography>
                             <Typography gutterBottom>
                               {sortedEvents[k].description}
                             </Typography>
