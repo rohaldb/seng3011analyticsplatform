@@ -20,6 +20,8 @@ import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import TextField from '@material-ui/core/TextField';
+import Switch from '@material-ui/core/Switch';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 import { getDate } from '../time'
 import { Navigation } from '../components'
@@ -96,6 +98,10 @@ class Timeline extends React.Component {
     eventData: {},
     filterStartDate: moment().subtract(5, 'y').format('YYYY-MM-DD'),
     filterEndDate: moment().format('YYYY-MM-DD'),
+    filterCategories: {
+      'technology': true,
+      'aviation': true,
+    },
   }
 
   componentDidMount() {
@@ -116,9 +122,15 @@ class Timeline extends React.Component {
     })
   }
 
+  handleCategoryChange = name => event => {
+    let filterCategories = this.state.filterCategories;
+    filterCategories[name] = event.target.checked;
+    this.setState({ filterCategories });
+  }
+
   render () {
     const { classes } = this.props
-    const { currentUser, eventData, filterStartDate, filterEndDate } = this.state
+    const { currentUser, eventData, filterStartDate, filterEndDate, filterCategories } = this.state
 
     const drawer = (
       <Drawer
@@ -166,10 +178,18 @@ class Timeline extends React.Component {
             <Typography className={classes.heading}>Categories</Typography>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails>
-            <Typography>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus ex,
-              sit amet blandit leo lobortis eget.
-            </Typography>
+            { _.map(_.keys(filterCategories), (k, i) =>
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={filterCategories[k]}
+                    onChange={this.handleCategoryChange(k)}
+                    value={k}
+                  />
+                }
+                label={_.startCase(_.toLower(k))}
+              />
+            )}
           </ExpansionPanelDetails>
         </ExpansionPanel>
         <Divider />
@@ -177,7 +197,7 @@ class Timeline extends React.Component {
     );
 
     //need to clean data up a bit
-    let sortedEvents = {}
+    let sortedEvents = {};
     _.map(_.pickBy(eventData, _.identity), (x,i) => sortedEvents[i] = x)
 
     // Filter by date
@@ -186,6 +206,13 @@ class Timeline extends React.Component {
       let filterStart = moment(filterStartDate, 'YYYY-MM-DD');
       let filterEnd = moment(filterEndDate, 'YYYY-MM-DD');
       return startDate.isBetween(filterStart, filterEnd, null, '[]'); // Inclusive date range match
+    });
+
+    // Filter by category
+    console.log(this.state);
+    sortedEvents = _.filter(sortedEvents, x => {
+      // Check whether the category's switch has been toggled
+      return filterCategories[_.lowerCase(x.category)] === true;
     });
 
     // Sort by start date
