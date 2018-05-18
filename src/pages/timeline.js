@@ -11,9 +11,16 @@ import _ from 'lodash'
 import { Link } from 'react-router-dom'
 import moment from 'moment'
 import { Grid, Chip, Typography, withStyles } from 'material-ui'
+
 import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
+import { ExpandMore } from 'material-ui-icons';
+
+import ExpansionPanel from '@material-ui/core/ExpansionPanel';
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+
 import { getDate } from '../time'
 import { Navigation } from '../components'
 
@@ -69,6 +76,10 @@ const styles = theme => ({
     flexGrow: 1,
     backgroundColor: theme.palette.background.default,
     padding: theme.spacing.unit * 3,
+  },
+  expansionHeading: {
+    fontSize: theme.typography.pxToRem(15),
+    fontWeight: theme.typography.fontWeightRegular,
   },
 })
 
@@ -133,7 +144,17 @@ class Timeline extends React.Component {
       >
         <div className={classes.toolbar} />
         <Divider />
-        <List>{mailFolderListItems}</List>
+        <ExpansionPanel defaultExpanded>
+          <ExpansionPanelSummary expandIcon={<ExpandMore />}>
+            <Typography className={classes.heading}>Filter</Typography>
+          </ExpansionPanelSummary>
+          <ExpansionPanelDetails>
+            <Typography>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus ex,
+              sit amet blandit leo lobortis eget.
+            </Typography>
+          </ExpansionPanelDetails>
+        </ExpansionPanel>
         <Divider />
         <List>{mailFolderListItems}</List>
       </Drawer>
