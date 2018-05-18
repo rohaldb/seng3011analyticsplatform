@@ -4,6 +4,7 @@ import withRoot from '../withRoot'
 import PropTypes from 'prop-types'
 import Card, { CardContent, CardHeader } from 'material-ui/Card'
 import Fade from 'material-ui/transitions/Fade'
+import moment from 'moment'
 import 'amstock3/amcharts/amcharts.js'
 import 'amstock3/amcharts/serial.js'
 import 'amstock3/amcharts/amstock.js'
@@ -20,6 +21,8 @@ class Social extends React.Component {
 
   static propTypes = {
     posts: PropTypes.object.isRequired,
+    start: PropTypes.object.isRequired,
+    end: PropTypes.object.isRequired,
   }
 
   configGraph = (chartData) => {
@@ -97,8 +100,18 @@ class Social extends React.Component {
     }
   }
 
-  declareConfig = (posts) => {
+  declareConfig = (posts, start, end) => {
     var chartData = {}
+    var currDate = moment(start)
+    var maxDate = moment(end)
+    while (currDate <= maxDate) {
+      chartData[moment(currDate).format('YYYY-MM-DD')] = {
+        'posts': 0,
+        'likes': 0,
+        'comments': 0
+      }
+      currDate = moment(currDate).add(1, 'days')
+    }
     for (let post in posts) {
       var entry = posts[post]['created_time'].substring(0, 10)
       if (chartData[entry]) {
@@ -129,7 +142,7 @@ class Social extends React.Component {
   }
 
   render () {
-    const { classes, posts } = this.props
+    const { classes, posts, start, end } = this.props
 
     return (
       <Fade in timeout={500}>
@@ -140,7 +153,7 @@ class Social extends React.Component {
           />
           <CardContent>
             <Fade in timeout={500}>
-              <AmCharts.React className="lineChart" style={{ width: "100%", height: "500px" }} options={this.declareConfig(posts)} />
+              <AmCharts.React className="lineChart" style={{ width: "100%", height: "750px" }} options={this.declareConfig(posts, start, end)} />
             </Fade>
           </CardContent>
         </Card>

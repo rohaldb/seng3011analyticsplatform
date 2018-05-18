@@ -207,7 +207,13 @@ class Event extends React.Component {
                       response.text().then(res => {
                         // console.log(res)
                         var extract = res.substring(res.indexOf('extract'), res.length)
-                        data.data.description = companyName + ' ' + extractCompanySummary(extract, 450).replace(/\}+\)/, '')
+                        data.data.description = extractCompanySummary(extract, 450).replace(/\}+\)/, '')
+                        if (data.data.description.match(/^\s*$/)) {
+                          data.data.description = 'This company has not provided a description of their operations. '
+                          data.data.description += `Please visit the ${companyName} website for more information.`
+                        } else {
+                          data.data.description = companyName + ' ' + data.data.descripton
+                        }
                         data.data.code = companyCode
                         infoJSON[companyName] = data.data
                         console.log(infoJSON)
@@ -382,7 +388,14 @@ class Event extends React.Component {
                 {_.map(_.keys(EventData.related_companies), (company, i) => (
                   <Grid item xs={4} key={Company}>
                     <span id={company}>
-                      <Company infoJSON={infoJSON[company]} name={company} loading={loadingInfo} key={i} />
+                      <Company
+                        infoJSON={infoJSON[company]}
+                        name={company}
+                        loading={loadingInfo}
+                        start={EventData.start_date * 1000}
+                        end={EventData.end_date * 1000}
+                        key={i}
+                      />
                     </span>
                   </Grid>
               ))}

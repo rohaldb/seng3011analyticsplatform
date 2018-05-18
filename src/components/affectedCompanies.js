@@ -35,6 +35,8 @@ class Company extends React.Component {
     name: PropTypes.string.isRequired,
     loading: PropTypes.bool.isRequired,
     infoJSON: PropTypes.object,
+    start: PropTypes.object,
+    end: PropTypes.object
   }
 
   state = {
@@ -54,7 +56,7 @@ class Company extends React.Component {
   }
 
   render () {
-    const { name, loading, infoJSON } = this.props
+    const { name, loading, infoJSON, start, end } = this.props
     const { classes } = this.props
 
     return (
@@ -91,40 +93,33 @@ class Company extends React.Component {
           </Card>
         </Fade>
 
-      <Dialog
-          open={this.state.open}
-          onClose={() => this.handleClose()}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-          maxWidth={false}
-      >
-          <DialogTitle id="alert-dialog-title">{"Company Information"}</DialogTitle>
+      {infoJSON ?
+        <Dialog
+            open={this.state.open}
+            onClose={() => this.handleClose()}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+            maxWidth={false}
+        >
+          <DialogTitle id="alert-dialog-title">{infoJSON.name} - {infoJSON.code}</DialogTitle>
           <DialogContent>
-                {infoJSON ?
-                (
-                <CardContent>
-                  <Typography>
-                    <b>{infoJSON.name} - {infoJSON.code}</b>
-                    <br></br>
-                    <b>Operations:</b> {infoJSON.category}
-                    <br></br>
-                    <b>Followers:</b> <NumericLabel>{infoJSON.fan_count}</NumericLabel>
-                    <br></br>
-                    <b>Website:</b> <a target="_blank" href={infoJSON.website}>{infoJSON.website}</a>
-                    <br></br>
-                    <b>Description:</b> <span dangerouslySetInnerHTML={this.rawMarkup(infoJSON.description)} />
-                  </Typography>
-                  <Social posts={infoJSON.posts} />
-                </CardContent>
-                ):
-                <CardContent>
-                  <Typography>
-                    <i> No information for {name} can be retrieved at this point in time. We apologise for any inconvenience. </i>
-                  </Typography>
-                </CardContent>
-                }
+            <CardContent>
+              <Typography>
+                <b>Operations:</b> {infoJSON.category}
+                <br></br>
+                <b>Followers:</b> <NumericLabel>{infoJSON.fan_count}</NumericLabel>
+                <br></br>
+                <b>Website:</b> <a target="_blank" href={infoJSON.website}>{infoJSON.website}</a>
+                <br></br>
+                <b>Description:</b> <span dangerouslySetInnerHTML={this.rawMarkup(infoJSON.description)} />
+                <br></br>
+              </Typography>
+              <br></br>
+              <Social posts={infoJSON.posts} start={start} end={end} />
+            </CardContent>
           </DialogContent>
         </Dialog>
+        : null }
       </div>
     )
   }
