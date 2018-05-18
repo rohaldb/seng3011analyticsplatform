@@ -21,7 +21,12 @@ import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import TextField from '@material-ui/core/TextField';
 import Switch from '@material-ui/core/Switch';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
+
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import ListItemText from '@material-ui/core/ListItemText';
 
 import { getDate } from '../time'
 import { Navigation } from '../components'
@@ -189,18 +194,30 @@ class Timeline extends React.Component {
             <Typography className={classes.heading}>Categories</Typography>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails>
-            { _.map(_.keys(filterCategories), (k, i) =>
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={filterCategories[k]}
-                    onChange={this.handleCategoryChange(k)}
-                    value={k}
-                  />
-                }
-                label={_.startCase(_.toLower(k))}
-              />
-            )}
+            <List style={{width: '100%'}}>
+              { _.map(_.keys(filterCategories), (k, i) =>
+                <ListItem key={i}>
+                  <ListItemIcon>
+                    {filterCategories[k] ?
+                      <i className="material-icons">
+                        airplanemode_active
+                      </i>
+                      :
+                      <i className="material-icons">
+                        label
+                      </i>
+                    }
+                  </ListItemIcon>
+                  <ListItemText primary={_.startCase(_.toLower(k))} />
+                  <ListItemSecondaryAction>
+                    <Switch
+                      onChange={this.handleCategoryChange(k)}
+                      checked={filterCategories[k]}
+                    />
+                  </ListItemSecondaryAction>
+                </ListItem>
+              )}
+            </List>
           </ExpansionPanelDetails>
         </ExpansionPanel>
         <Divider />
