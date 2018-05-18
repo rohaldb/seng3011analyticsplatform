@@ -42,7 +42,7 @@ class Event extends React.Component {
     currentUser: PropTypes.object.isRequired,
     eventData: PropTypes.object.isRequired
   }
-  
+
   constructor (props) {
     super(props)
     this.state = {
@@ -67,7 +67,7 @@ class Event extends React.Component {
 
   printDocument(eventData) {
     this.startProgressBar()
-    const companies = Events[this.props.eventID].related_companies
+    const companies = eventData.related_companies
     const summary = document.getElementById('summary')
     const summaryW = document.getElementById('summary').offsetWidth / 7
     const summaryH = document.getElementById('summary').offsetHeight / 7
@@ -184,8 +184,8 @@ class Event extends React.Component {
   }
 
   getInfo () {
-    const companies = Events[this.props.eventID].related_companies
-    const eventInfo = Events[this.props.eventID]
+    const companies = this.props.eventData.related_companies
+    const eventInfo = this.props.eventData
     const start = new moment(eventInfo.start_date * 1000)
     const end = new moment(eventInfo.end_date * 1000)
     var dates = `start_date=${start.format('YYYY-MM-DD')}`
@@ -362,10 +362,10 @@ class Event extends React.Component {
             <Grid item xs={12}>
               <div id="summary">
                 <EventSummary
-                  name={EventData.name}
-                  description={EventData.description}
-                  start_date={`${moment(EventData.start_date * 1000).format('DD MMM YY')}`}
-                  end_date={getDate(EventData.end_date)}
+                  name={eventData.name}
+                  description={eventData.description}
+                  start_date={`${moment(eventData.start_date * 1000).format('DD MMM YY')}`}
+                  end_date={getDate(eventData.end_date)}
                 />
               </div>
             </Grid>
@@ -374,7 +374,7 @@ class Event extends React.Component {
                 <Grid item xs={1}>
                   <IconButton
                     tooltip="Generate Event Report"
-                    onClick={() => this.printDocument(EventData)}
+                    onClick={() => this.printDocument(eventData)}
                     style={styles.large}
                   >
                     <PrintIcon />
@@ -390,15 +390,15 @@ class Event extends React.Component {
             </Grid>
             <Grid item xs={12}>
               <Grid container spacing={16}>
-                {_.map(_.keys(EventData.related_companies), (company, i) => (
+                {_.map(_.keys(eventData.related_companies), (company, i) => (
                   <Grid item xs={4} key={Company}>
                     <span id={company}>
                       <Company
                         infoJSON={infoJSON[company]}
                         name={company}
                         loading={loadingInfo}
-                        start={EventData.start_date * 1000}
-                        end={EventData.end_date * 1000}
+                        start={eventData.start_date * 1000}
+                        end={eventData.end_date * 1000}
                         key={i}
                       />
                     </span>
