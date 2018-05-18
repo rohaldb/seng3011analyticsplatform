@@ -49,6 +49,10 @@ class Company extends React.Component {
     this.setState({open: false})
   }
 
+  rawMarkup = (html) => {
+    return { __html: html }
+  }
+
   render () {
     const { name, loading, infoJSON } = this.props
     const { classes } = this.props
@@ -67,7 +71,7 @@ class Company extends React.Component {
                 (
                 <CardContent>
                   <Typography>
-                    <b>{infoJSON.name}</b>
+                    <b>{infoJSON.name} - {infoJSON.code}</b>
                     <br></br>
                     <b>Operations:</b> {infoJSON.category}
                     <br></br>
@@ -92,6 +96,7 @@ class Company extends React.Component {
           onClose={() => this.handleClose()}
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
+          maxWidth={false}
       >
           <DialogTitle id="alert-dialog-title">{"Company Information"}</DialogTitle>
           <DialogContent>
@@ -99,7 +104,7 @@ class Company extends React.Component {
                 (
                 <CardContent>
                   <Typography>
-                    <b>{infoJSON.name}</b>
+                    <b>{infoJSON.name} - {infoJSON.code}</b>
                     <br></br>
                     <b>Operations:</b> {infoJSON.category}
                     <br></br>
@@ -107,7 +112,7 @@ class Company extends React.Component {
                     <br></br>
                     <b>Website:</b> <a target="_blank" href={infoJSON.website}>{infoJSON.website}</a>
                     <br></br>
-                    <b>Description:</b> {infoJSON.description}
+                    <b>Description:</b> <span dangerouslySetInnerHTML={this.rawMarkup(infoJSON.description)} />
                   </Typography>
                   <Social posts={infoJSON.posts} />
                 </CardContent>

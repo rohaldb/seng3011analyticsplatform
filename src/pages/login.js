@@ -3,6 +3,7 @@ import withRoot from '../withRoot'
 import { withStyles } from 'material-ui'
 import '../assets/login.css'
 import { fb } from '../config'
+
 const styles = theme => ({
 
 })
@@ -10,8 +11,8 @@ const styles = theme => ({
 class Login extends React.Component {
 
     constructor() {
-      super();
-      this.getUserId = this.getUserId.bind(this);
+      super()
+      this.getUserId = this.getUserId.bind(this)
       this.database = fb.database().ref()
       this.state = {
           name: null,
@@ -36,7 +37,7 @@ class Login extends React.Component {
             } else {
                 this.setState({ isValid: false })
             }
-        });
+        })
     }
 
   render() {
@@ -67,7 +68,7 @@ class Login extends React.Component {
             </button>
             { this.state.isValid ? null : <p> Invalid credentials </p> }
       </div>
-    );
+    )
   }
 }
 export default withRoot(withStyles(styles)(Login))

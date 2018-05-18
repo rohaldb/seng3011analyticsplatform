@@ -6,6 +6,7 @@ import Grid from 'material-ui/Grid'
 import moment from 'moment'
 import { EventSummary, Company, Stock, Map, NewsCard, Navigation } from '../components'
 import { getDate } from '../time'
+import { extractCompanySummary } from '../info'
 import _ from 'lodash'
 
 const styles = theme => ({
@@ -64,12 +65,33 @@ class Event extends React.Component {
                 // console.log(data)
                 let infoJSON = this.state.infoJSON
                 if (data.data.website && !data.data.website.match(/^http/)) data.data.website = "http://" + data.data.website
-                if (!data.data.description) data.data.description = 'No description available'
-                infoJSON[companyName] = data.data
-                console.log(infoJSON)
-                companiesProcessed++
-                if (companiesProcessed === Object.keys(companies).length) {
-                  this.setState({ infoJSON: infoJSON, loadingInfo: false })
+                if (!data.data.description) {
+                  var url = 'https://en.wikipedia.org/w/api.php?action=query&origin=*&prop=extracts'
+                  url += '&format=json&exintro=&explaintext=&titles=' + companyName + '&rvprop=content&redirects&callback=?'
+                  fetch(url).then((response) => {
+                    if (response.ok) {
+                      response.text().then(res => {
+                        // console.log(res)
+                        var extract = res.substring(res.indexOf('extract'), res.length)
+                        data.data.description = companyName + ' ' + extractCompanySummary(extract, 450).replace(/\}+\)/, '')
+                        data.data.code = companyCode
+                        infoJSON[companyName] = data.data
+                        console.log(infoJSON)
+                        companiesProcessed++
+                        if (companiesProcessed === Object.keys(companies).length) {
+                          this.setState({ infoJSON: infoJSON, loadingInfo: false })
+                        }
+                      })
+                    }
+                  })
+                } else {
+                  data.data.code = companyCode
+                  infoJSON[companyName] = data.data
+                  console.log(infoJSON)
+                  companiesProcessed++
+                  if (companiesProcessed === Object.keys(companies).length) {
+                    this.setState({ infoJSON: infoJSON, loadingInfo: false })
+                  }
                 }
               })
             }
