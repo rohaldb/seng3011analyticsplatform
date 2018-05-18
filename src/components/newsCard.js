@@ -43,7 +43,7 @@ class NewsCard extends Component {
     data.map(function(item, i) {
       const timestamp = prettyDate(new Date(item.webPublicationDate))
       if (num-- >= 0) {
-        var bodyText = item.blocks.body[0].bodyHtml
+        var bodyText = item.blocks.body.length > 0 ? item.blocks.body[0].bodyHtml : "";
 
         /* remove hyperlinks from body */
         bodyText = bodyText.replace(/<\s*\/?\s*a\s[^>]*>/gi, '')
