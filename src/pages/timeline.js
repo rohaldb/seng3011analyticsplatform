@@ -25,10 +25,6 @@ import { getDate } from '../time'
 import { Navigation } from '../components'
 
 
-// TODO REMOVE
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-
 const styles = theme => ({
   root: {
     // need to fix the background
@@ -116,23 +112,6 @@ class Timeline extends React.Component {
     const { classes } = this.props
     const { currentUser, eventData } = this.state
 
-    const mailFolderListItems = (
-      <div>
-        <ListItem button>
-          <ListItemText primary="Inbox" />
-        </ListItem>
-        <ListItem button>
-          <ListItemText primary="Starred" />
-        </ListItem>
-        <ListItem button>
-          <ListItemText primary="Send mail" />
-        </ListItem>
-        <ListItem button>
-          <ListItemText primary="Drafts" />
-        </ListItem>
-      </div>
-    );
-
     const drawer = (
       <Drawer
         variant="permanent"
@@ -168,7 +147,6 @@ class Timeline extends React.Component {
           </ExpansionPanelDetails>
         </ExpansionPanel>
         <Divider />
-        <List>{mailFolderListItems}</List>
       </Drawer>
     );
 
