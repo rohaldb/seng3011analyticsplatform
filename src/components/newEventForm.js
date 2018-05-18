@@ -3,6 +3,7 @@ import { withStyles } from 'material-ui/styles'
 import withRoot from '../withRoot'
 import IconButton from '@material-ui/core/IconButton'
 import { Delete } from 'material-ui-icons'
+import moment from 'moment'
 import { fb } from '../config'
 import _ from 'lodash'
 import Typography from 'material-ui/Typography'
@@ -46,26 +47,29 @@ class NewEventForm extends React.Component {
     companyName: ''
   }
 
-  handleClose = () => {
-    this.props.closeCallback()
-  }
-
   addEvent = () => {
+    let {
+      name,
+      description,
+      start_date,
+      end_date,
+      related_companies,
+      keywords
+    } = this.state
+
+    let keywordsHash = {}
+    _.map(keywords, (keyword, i) => keywordsHash[i] = keyword)
+
     fb.database().ref('timeline/' + Math.random().toString(36).substr(2, 5)).set({
-      description: 'description',
-      start_date: 'start_date',
-      end_date : 'end_date',
-      keywords: {
-        0: 'zero',
-        1: 'one'
-      },
-      name: 'name',
-      related_companies: {
-        'ben': 'rohald'
-      }
+      description,
+      start_date: new moment(start_date).valueOf(),
+      end_date : new moment(end_date).valueOf(),
+      keywords: keywordsHash,
+      name,
+      related_companies,
     })
 
-    this.handleClcose()
+    this.props.closeCallback()
   }
 
   handleChange = name => event => {
@@ -98,7 +102,7 @@ class NewEventForm extends React.Component {
     delete related_companies[key]
     this.setState({related_companies})
   }
-  
+
 
   render () {
     const { classes } = this.props
@@ -107,9 +111,10 @@ class NewEventForm extends React.Component {
     return (
       <Dialog open={this.props.isOpen} onClose={this.handleClose} aria-labelledby="simple-dialog-title" >
         <DialogTitle id="simple-dialog-title">Create New Event</DialogTitle>
+        <form>
         <DialogContent>
-          <form>
             <TextField
+              required
               id="name"
               label="Name"
               className={classes.textField}
@@ -120,6 +125,7 @@ class NewEventForm extends React.Component {
             />
 
             <TextField
+              required
               id="description"
               label="Description"
               multiline
@@ -130,6 +136,7 @@ class NewEventForm extends React.Component {
               margin="normal"
             />
             <TextField
+              required
               label="Start Date"
               type="date"
               value={this.state.start_date}
@@ -140,9 +147,10 @@ class NewEventForm extends React.Component {
               }}
             />
             <TextField
+              required
               label="End Date"
               type="date"
-              value={this.state.start_date}
+              value={this.state.end_date}
               onChange={this.handleChange('end_date')}
               className={classes.textField}
               InputLabelProps={{
@@ -168,7 +176,7 @@ class NewEventForm extends React.Component {
                   <Typography style={{display: 'inline'}}>
                     {key}, {related_companies[key]}
                   </Typography>
-                  <IconButton 
+                  <IconButton
                     className={classes.button} aria-label="Delete"
                     onClick={() => this.deleteRelatedCompany(key)}
                   >
@@ -198,15 +206,17 @@ class NewEventForm extends React.Component {
             >
               Add
             </Button>
-          </form>
+          </DialogContent>
           <DialogActions>
-            <Button size="medium" color="secondary" 
+            <Button
+              size="medium"
+              color="secondary"
               onClick={() => this.addEvent()}
             >
               Add Event
             </Button>
           </DialogActions>
-        </DialogContent>
+        </form>
       </Dialog>
     )
   }
