@@ -104,20 +104,21 @@ class Timeline extends React.Component {
     filterStartDate: moment().subtract(5, 'y').format('YYYY-MM-DD'),
     filterEndDate: moment().format('YYYY-MM-DD'),
     filterCategories: {}, // filled in with categories from Firebase
+    categoryIcons: {}, // filled in with data from Firebase
   }
 
   componentDidMount() {
+    // Fetch categories from Firebase /categories
     base.fetch('categories', {
       context: this,
-      asArray: true,
     }).then((categories) => {
       let filterCategories = {};
-      for (let i = 0; i < categories.length; i++) {
-        filterCategories[categories[i]] = true;
+      for (let key in categories) {
+        if (categories.hasOwnProperty(key)) {
+          filterCategories[key] = true;
+        }
       }
-      console.log(categories);
-      console.log(filterCategories);
-      this.setState({ filterCategories });
+      this.setState({ filterCategories, categoryIcons: categories });
     }).then(() => {
       this.ref = base.syncState(`timeline`, {
         context: this,
@@ -146,7 +147,7 @@ class Timeline extends React.Component {
 
   render () {
     const { classes } = this.props
-    const { currentUser, eventData, filterStartDate, filterEndDate, filterCategories } = this.state
+    const { currentUser, eventData, filterStartDate, filterEndDate, filterCategories, categoryIcons } = this.state
 
     const drawer = (
       <Drawer
@@ -198,9 +199,9 @@ class Timeline extends React.Component {
               { _.map(_.keys(filterCategories), (k, i) =>
                 <ListItem key={i}>
                   <ListItemIcon>
-                    {filterCategories[k] ?
+                    {categoryIcons[k] ?
                       <i className="material-icons">
-                        airplanemode_active
+                        {categoryIcons[k]}
                       </i>
                       :
                       <i className="material-icons">
