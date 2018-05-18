@@ -8,6 +8,8 @@ import { EventSummary, Company, Stock, Map, NewsCard, Navigation } from '../comp
 import { getDate } from '../time'
 import { extractCompanySummary } from '../info'
 import _ from 'lodash'
+import html2canvas from 'html2canvas'
+import jsPDF from 'jspdf'
 
 const styles = theme => ({
   root: {
@@ -40,6 +42,73 @@ class Event extends React.Component {
       startDate: null,
       endDate: null
     }
+    this.printDocument = this.printDocument.bind(this);
+    this.renderNextCompany = this.renderNextCompany.bind(this);
+  }
+
+  renderNextCompany(info, i, offset, pdf, callback) {
+    html2canvas(info[i].component)
+    .then((canvas) => {
+      const imgData = canvas.toDataURL('image/png')
+      if (i + 1 % 6 === 0) pdf.addPage()
+      pdf.addImage(imgData, 'JPEG', 10, offset, info[i].width, info[i].height)
+      if (info[i + 1]) {
+        this.renderNextCompany(info, i + 1, offset + 45, pdf, callback)
+      } else {
+        callback()
+      }
+    })
+  }
+
+  printDocument() {
+    const companies = Events[this.props.eventID].related_companies
+    const summary = document.getElementById('summary')
+    const summaryW = document.getElementById('summary').offsetWidth / 6
+    const summaryH = document.getElementById('summary').offsetHeight / 6
+    var info = []
+    for (let name in companies) {
+      const company = document.getElementById(name)
+      const companyW = document.getElementById(name).offsetWidth / 6
+      const companyH = document.getElementById(name).offsetHeight / 6
+      info.push({'component': company, 'width': companyW, 'height': companyH})
+    }
+    const stock = document.getElementById('stock')
+    const map = document.getElementById('map')
+    const pdf = new jsPDF()
+    var width = pdf.internal.pageSize.width / 1.5
+    var height = pdf.internal.pageSize.height / 3
+    html2canvas(summary)
+    .then((canvas) => {
+      const imgData = canvas.toDataURL('image/png');
+      pdf.addImage(imgData, 'JPEG', 10, 10, summaryW, summaryH)
+      this.renderNextCompany(info, 0, 45, pdf, function() {
+        html2canvas(stock)
+        .then((canvas) => {
+          const imgData = canvas.toDataURL('image/png');
+          if (info.length === 1) {
+            pdf.addImage(imgData, 'JPEG', 10, 90, width, height)
+          } else if (info.length === 2) {
+            pdf.addImage(imgData, 'JPEG', 10, 135, width, height)
+          } else {
+            pdf.addPage()
+            pdf.addImage(imgData, 'JPEG', 10, 10, width, height)
+          }
+          html2canvas(map)
+          .then((canvas) => {
+            const imgData = canvas.toDataURL('image/png')
+            if (info.length === 1) {
+              pdf.addImage(imgData, 'JPEG', 10, 200, width, height)
+            } else if (info.length === 2) {
+              pdf.addPage()
+              pdf.addImage(imgData, 'JPEG', 10, 10, width, height)
+            } else {
+              pdf.addImage(imgData, 'JPEG', 10, 100, width, height)
+            }
+            pdf.save('event-report.pdf')
+          })
+        })
+      })
+    })
   }
 
   getInfo () {
@@ -212,30 +281,41 @@ class Event extends React.Component {
     return (
       <div>
         <Navigation style={{color: 'blue'}} />
+        <div>
+          <button onClick={this.printDocument}>Print</button>
+        </div>
         <div className={classes.root}>
           <Grid container spacing={24}>
             <Grid item xs={12}>
+              <div id="summary">
               <EventSummary
                 name={EventData.name}
                 description={EventData.description}
                 start_date={`${moment(EventData.start_date * 1000).format('DD MMM YY')}`}
                 end_date={getDate(EventData.end_date)}
                 />
+                </div>
             </Grid>
             <Grid item xs={12}>
               <Grid container spacing={16}>
                 {_.map(_.keys(EventData.related_companies), (company, i) => (
                   <Grid item xs={4} key={Company}>
-                    <Company infoJSON={infoJSON[company]} name={company} loading={loadingInfo} key={i} />
+                    <span id={company}>
+                      <Company infoJSON={infoJSON[company]} name={company} loading={loadingInfo} key={i} />
+                    </span>
                   </Grid>
               ))}
               </Grid>
             </Grid>
             <Grid item xs={6}>
+              <div id="stock">
               <Stock stockJSON={stockJSON} startDate={this.state.startDate} endDate={this.state.endDate} loading={loadingStock} />
+              </div>
             </Grid>
             <Grid item xs={6}>
+              <div id="map">
               <Map />
+              </div>
             </Grid>
             <Grid item xs={12}>
               <NewsCard newsJSON={newsJSON} loading={loadingNews} />
