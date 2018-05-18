@@ -10,6 +10,9 @@ import { extractCompanySummary } from '../info'
 import _ from 'lodash'
 import html2canvas from 'html2canvas'
 import jsPDF from 'jspdf'
+import IconButton from 'material-ui/IconButton'
+import PrintIcon from 'react-material-icon-svg/dist/PrinterIcon'
+import { Line } from 'rc-progress'
 
 const styles = theme => ({
   root: {
@@ -23,6 +26,11 @@ const styles = theme => ({
   },
   navBar: {
     textAlign: 'center'
+  },
+  large: {
+    width: 120,
+    height: 120,
+    padding: 30,
   }
 
 })
@@ -40,31 +48,20 @@ class Event extends React.Component {
       loadingStock: true,
       loadingNews: true,
       startDate: null,
-      endDate: null
+      endDate: null,
+      percent: 0
     }
-    this.printDocument = this.printDocument.bind(this);
-    this.renderNextCompany = this.renderNextCompany.bind(this);
-  }
-
-  renderNextCompany(info, i, offset, pdf, callback) {
-    html2canvas(info[i].component)
-    .then((canvas) => {
-      const imgData = canvas.toDataURL('image/png')
-      if (i + 1 % 6 === 0) pdf.addPage()
-      pdf.addImage(imgData, 'JPEG', 10, offset, info[i].width, info[i].height)
-      if (info[i + 1]) {
-        this.renderNextCompany(info, i + 1, offset + 45, pdf, callback)
-      } else {
-        callback()
-      }
-    })
+    this.printDocument = this.printDocument.bind(this)
+    this.renderNextCompany = this.renderNextCompany.bind(this)
+    this.startProgressBar = this.startProgressBar.bind(this)
   }
 
   printDocument() {
+    this.startProgressBar()
     const companies = Events[this.props.eventID].related_companies
     const summary = document.getElementById('summary')
-    const summaryW = document.getElementById('summary').offsetWidth / 6
-    const summaryH = document.getElementById('summary').offsetHeight / 6
+    const summaryW = document.getElementById('summary').offsetWidth / 7
+    const summaryH = document.getElementById('summary').offsetHeight / 7
     var info = []
     for (let name in companies) {
       const company = document.getElementById(name)
@@ -77,14 +74,19 @@ class Event extends React.Component {
     const pdf = new jsPDF()
     var width = pdf.internal.pageSize.width / 1.5
     var height = pdf.internal.pageSize.height / 3
+
+    const exportComplete = () => {
+      this.setState({ percent: 100 })
+    }
+
     html2canvas(summary)
     .then((canvas) => {
-      const imgData = canvas.toDataURL('image/png');
+      const imgData = canvas.toDataURL('image/png')
       pdf.addImage(imgData, 'JPEG', 10, 10, summaryW, summaryH)
       this.renderNextCompany(info, 0, 45, pdf, function() {
         html2canvas(stock)
         .then((canvas) => {
-          const imgData = canvas.toDataURL('image/png');
+          const imgData = canvas.toDataURL('image/png')
           if (info.length === 1) {
             pdf.addImage(imgData, 'JPEG', 10, 90, width, height)
           } else if (info.length === 2) {
@@ -97,18 +99,46 @@ class Event extends React.Component {
           .then((canvas) => {
             const imgData = canvas.toDataURL('image/png')
             if (info.length === 1) {
-              pdf.addImage(imgData, 'JPEG', 10, 200, width, height)
+              pdf.addImage(imgData, 'JPEG', 10, 190, width, height)
             } else if (info.length === 2) {
               pdf.addPage()
               pdf.addImage(imgData, 'JPEG', 10, 10, width, height)
             } else {
-              pdf.addImage(imgData, 'JPEG', 10, 100, width, height)
+              pdf.addImage(imgData, 'JPEG', 10, 120, width, height)
             }
+            exportComplete()
             pdf.save('event-report.pdf')
           })
         })
       })
     })
+  }
+
+  renderNextCompany(info, i, offset, pdf, callback) {
+    html2canvas(info[i].component)
+    .then((canvas) => {
+      const imgData = canvas.toDataURL('image/png')
+      if ((i + 1) % 6 === 0) {
+        offset = 10
+        pdf.addPage()
+      }
+      pdf.addImage(imgData, 'JPEG', 10, offset, info[i].width, info[i].height)
+      if (info[i + 1]) {
+        this.renderNextCompany(info, i + 1, offset + 45, pdf, callback)
+      } else {
+        callback()
+      }
+    })
+  }
+
+  startProgressBar() {
+    const percent = this.state.percent + 20
+    if (percent >= 100) {
+      clearTimeout(this.tm)
+    } else {
+      this.setState({ percent })
+      this.tm = setTimeout(this.startProgressBar, 1)
+    }
   }
 
   getInfo () {
@@ -281,20 +311,36 @@ class Event extends React.Component {
     return (
       <div>
         <Navigation style={{color: 'blue'}} />
-        <div>
-          <button onClick={this.printDocument}>Print</button>
-        </div>
         <div className={classes.root}>
           <Grid container spacing={24}>
             <Grid item xs={12}>
               <div id="summary">
-              <EventSummary
-                name={EventData.name}
-                description={EventData.description}
-                start_date={`${moment(EventData.start_date * 1000).format('DD MMM YY')}`}
-                end_date={getDate(EventData.end_date)}
+                <EventSummary
+                  name={EventData.name}
+                  description={EventData.description}
+                  start_date={`${moment(EventData.start_date * 1000).format('DD MMM YY')}`}
+                  end_date={getDate(EventData.end_date)}
                 />
-                </div>
+              </div>
+            </Grid>
+            <Grid item xs={7}>
+              <Grid container spacing={2}>
+                <Grid item xs={1}>
+                  <IconButton
+                    tooltip="Generate Event Report"
+                    onClick={() => this.printDocument()}
+                    style={styles.large}
+                  >
+                    <PrintIcon />
+                  </IconButton>
+                </Grid>
+                <Grid item xs={5}>
+                  {this.state.percent > 0 && this.state.percent < 100 ?
+                    <Line strokeWidth="1" trailColor="#e3e3e3" percent={this.state.percent} />
+                  : null
+                  }
+                </Grid>
+              </Grid>
             </Grid>
             <Grid item xs={12}>
               <Grid container spacing={16}>
