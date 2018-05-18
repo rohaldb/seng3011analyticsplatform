@@ -54,9 +54,11 @@ class Event extends React.Component {
     this.printDocument = this.printDocument.bind(this)
     this.renderNextCompany = this.renderNextCompany.bind(this)
     this.startProgressBar = this.startProgressBar.bind(this)
+    this.newPDFPage = this.newPDFPage.bind(this)
+    this.alignText = this.alignText.bind(this)
   }
 
-  printDocument() {
+  printDocument(eventData) {
     this.startProgressBar()
     const companies = Events[this.props.eventID].related_companies
     const summary = document.getElementById('summary')
@@ -71,7 +73,17 @@ class Event extends React.Component {
     }
     const stock = document.getElementById('stock')
     const map = document.getElementById('map')
+
     const pdf = new jsPDF()
+    var pg = 1
+    pdf.setProperties({
+      title: eventData.name + ' report',
+      subject: eventData.name,
+      author: 'EventStock',
+      keywords: eventData.name + ', ' + eventData.keywords.toString().replace(/,/g, ', '),
+      creator: 'EventStock'
+    })
+    this.newPDFPage(pdf, false, pg)
     var width = pdf.internal.pageSize.width / 1.5
     var height = pdf.internal.pageSize.height / 3
 
@@ -79,11 +91,15 @@ class Event extends React.Component {
       this.setState({ percent: 100 })
     }
 
+    const makePage = (pdf, pg) => {
+      this.newPDFPage(pdf, true, pg)
+    }
+
     html2canvas(summary)
     .then((canvas) => {
       const imgData = canvas.toDataURL('image/png')
       pdf.addImage(imgData, 'JPEG', 10, 10, summaryW, summaryH)
-      this.renderNextCompany(info, 0, 45, pdf, function() {
+      this.renderNextCompany(info, 0, 45, pdf, function(pg) {
         html2canvas(stock)
         .then((canvas) => {
           const imgData = canvas.toDataURL('image/png')
@@ -92,7 +108,7 @@ class Event extends React.Component {
           } else if (info.length === 2) {
             pdf.addImage(imgData, 'JPEG', 10, 135, width, height)
           } else {
-            pdf.addPage()
+            makePage(pdf, ++pg)
             pdf.addImage(imgData, 'JPEG', 10, 10, width, height)
           }
           html2canvas(map)
@@ -101,7 +117,7 @@ class Event extends React.Component {
             if (info.length === 1) {
               pdf.addImage(imgData, 'JPEG', 10, 190, width, height)
             } else if (info.length === 2) {
-              pdf.addPage()
+              makePage(pdf, ++pg)
               pdf.addImage(imgData, 'JPEG', 10, 10, width, height)
             } else {
               pdf.addImage(imgData, 'JPEG', 10, 120, width, height)
@@ -110,25 +126,44 @@ class Event extends React.Component {
             pdf.save('event-report.pdf')
           })
         })
-      })
+      }, pg)
     })
   }
 
-  renderNextCompany(info, i, offset, pdf, callback) {
+  renderNextCompany(info, i, offset, pdf, callback, pg) {
     html2canvas(info[i].component)
     .then((canvas) => {
       const imgData = canvas.toDataURL('image/png')
       if ((i + 1) % 6 === 0) {
         offset = 10
-        pdf.addPage()
+        this.newPDFPage(pdf, true, ++pg)
       }
       pdf.addImage(imgData, 'JPEG', 10, offset, info[i].width, info[i].height)
       if (info[i + 1]) {
-        this.renderNextCompany(info, i + 1, offset + 45, pdf, callback)
+        this.renderNextCompany(info, i + 1, offset + 45, pdf, callback, pg)
       } else {
-        callback()
+        callback(pg)
       }
     })
+  }
+
+  newPDFPage(pdf, add, pg) {
+    if (add) pdf.addPage()
+    pdf.setFontSize(10)
+    pdf.text(10, 8, 'EventStock Event Report')
+    this.alignText(moment(new Date()).format("DD/MM/YYYY"), 8, pdf, 'centre')
+    this.alignText('Page ' + pg, 8, pdf, 'right')
+  }
+
+  alignText(text, y, pdf, centreOrRight) {
+    var textWidth = pdf.getStringUnitWidth(text) * pdf.internal.getFontSize() / pdf.internal.scaleFactor
+    var textOffset = (pdf.internal.pageSize.width - textWidth)
+    if (centreOrRight === 'centre') {
+      textOffset /= 2
+    } else {
+      textOffset -= 10
+    }
+    pdf.text(textOffset, y, text)
   }
 
   startProgressBar() {
@@ -328,7 +363,7 @@ class Event extends React.Component {
                 <Grid item xs={1}>
                   <IconButton
                     tooltip="Generate Event Report"
-                    onClick={() => this.printDocument()}
+                    onClick={() => this.printDocument(EventData)}
                     style={styles.large}
                   >
                     <PrintIcon />
