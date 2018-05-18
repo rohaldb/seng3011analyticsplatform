@@ -11,13 +11,22 @@ import _ from 'lodash'
 import { Link } from 'react-router-dom'
 import moment from 'moment'
 import { Grid, Chip, Typography, withStyles } from 'material-ui'
+import Drawer from '@material-ui/core/Drawer';
+import List from '@material-ui/core/List';
+import Divider from '@material-ui/core/Divider';
 import { getDate } from '../time'
 import { Navigation } from '../components'
 
+
+// TODO REMOVE
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+
+const drawerWidth = 240;
 const styles = theme => ({
   root: {
     // need to fix the background
-    backgroundColor: 'rgb(227,227,227)',
+    backgroundColor: theme.palette.background.default,
     minHeight: '100vh'
   },
   chip: {
@@ -42,7 +51,25 @@ const styles = theme => ({
   loader: {
     marginTop: 20,
     textAlign: 'center'
-  }
+  },
+
+  appFrame: {
+    zIndex: 1,
+    overflow: 'hidden',
+    position: 'relative',
+    display: 'flex',
+    width: '100%',
+  },
+  drawerPaper: {
+    position: 'relative',
+    width: drawerWidth,
+  },
+  toolbar: theme.mixins.toolbar,
+  content: {
+    flexGrow: 1,
+    backgroundColor: theme.palette.background.default,
+    padding: theme.spacing.unit * 3,
+  },
 })
 
 const bgCols = [
@@ -79,6 +106,39 @@ class Timeline extends React.Component {
     const { classes } = this.props
     const { currentUser, eventData } = this.state
 
+    const mailFolderListItems = (
+      <div>
+        <ListItem button>
+          <ListItemText primary="Inbox" />
+        </ListItem>
+        <ListItem button>
+          <ListItemText primary="Starred" />
+        </ListItem>
+        <ListItem button>
+          <ListItemText primary="Send mail" />
+        </ListItem>
+        <ListItem button>
+          <ListItemText primary="Drafts" />
+        </ListItem>
+      </div>
+    );
+
+    const drawer = (
+      <Drawer
+        variant="permanent"
+        classes={{
+          paper: classes.drawerPaper,
+        }}
+        anchor={"left"}
+      >
+        <div className={classes.toolbar} />
+        <Divider />
+        <List>{mailFolderListItems}</List>
+        <Divider />
+        <List>{mailFolderListItems}</List>
+      </Drawer>
+    );
+
     //need to clean data up a bit
     let sortedEvents = {}
     _.map(_.pickBy(eventData, _.identity), (x,i) => sortedEvents[i] = x)
@@ -90,62 +150,69 @@ class Timeline extends React.Component {
     return (
       <div>
         <Navigation isAdmin={currentUser.admin}/>
-        <Grid container direction='column' className={classes.root}>
-          <Grid item container justify='center' direction='row'>
-            <Grid item xs={8}>
-              <Grid container alignItems='center' direction='column'>
-                <Grid item>
-                  <Typography variant='display3' gutterBottom className={classes.title}>
-                    EventStock
-                  </Typography>
-                </Grid>
-                <Grid item>
-                  <Typography variant='subheading' gutterBottom className={classes.subTitle}>
-                    Welcome to EventStock! Here to answer the Who, Why and How of the Financial Markets.
-                    Please browse the timeline below to see the events that have, and continue to, significantly impact major listed stocks.
-                  </Typography>
-                </Grid>
-              </Grid>
-            </Grid>
-          </Grid>
-          <Grid item container direction='row'>
-            <Grid item xs={12}>
-              { _.isEmpty(sortedEvents) ?
-                <div className={classes.loader}>
-                  <CircularProgress size={60}/>
-                </div>
-                :
-                <VerticalTimeline>
-                  { _.map(_.keys(sortedEvents), (k, i) =>
-                    <VerticalTimelineElement
-                      key={i}
-                      className='vertical-timeline-element--work'
-                      date={`${moment(sortedEvents[k].start_date * 1000).format('DD MMM YY')} - ${getDate(sortedEvents[k].end_date)}`}
-                      iconStyle={{ background: bgCols[i % bgCols.length], color: '#fff' }}
-                      icon={<Event />}
-                  >
-                      <Link to={{
-                        pathname: `event/${k}`,
-                        state: {currentUser: currentUser, eventData: sortedEvents[k]}
-                        }}
-                        className={classes.link}>
-                        <Typography variant='title' className='vertical-timeline-element-title' gutterBottom>
-                          {sortedEvents[k].name}
+        <Grid container direction='row'>
+          <Grid container direction='column' className={classes.root}>
+            <div className={classes.appFrame}>
+              {drawer}
+              <main className={classes.content}>
+                <Grid item container justify='center' direction='row'>
+                  <Grid item xs={8}>
+                    <Grid container alignItems='center' direction='column'>
+                      <Grid item>
+                        <Typography variant='display3' gutterBottom className={classes.title}>
+                          EventStock
                         </Typography>
-                      </Link>
-                      <Typography gutterBottom>
-                        {sortedEvents[k].description}
-                      </Typography>
-                      <div>
-                        {_.map(sortedEvents[k].related_companies, (c, i) =>
-                          <Chip label={i} className={classes.chip} key={i} />
-                    )}
+                      </Grid>
+                      <Grid item>
+                        <Typography variant='subheading' gutterBottom className={classes.subTitle}>
+                          Welcome to EventStock! Here to answer the Who, Why and How of the Financial Markets.
+                          Please browse the timeline below to see the events that have, and continue to, significantly impact major listed stocks.
+                        </Typography>
+                      </Grid>
+                    </Grid>
+                  </Grid>
+                </Grid>
+                <Grid item container direction='row'>
+                  <Grid item xs={12}>
+                    { _.isEmpty(sortedEvents) ?
+                      <div className={classes.loader}>
+                        <CircularProgress size={60}/>
                       </div>
-                    </VerticalTimelineElement>
-                  )}
-                </VerticalTimeline>
-              }
-            </Grid>
+                      :
+                      <VerticalTimeline>
+                        { _.map(_.keys(sortedEvents), (k, i) =>
+                          <VerticalTimelineElement
+                            key={i}
+                            className='vertical-timeline-element--work'
+                            date={`${moment(sortedEvents[k].start_date * 1000).format('DD MMM YY')} - ${getDate(sortedEvents[k].end_date)}`}
+                            iconStyle={{ background: bgCols[i % bgCols.length], color: '#fff' }}
+                            icon={<Event />}
+                          >
+                            <Link to={{
+                              pathname: `event/${k}`,
+                              state: {currentUser: currentUser, eventData: sortedEvents[k]}
+                            }}
+                                  className={classes.link}>
+                              <Typography variant='title' className='vertical-timeline-element-title' gutterBottom>
+                                {sortedEvents[k].name}
+                              </Typography>
+                            </Link>
+                            <Typography gutterBottom>
+                              {sortedEvents[k].description}
+                            </Typography>
+                            <div>
+                              {_.map(sortedEvents[k].related_companies, (c, i) =>
+                                <Chip label={i} className={classes.chip} key={i} />
+                              )}
+                            </div>
+                          </VerticalTimelineElement>
+                        )}
+                      </VerticalTimeline>
+                    }
+                  </Grid>
+                </Grid>
+              </main>
+            </div>
           </Grid>
         </Grid>
       </div>
