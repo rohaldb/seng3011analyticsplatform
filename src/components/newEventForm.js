@@ -47,6 +47,8 @@ class NewEventForm extends React.Component {
     companyName: ''
   }
 
+  handleClose = () => this.props.closeCallback()
+
   addEvent = () => {
     let {
       name,
@@ -111,8 +113,8 @@ class NewEventForm extends React.Component {
     return (
       <Dialog open={this.props.isOpen} onClose={this.handleClose} aria-labelledby="simple-dialog-title" >
         <DialogTitle id="simple-dialog-title">Create New Event</DialogTitle>
-        <form>
         <DialogContent>
+          <form>
             <TextField
               required
               id="name"
@@ -206,6 +208,7 @@ class NewEventForm extends React.Component {
             >
               Add
             </Button>
+          </form>
           </DialogContent>
           <DialogActions>
             <Button
@@ -216,7 +219,6 @@ class NewEventForm extends React.Component {
               Add Event
             </Button>
           </DialogActions>
-        </form>
       </Dialog>
     )
   }
