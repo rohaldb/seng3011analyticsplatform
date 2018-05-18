@@ -4,12 +4,13 @@ import withRoot from '../withRoot'
 import { withStyles } from 'material-ui'
 import '../assets/login.css'
 import { fb } from '../config'
+
 const styles = theme => ({})
 
 class Login extends React.Component {
 
   constructor() {
-    super();
+    super()
     this.database = fb.database().ref()
     this.state = {
       name: null,
@@ -32,7 +33,7 @@ class Login extends React.Component {
       } else {
         this.setState({isValid: false})
       }
-    });
+    })
   }
 
   render() {
@@ -61,7 +62,8 @@ class Login extends React.Component {
             Invalid credentials
           </p>}
       </div>
-    );
+    )
   }
 }
+
 export default withRouter(withRoot(withStyles(styles)(Login)))

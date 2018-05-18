@@ -97,6 +97,7 @@ class Article extends React.Component {
           onClose={() => this.handleClose()}
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
+          maxWidth={false}
         >
           <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
           <DialogContent>

@@ -7,7 +7,13 @@ import Grid from 'material-ui/Grid'
 import moment from 'moment'
 import { EventSummary, Company, Stock, Map, NewsCard, Navigation } from '../components'
 import { getDate } from '../time'
+import { extractCompanySummary } from '../info'
 import _ from 'lodash'
+import html2canvas from 'html2canvas'
+import jsPDF from 'jspdf'
+import IconButton from 'material-ui/IconButton'
+import PrintIcon from 'react-material-icon-svg/dist/PrinterIcon'
+import { Line } from 'rc-progress'
 
 const styles = theme => ({
   root: {
@@ -21,6 +27,11 @@ const styles = theme => ({
   },
   navBar: {
     textAlign: 'center'
+  },
+  large: {
+    width: 120,
+    height: 120,
+    padding: 30,
   }
 
 })
@@ -31,42 +42,203 @@ class Event extends React.Component {
     currentUser: PropTypes.object.isRequired,
     eventData: PropTypes.object.isRequired
   }
+  
+  constructor (props) {
+    super(props)
+    this.state = {
+      pagination: false,
+      infoJSON: {},
+      stockJSON: {},
+      newsJSON: {},
+      loadingInfo: true,
+      loadingStock: true,
+      loadingNews: true,
+      startDate: null,
+      endDate: null,
+      percent: 0,
+      currentUser: this.props.currentUser
+    }
+    this.printDocument = this.printDocument.bind(this)
+    this.renderNextCompany = this.renderNextCompany.bind(this)
+    this.startProgressBar = this.startProgressBar.bind(this)
+    this.newPDFPage = this.newPDFPage.bind(this)
+    this.alignText = this.alignText.bind(this)
+  }
 
-  state = {
-    pagination: false,
-    infoJSON: {},
-    stockJSON: {},
-    newsJSON: {},
-    loadingInfo: true,
-    loadingStock: true,
-    loadingNews: true,
-    startDate: null,
-    endDate: null,
-    currentUser: this.props.currentUser
+  printDocument(eventData) {
+    this.startProgressBar()
+    const companies = Events[this.props.eventID].related_companies
+    const summary = document.getElementById('summary')
+    const summaryW = document.getElementById('summary').offsetWidth / 7
+    const summaryH = document.getElementById('summary').offsetHeight / 7
+    var info = []
+    for (let name in companies) {
+      const company = document.getElementById(name)
+      const companyW = document.getElementById(name).offsetWidth / 6
+      const companyH = document.getElementById(name).offsetHeight / 6
+      info.push({'component': company, 'width': companyW, 'height': companyH})
+    }
+    const stock = document.getElementById('stock')
+    const map = document.getElementById('map')
+
+    const pdf = new jsPDF()
+    var pg = 1
+    pdf.setProperties({
+      title: eventData.name + ' report',
+      subject: eventData.name,
+      author: 'EventStock',
+      keywords: eventData.name + ', ' + eventData.keywords.toString().replace(/,/g, ', '),
+      creator: 'EventStock'
+    })
+    this.newPDFPage(pdf, false, pg)
+    var width = pdf.internal.pageSize.width / 1.5
+    var height = pdf.internal.pageSize.height / 3
+
+    const exportComplete = () => {
+      this.setState({ percent: 100 })
+    }
+
+    const makePage = (pdf, pg) => {
+      this.newPDFPage(pdf, true, pg)
+    }
+
+    html2canvas(summary)
+    .then((canvas) => {
+      const imgData = canvas.toDataURL('image/png')
+      pdf.addImage(imgData, 'JPEG', 10, 10, summaryW, summaryH)
+      this.renderNextCompany(info, 0, 45, pdf, function(pg) {
+        html2canvas(stock)
+        .then((canvas) => {
+          const imgData = canvas.toDataURL('image/png')
+          if (info.length === 1) {
+            pdf.addImage(imgData, 'JPEG', 10, 90, width, height)
+          } else if (info.length === 2) {
+            pdf.addImage(imgData, 'JPEG', 10, 135, width, height)
+          } else {
+            makePage(pdf, ++pg)
+            pdf.addImage(imgData, 'JPEG', 10, 10, width, height)
+          }
+          html2canvas(map)
+          .then((canvas) => {
+            const imgData = canvas.toDataURL('image/png')
+            if (info.length === 1) {
+              pdf.addImage(imgData, 'JPEG', 10, 190, width, height)
+            } else if (info.length === 2) {
+              makePage(pdf, ++pg)
+              pdf.addImage(imgData, 'JPEG', 10, 10, width, height)
+            } else {
+              pdf.addImage(imgData, 'JPEG', 10, 120, width, height)
+            }
+            exportComplete()
+            pdf.save('event-report.pdf')
+          })
+        })
+      }, pg)
+    })
+  }
+
+  renderNextCompany(info, i, offset, pdf, callback, pg) {
+    html2canvas(info[i].component)
+    .then((canvas) => {
+      const imgData = canvas.toDataURL('image/png')
+      if ((i + 1) % 6 === 0) {
+        offset = 10
+        this.newPDFPage(pdf, true, ++pg)
+      }
+      pdf.addImage(imgData, 'JPEG', 10, offset, info[i].width, info[i].height)
+      if (info[i + 1]) {
+        this.renderNextCompany(info, i + 1, offset + 45, pdf, callback, pg)
+      } else {
+        callback(pg)
+      }
+    })
+  }
+
+  newPDFPage(pdf, add, pg) {
+    if (add) pdf.addPage()
+    pdf.setFontSize(10)
+    pdf.text(10, 8, 'EventStock Event Report')
+    this.alignText(moment(new Date()).format("DD/MM/YYYY"), 8, pdf, 'centre')
+    this.alignText('Page ' + pg, 8, pdf, 'right')
+  }
+
+  alignText(text, y, pdf, centreOrRight) {
+    var textWidth = pdf.getStringUnitWidth(text) * pdf.internal.getFontSize() / pdf.internal.scaleFactor
+    var textOffset = (pdf.internal.pageSize.width - textWidth)
+    if (centreOrRight === 'centre') {
+      textOffset /= 2
+    } else {
+      textOffset -= 10
+    }
+    pdf.text(textOffset, y, text)
+  }
+
+  startProgressBar() {
+    const percent = this.state.percent + 20
+    if (percent >= 100) {
+      clearTimeout(this.tm)
+    } else {
+      this.setState({ percent })
+      this.tm = setTimeout(this.startProgressBar, 1)
+    }
   }
 
   getInfo () {
-    const companies = this.props.eventData.related_companies
-    // console.log(companies)
+    const companies = Events[this.props.eventID].related_companies
+    const eventInfo = Events[this.props.eventID]
+    const start = new moment(eventInfo.start_date * 1000)
+    const end = new moment(eventInfo.end_date * 1000)
+    var dates = `start_date=${start.format('YYYY-MM-DD')}`
+    if (eventInfo.end_date !== 'ongoing') {
+      dates += `&end_date=${end.format('YYYY-MM-DD')}`
+    }
     let companiesProcessed = 0
     for (let companyName in companies) {
-      // console.log("COMPANY: " + companyName)
       if (companies.hasOwnProperty(companyName) && companies[companyName]) {
         const companyCode = companies[companyName]
-        let apiBase = `${companyCode}?statistics=id,name,website,description,category,fan_count`
-        fetch(`https://unassigned-api.herokuapp.com/api/${apiBase}&workaround=true`)
-          //eslint-disable-next-line
+        let params = `statistics=id,name,website,description,category,fan_count,posts{likes,comments,created_time}&${dates}&workaround=true`
+        console.log(`https://unassigned-api.herokuapp.com/api/${companyCode}?${params}`)
+        fetch(`https://unassigned-api.herokuapp.com/api/${companyCode}?${params}`)
+          // eslint-disable-next-line
           .then((response) => {
             if (response.ok) {
               response.json().then(data => {
+                // console.log(data)
                 let infoJSON = this.state.infoJSON
-                if (data.data.website && !data.data.website.match(/^http/)) data.data.website = 'http://' + data.data.website
-                if (!data.data.description) data.data.description = 'No description available'
-                infoJSON[companyName] = data.data
-                console.log(infoJSON)
-                companiesProcessed++
-                if (companiesProcessed === Object.keys(companies).length) {
-                  this.setState({ infoJSON: infoJSON, loadingInfo: false })
+                if (data.data.website && !data.data.website.match(/^http/)) data.data.website = "http://" + data.data.website
+                if (!data.data.description) {
+                  var url = 'https://en.wikipedia.org/w/api.php?action=query&origin=*&prop=extracts'
+                  url += '&format=json&exintro=&explaintext=&titles=' + companyName + '&rvprop=content&redirects&callback=?'
+                  fetch(url).then((response) => {
+                    if (response.ok) {
+                      response.text().then(res => {
+                        // console.log(res)
+                        var extract = res.substring(res.indexOf('extract'), res.length)
+                        data.data.description = extractCompanySummary(extract, 450).replace(/\}+\)/, '')
+                        if (data.data.description.match(/^\s*$/)) {
+                          data.data.description = 'This company has not provided a description of their operations. '
+                          data.data.description += `Please visit the ${companyName} website for more information.`
+                        } else {
+                          data.data.description = companyName + ' ' + data.data.descripton
+                        }
+                        data.data.code = companyCode
+                        infoJSON[companyName] = data.data
+                        console.log(infoJSON)
+                        companiesProcessed++
+                        if (companiesProcessed === Object.keys(companies).length) {
+                          this.setState({ infoJSON: infoJSON, loadingInfo: false })
+                        }
+                      })
+                    }
+                  })
+                } else {
+                  data.data.code = companyCode
+                  infoJSON[companyName] = data.data
+                  console.log(infoJSON)
+                  companiesProcessed++
+                  if (companiesProcessed === Object.keys(companies).length) {
+                    this.setState({ infoJSON: infoJSON, loadingInfo: false })
+                  }
                 }
               })
             }
@@ -132,7 +304,7 @@ class Event extends React.Component {
         const url = base + params
         // console.log('FETCHING: ' + url)
         fetch(url)
-          //eslint-disable-next-line
+          // eslint-disable-next-line
           .then((response) => {
             if (response.ok) {
               response.json().then(data => {
@@ -188,28 +360,61 @@ class Event extends React.Component {
         <div className={classes.root}>
           <Grid container spacing={24}>
             <Grid item xs={12}>
-              <EventSummary
-                name={eventData.name}
-                description={eventData.description}
-                start_date={`${moment(eventData.start_date * 1000).format('DD MMM YY')}`}
-                end_date={getDate(eventData.end_date)}
+              <div id="summary">
+                <EventSummary
+                  name={EventData.name}
+                  description={EventData.description}
+                  start_date={`${moment(EventData.start_date * 1000).format('DD MMM YY')}`}
+                  end_date={getDate(EventData.end_date)}
                 />
+              </div>
+            </Grid>
+            <Grid item xs={7}>
+              <Grid container spacing={2}>
+                <Grid item xs={1}>
+                  <IconButton
+                    tooltip="Generate Event Report"
+                    onClick={() => this.printDocument(EventData)}
+                    style={styles.large}
+                  >
+                    <PrintIcon />
+                  </IconButton>
+                </Grid>
+                <Grid item xs={5}>
+                  {this.state.percent > 0 && this.state.percent < 100 ?
+                    <Line strokeWidth="1" trailColor="#e3e3e3" percent={this.state.percent} />
+                  : null
+                  }
+                </Grid>
+              </Grid>
             </Grid>
             <Grid item xs={12}>
               <Grid container spacing={16}>
-                {_.map(_.keys(eventData.related_companies), (company, i) => (
-                  <Grid item xs={4} key={i}>
-                    <Company infoJSON={infoJSON[company]} name={company} loading={loadingInfo} key={i} />
+                {_.map(_.keys(EventData.related_companies), (company, i) => (
+                  <Grid item xs={4} key={Company}>
+                    <span id={company}>
+                      <Company
+                        infoJSON={infoJSON[company]}
+                        name={company}
+                        loading={loadingInfo}
+                        start={EventData.start_date * 1000}
+                        end={EventData.end_date * 1000}
+                        key={i}
+                      />
+                    </span>
                   </Grid>
               ))}
               </Grid>
             </Grid>
             <Grid item xs={6}>
+              <div id="stock">
               <Stock stockJSON={stockJSON} startDate={this.state.startDate} endDate={this.state.endDate} loading={loadingStock} />
+              </div>
             </Grid>
             <Grid item xs={6}>
-              <Map
-            />
+              <div id="map">
+              <Map />
+              </div>
             </Grid>
             <Grid item xs={12}>
               <NewsCard newsJSON={newsJSON} loading={loadingNews} />

@@ -7,6 +7,7 @@ import Fade from 'material-ui/transitions/Fade'
 import { CircularProgress } from 'material-ui/Progress'
 import Typography from 'material-ui/Typography'
 import NumericLabel from 'react-pretty-numbers'
+import Social from './social'
 import Dialog, {
   DialogContent,
   DialogTitle
@@ -34,6 +35,8 @@ class Company extends React.Component {
     name: PropTypes.string.isRequired,
     loading: PropTypes.bool.isRequired,
     infoJSON: PropTypes.object,
+    start: PropTypes.object,
+    end: PropTypes.object
   }
 
   state = {
@@ -48,8 +51,12 @@ class Company extends React.Component {
     this.setState({open: false})
   }
 
+  rawMarkup = (html) => {
+    return { __html: html }
+  }
+
   render () {
-    const { name, loading, infoJSON } = this.props
+    const { name, loading, infoJSON, start, end } = this.props
     const { classes } = this.props
 
     return (
@@ -66,7 +73,7 @@ class Company extends React.Component {
                 (
                 <CardContent>
                   <Typography>
-                    <b>{infoJSON.name}</b>
+                    <b>{infoJSON.name} - {infoJSON.code}</b>
                     <br></br>
                     <b>Operations:</b> {infoJSON.category}
                     <br></br>
@@ -85,38 +92,33 @@ class Company extends React.Component {
           </Card>
         </Fade>
 
-      <Dialog
-          open={this.state.open}
-          onClose={() => this.handleClose()}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-      >
-          <DialogTitle id="alert-dialog-title">{"Company Information"}</DialogTitle>
+      {infoJSON ?
+        <Dialog
+            open={this.state.open}
+            onClose={() => this.handleClose()}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+            maxWidth={false}
+        >
+          <DialogTitle id="alert-dialog-title">{infoJSON.name} - {infoJSON.code}</DialogTitle>
           <DialogContent>
-                {infoJSON ?
-                (
-                <CardContent>
-                  <Typography>
-                    <b>{infoJSON.name}</b>
-                    <br></br>
-                    <b>Operations:</b> {infoJSON.category}
-                    <br></br>
-                    <b>Followers:</b> <NumericLabel>{infoJSON.fan_count}</NumericLabel>
-                    <br></br>
-                    <b>Website:</b> <a target="_blank" href={infoJSON.website}>{infoJSON.website}</a>
-                    <br></br>
-                    <b>Description:</b> {infoJSON.description}
-                  </Typography>
-                </CardContent>
-                ):
-                <CardContent>
-                  <Typography>
-                    <i> No information for {name} can be retrieved at this point in time. We apologise for any inconvenience. </i>
-                  </Typography>
-                </CardContent>
-                }
+            <CardContent>
+              <Typography>
+                <b>Operations:</b> {infoJSON.category}
+                <br></br>
+                <b>Followers:</b> <NumericLabel>{infoJSON.fan_count}</NumericLabel>
+                <br></br>
+                <b>Website:</b> <a target="_blank" href={infoJSON.website}>{infoJSON.website}</a>
+                <br></br>
+                <b>Description:</b> <span dangerouslySetInnerHTML={this.rawMarkup(infoJSON.description)} />
+                <br></br>
+              </Typography>
+              <br></br>
+              <Social posts={infoJSON.posts} start={start} end={end} />
+            </CardContent>
           </DialogContent>
         </Dialog>
+        : null }
       </div>
     )
   }
