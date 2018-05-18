@@ -19,10 +19,8 @@ import Button from 'material-ui/Button'
 import TextField from 'material-ui/TextField'
 
 import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
-import NativeSelect from '@material-ui/core/NativeSelect';
 
 const styles = theme => ({
   textField: {
@@ -55,7 +53,7 @@ class NewEventForm extends React.Component {
     keywords: [],
     category: 'other',
     companyCode: '',
-    companyName: ''
+    companyName: '',
   }
 
   handleClose = () => this.props.closeCallback()
@@ -183,9 +181,10 @@ class NewEventForm extends React.Component {
                   id: 'category-simple',
                 }}
               >
-                <option value='other'>Other</option>
-                <option value='banking'>Banking</option>
-                <option value='technology'>Technology</option>
+                {_.map(this.props.categories, (k) =>
+                  <option value={k} key={k}>{_.startCase(_.toLower(k))}</option>
+                )}
+                <option value="other">Other</option>
               </Select>
             </FormControl>
 

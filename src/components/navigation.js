@@ -1,6 +1,7 @@
 import React from 'react'
 import { withStyles } from 'material-ui/styles'
 import withRoot from '../withRoot'
+import { base } from '../config';
 import AppBar from 'material-ui/AppBar'
 import Toolbar from 'material-ui/Toolbar'
 import { Home } from 'material-ui-icons'
@@ -35,6 +36,15 @@ class Navigation extends React.Component {
     modalOpen: false
   }
 
+  componentDidMount () {
+    // Fetch categories from Firebase /categories
+    base.fetch('categories_and_icons', {
+      context: this,
+    }).then((categories) => {
+      this.setState({ categories: Object.keys(categories) });
+    });
+  }
+
   render () {
     const { classes } = this.props
     const { modalOpen } = this.state
@@ -61,7 +71,7 @@ class Navigation extends React.Component {
           </Toolbar>
         </AppBar>
 
-        <NewEventForm isOpen={modalOpen} closeCallback={() => this.setState({modalOpen: false})}/>
+        <NewEventForm categories={this.state.categories} isOpen={modalOpen} closeCallback={() => this.setState({modalOpen: false})}/>
       </div>
     )
   }
