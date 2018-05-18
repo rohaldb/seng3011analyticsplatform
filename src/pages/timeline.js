@@ -239,8 +239,12 @@ class Timeline extends React.Component {
 
     // Filter by category
     sortedEvents = _.filter(sortedEvents, x => {
-      // Check whether the category's switch has been toggled
-      return filterCategories[_.lowerCase(x.category)] === true;
+      // Handle events with no category/category is not on Firebase list
+      const categoryNotOnFirebase = !filterCategories.hasOwnProperty(_.toLower(x.category));
+      const uncategorisedSelected = filterCategories['uncategorised'] === true;
+      let categoryToggled = filterCategories[_.toLower(x.category)] === true;
+
+      return categoryToggled || (categoryNotOnFirebase && uncategorisedSelected);
     });
 
     // Sort by start date
