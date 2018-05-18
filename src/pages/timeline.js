@@ -29,7 +29,6 @@ import { Navigation } from '../components'
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 
-const drawerWidth = 240;
 const styles = theme => ({
   root: {
     // need to fix the background
@@ -69,7 +68,7 @@ const styles = theme => ({
   },
   drawerPaper: {
     position: 'relative',
-    width: drawerWidth,
+    width: '20vw',
   },
   toolbar: theme.mixins.toolbar,
   content: {
@@ -146,7 +145,20 @@ class Timeline extends React.Component {
         <Divider />
         <ExpansionPanel defaultExpanded>
           <ExpansionPanelSummary expandIcon={<ExpandMore />}>
-            <Typography className={classes.heading}>Filter</Typography>
+            <Typography className={classes.heading}>Date Range</Typography>
+          </ExpansionPanelSummary>
+          <ExpansionPanelDetails>
+            <Typography>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus ex,
+              sit amet blandit leo lobortis eget.
+            </Typography>
+          </ExpansionPanelDetails>
+        </ExpansionPanel>
+        <Divider />
+
+        <ExpansionPanel defaultExpanded>
+          <ExpansionPanelSummary expandIcon={<ExpandMore />}>
+            <Typography className={classes.heading}>Categories</Typography>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails>
             <Typography>
