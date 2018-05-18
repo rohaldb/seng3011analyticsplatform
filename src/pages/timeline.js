@@ -13,13 +13,13 @@ import moment from 'moment'
 import { Grid, Chip, Typography, withStyles } from 'material-ui'
 
 import Drawer from '@material-ui/core/Drawer';
-import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
 import { ExpandMore } from 'material-ui-icons';
 
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import TextField from '@material-ui/core/TextField';
 
 import { getDate } from '../time'
 import { Navigation } from '../components'
@@ -93,7 +93,9 @@ class Timeline extends React.Component {
 
   state = {
     currentUser: this.props.currentUser,
-    eventData: {}
+    eventData: {},
+    filterStartDate: null,
+    filterEndDate: null,
   }
 
   componentDidMount() {
@@ -106,6 +108,12 @@ class Timeline extends React.Component {
   constructor (props) {
     super(props)
     document.getElementById('global').style.overflow = 'scroll'
+  }
+
+  handleChange = name => event => {
+    this.setState({
+      [name]: event.target.value,
+    })
   }
 
   render () {
@@ -127,10 +135,28 @@ class Timeline extends React.Component {
             <Typography className={classes.heading}>Date Range</Typography>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails>
-            <Typography>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus ex,
-              sit amet blandit leo lobortis eget.
-            </Typography>
+            <TextField
+              label="Start Date"
+              type="date"
+              value={this.state.filterStartDate}
+              onChange={this.handleChange('filterStartDate')}
+              className={classes.textField}
+              InputLabelProps={{
+                shrink: true,
+              }}
+            />
+
+            <TextField
+              required
+              label="End Date"
+              type="date"
+              value={this.state.filterEndDate}
+              onChange={this.handleChange('filterEndDate')}
+              className={classes.textField}
+              InputLabelProps={{
+                shrink: true,
+              }}
+            />
           </ExpansionPanelDetails>
         </ExpansionPanel>
         <Divider />
