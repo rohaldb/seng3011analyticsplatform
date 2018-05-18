@@ -48,16 +48,16 @@ class Navigation extends React.Component {
               <Home />
             </IconButton>
            </div>
-           { this.props.isAdmin ?
-             <div>
-               <Button color="inherit" onClick={() => this.setState({modalOpen: true})}>
-                 Add Event
-               </Button>
-               <Link to={`/`} style={{color: 'white', textDecoration: 'none'}} className={classes.menuButton}>
-                <Button color="inherit">Log Out</Button>
-               </Link>
-             </div>
+           <div>
+             { this.props.isAdmin ?
+             <Button color="inherit" onClick={() => this.setState({modalOpen: true})}>
+               Add Event
+             </Button>
              : null }
+             <Link to={`/`} style={{color: 'white', textDecoration: 'none'}} className={classes.menuButton}>
+              <Button color="inherit">Log Out</Button>
+             </Link>
+           </div>
           </Toolbar>
         </AppBar>
 
