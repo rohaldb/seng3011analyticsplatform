@@ -109,7 +109,7 @@ class Timeline extends React.Component {
 
   componentDidMount() {
     // Fetch categories from Firebase /categories
-    base.fetch('categories', {
+    base.fetch('categories_and_icons', {
       context: this,
     }).then((categories) => {
       let filterCategories = {};
