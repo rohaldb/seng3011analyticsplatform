@@ -98,17 +98,28 @@ class Timeline extends React.Component {
     eventData: {},
     filterStartDate: moment().subtract(5, 'y').format('YYYY-MM-DD'),
     filterEndDate: moment().format('YYYY-MM-DD'),
-    filterCategories: {
-      'technology': true,
-      'aviation': true,
-    },
+    filterCategories: {}, // filled in with categories from Firebase
   }
 
   componentDidMount() {
-    this.ref = base.syncState(`timeline`, {
+    base.fetch('categories', {
       context: this,
-      state: 'eventData'
-    })
+      asArray: true,
+    }).then((categories) => {
+      let filterCategories = {};
+      for (let i = 0; i < categories.length; i++) {
+        filterCategories[categories[i]] = true;
+      }
+      console.log(categories);
+      console.log(filterCategories);
+      this.setState({ filterCategories });
+    }).then(() => {
+      this.ref = base.syncState(`timeline`, {
+        context: this,
+        state: 'eventData',
+      });
+
+    });
   }
 
   constructor (props) {
@@ -209,7 +220,6 @@ class Timeline extends React.Component {
     });
 
     // Filter by category
-    console.log(this.state);
     sortedEvents = _.filter(sortedEvents, x => {
       // Check whether the category's switch has been toggled
       return filterCategories[_.lowerCase(x.category)] === true;
