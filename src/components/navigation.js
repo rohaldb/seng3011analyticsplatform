@@ -87,10 +87,10 @@ class Navigation extends React.Component {
         <AppBar position='static' color='primary'>
           <Toolbar>
             <div style={{flex: 1}}>
-            <IconButton classname={classes.menuicon} color='inherit' aria-label='menu'>
+            <IconButton className={classes.menuicon} color='inherit' aria-label='menu'>
               <Home />
             </IconButton>
-            <IconButton classname={classes.menuicon} color='inherit' aria-label='menu' onClick={this.startTour}>
+            <IconButton className={classes.menuicon} color='inherit' aria-label='menu' onClick={this.startTour}>
               <Help />
             </IconButton>
            </div>

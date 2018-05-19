@@ -374,18 +374,8 @@ class Event extends React.Component {
         <Navigation isAdmin={currentUser.admin} tour={EventTour} />
         <div className={classes.root}>
           <Grid container spacing={24}>
-            <Grid item xs={12}>
-              <div id="summary">
-                <EventSummary
-                  name={eventData.name}
-                  description={eventData.description}
-                  start_date={`${moment(eventData.start_date * 1000).format('DD MMM YY')}`}
-                  end_date={getDate(eventData.end_date)}
-                />
-              </div>
-            </Grid>
             <Grid item xs={8}>
-              <Grid container spacing={0}>
+              <Grid container alignItems="center" spacing={0}>
                 <Grid item xs={1}>
                   <FacebookShareButton
                     url={document.location}
@@ -459,6 +449,16 @@ class Event extends React.Component {
                   }
                 </Grid>
               </Grid>
+            </Grid>
+            <Grid item xs={12}>
+              <div id="summary">
+                <EventSummary
+                  name={eventData.name}
+                  description={eventData.description}
+                  start_date={`${moment(eventData.start_date * 1000).format('DD MMM YY')}`}
+                  end_date={getDate(eventData.end_date)}
+                />
+              </div>
             </Grid>
             <div className="overview-tour"></div>
             <div className="report-tour"></div>

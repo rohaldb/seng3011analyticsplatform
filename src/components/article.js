@@ -18,13 +18,6 @@ const styles = theme => ({
     padding: '4%',
     fontFamily: 'Roboto'
   },
-  title: {
-    marginBottom: '0'
-  },
-  body: {
-    marginTop: '1px',
-    fontFamily: 'Roboto'
-  },
   largeIcon: {
     width: 60,
     height: 60,
@@ -70,10 +63,16 @@ class Article extends React.Component {
       <div>
         <Grid container>
           <Grid item xs={12} style={{borderBottom: '2px solid #66bb6a'}}>
-            <h2 className={classes.title}>{title}</h2>
-            <h4 className={classes.date}>{date}</h4>
+            <Typography variant="display1" gutterBottom style={{marginTop: 10}}>
+              {title}
+            </Typography>
+            <Typography gutterBottom>
+              {date}
+            </Typography>
             <img className={classes.img} src={img} alt="" style={{float: 'left', marginTop: '0px', marginRight: '25px', marginBottom: '10px'}}></img>
-            <p className={classes.body}>{body}</p>
+            <Typography className={classes.body} gutterBottom>
+              {body}
+            </Typography>
             <div style={{margin: 'auto', textAlign: 'right'}}>
               <IconButton
                 tooltip="View article body"
@@ -99,9 +98,9 @@ class Article extends React.Component {
           aria-describedby="alert-dialog-description"
           maxWidth={false}
         >
-          <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
+          <DialogTitle id="alert-dialog-title" style={{background: 'linear-gradient(60deg, #66bb6a, #338a3e)'}}>{title}</DialogTitle>
           <DialogContent>
-            <Typography>{date}</Typography>
+            <Typography style={{marginTop: 10}}>{date}</Typography>
             <CardContent>
               <Typography>
                <span dangerouslySetInnerHTML={this.rawMarkup(bodyText)} />
