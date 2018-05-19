@@ -128,7 +128,6 @@ class Timeline extends React.Component {
 
   constructor (props) {
     super(props)
-    document.getElementById('global').style.overflow = 'scroll'
   }
 
   handleChange = name => event => {
@@ -160,7 +159,7 @@ class Timeline extends React.Component {
         <ExpansionPanel defaultExpanded>
           <ExpansionPanelSummary expandIcon={<ExpandMore />}>
             <Typography className={classes.heading}>Start Date Range</Typography>
-            <div className="filter-date"></div>
+            <div className="filter-date-tour"></div>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails>
             <TextField
@@ -194,7 +193,7 @@ class Timeline extends React.Component {
             <Typography className={classes.heading}>Categories</Typography>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails>
-            <div className="filter-category"></div>
+            <div className="filter-category-tour"></div>
             <List style={{width: '100%'}}>
               { _.map(_.keys(filterCategories), (k, i) =>
                 <ListItem key={i}>
@@ -264,7 +263,7 @@ class Timeline extends React.Component {
                   <Grid item xs={8}>
                     <Grid container alignItems='center' direction='column'>
                       <Grid item>
-                        <div className="welcome">
+                        <div className="welcome-tour">
                         <Typography variant='display3' gutterBottom className={classes.title}>
                           EventStock
                         </Typography></div>
@@ -279,7 +278,7 @@ class Timeline extends React.Component {
                   </Grid>
                 </Grid>
                 <Grid item container direction='row'>
-                  <div className="browse"></div>
+                  <div className="browse-tour"></div>
                   <Grid item xs={12}>
                     { _.isEmpty(sortedEvents) ?
                       <div className={classes.loader}>

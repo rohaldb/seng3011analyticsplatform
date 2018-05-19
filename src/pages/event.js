@@ -216,11 +216,11 @@ class Event extends React.Component {
                         // console.log(res)
                         var extract = res.substring(res.indexOf('extract'), res.length)
                         data.data.description = extractCompanySummary(extract, 450).replace(/\}+\)/, '')
-                        if (data.data.description.match(/^\s*$/)) {
+                        if (!data.data.description || data.data.description.match(/^\s*$/)) {
                           data.data.description = 'This company has not provided a description of their operations. '
                           data.data.description += `Please visit the ${companyName} website for more information.`
                         } else {
-                          data.data.description = companyName + ' ' + data.data.descripton
+                          data.data.description = companyName + ' ' + data.data.description
                         }
                         data.data.code = companyCode
                         infoJSON[companyName] = data.data
@@ -358,7 +358,6 @@ class Event extends React.Component {
     return (
       <div>
         <Navigation isAdmin={currentUser.admin} tour={EventTour} />
-        <div className="overview"></div>
         <div className={classes.root}>
           <Grid container spacing={24}>
             <Grid item xs={12}>
@@ -390,10 +389,11 @@ class Event extends React.Component {
                 </Grid>
               </Grid>
             </Grid>
-            <div className="report"></div>
+            <div className="overview-tour"></div>
+            <div className="report-tour"></div>
             <Grid item xs={12}>
               <Grid container spacing={16}>
-                <div className="company-card"></div>
+                <div className="company-card-tour"></div>
                 {_.map(_.keys(eventData.related_companies), (company, i) => (
                   <Grid item xs={4} key={Company}>
                     <span id={company}>
@@ -411,19 +411,19 @@ class Event extends React.Component {
               </Grid>
             </Grid>
             <Grid item xs={6}>
-              <div className="stock-chart"></div>
+              <div className="stock-chart-tour"></div>
               <div id="stock">
               <Stock stockJSON={stockJSON} startDate={this.state.startDate} endDate={this.state.endDate} loading={loadingStock} />
               </div>
             </Grid>
             <Grid item xs={6}>
-              <div className="heat-map"></div>
+              <div className="heat-map-tour"></div>
               <div id="map">
               <Map />
               </div>
             </Grid>
             <Grid item xs={12}>
-              <div className="news-articles"></div>
+              <div className="news-articles-tour"></div>
               <NewsCard newsJSON={newsJSON} loading={loadingNews} />
             </Grid>
           </Grid>
