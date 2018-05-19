@@ -121,6 +121,7 @@ class Timeline extends React.Component {
         state: 'eventData',
       })
     })
+    window.scrollTo(0, 0)
   }
 
 
@@ -238,7 +239,7 @@ class Timeline extends React.Component {
     })
 
     // Sort by start date
-    sortedEvents = _.sortBy(sortedEvents, x => x.start_date)
+    sortedEvents = _.sortBy(sortedEvents, x => x.start_date).reverse()
 
     document.title = 'EventStock'
 
@@ -272,21 +273,21 @@ class Timeline extends React.Component {
                 <Grid item container direction='row'>
                   <div className="browse-tour"></div>
                   <Grid item xs={12}>
+                    <div style={{textAlign: 'center'}}>
+                      <Button
+                        variant="raised"
+                        color="secondary"
+                        className={classes.button}
+                        onClick={() => this.setState({drawerOpen: true})}>
+                        Filter Timeline
+                      </Button>
+                    </div>
                     { _.isEmpty(sortedEvents) ?
                       <div className={classes.loader}>
                         <CircularProgress size={60}/>
                       </div>
                       :
                       <div>
-                        <div style={{textAlign: 'center'}}>
-                          <Button
-                            variant="raised"
-                            color="secondary"
-                            className={classes.button}
-                            onClick={() => this.setState({drawerOpen: true})}>
-                            Filter Timeline
-                          </Button>
-                        </div>
                         <VerticalTimeline>
                           { _.map(_.keys(sortedEvents), (k, i) =>
                             <VerticalTimelineElement
