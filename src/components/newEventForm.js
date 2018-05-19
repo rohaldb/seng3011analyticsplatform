@@ -204,7 +204,7 @@ class NewEventForm extends React.Component {
                 }}
               >
                 {_.map(this.props.categories, (k) =>
-                    k === 'uncategorised' ? null : 
+                    k === 'uncategorised' ? null :
                       <option value={k} key={k}>{_.startCase(_.toLower(k))}</option>
                 )}
               </Select>

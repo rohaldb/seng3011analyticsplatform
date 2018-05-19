@@ -15,15 +15,9 @@ const TimelineTour = [
   },
   {
     step: 3,
-    selector: ".filter-date-tour",
-    title: <div style={{color: "black"}}>3. Filter the timeline by date</div>,
-    body: <div style={{color: "394b59"}}>Find events within a certain date range of interest.</div>
-  },
-  {
-    step: 4,
-    selector: ".filter-category-tour",
-    title: <div style={{color: "black"}}>4. Filter the timeline by category</div>,
-    body: <div style={{color: "394b59"}}>Find more relevant events by selecting categories of interest.</div>
+    selector: ".filter-tour",
+    title: <div style={{color: "black"}}>3. Filter the timeline by date or category</div>,
+    body: <div style={{color: "394b59"}}>Find events within a certain date range or category of interest.</div>
   }
 ]
 
@@ -63,7 +57,7 @@ const EventTour = [
     selector: ".news-articles-tour",
     title: <div style={{color: "black"}}>6. News articles</div>,
     body: <div style={{color: "394b59"}}>A range of news articles relating to the event and companies are available to view.</div>
-  },
+  }
 ]
 
 export { TimelineTour, EventTour }

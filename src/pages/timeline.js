@@ -124,7 +124,6 @@ class Timeline extends React.Component {
     window.scrollTo(0, 0)
   }
 
-
   handleChange = name => event => {
     this.setState({
       [name]: event.target.value,
@@ -156,7 +155,6 @@ class Timeline extends React.Component {
             <ListItemText primary="Date Range"/>
           </ListItem>
           <ListItem>
-            <div className="filter-date-tour"></div>
             <TextField
               fullWidth
               label="Start Date"
@@ -187,7 +185,6 @@ class Timeline extends React.Component {
         <List style={{width: '100%'}}>
           <ListItem>
             <ListItemText primary="Categories">
-              <div className="filter-category-tour"></div>
             </ListItemText>
           </ListItem>
           { _.map(_.keys(filterCategories), (k, i) =>
@@ -282,6 +279,7 @@ class Timeline extends React.Component {
                         Filter Timeline
                       </Button>
                     </div>
+                    <div className="filter-tour"></div>
                     { _.isEmpty(sortedEvents) ?
                       <div className={classes.loader}>
                         <CircularProgress size={60}/>

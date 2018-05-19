@@ -433,6 +433,7 @@ class Event extends React.Component {
                     />
                   </EmailShareButton>
                 </Grid>
+                <div className="report-tour"></div>
                 <Grid item xs={1}>
                   <IconButton
                     tooltip="Generate Event Report"
@@ -461,7 +462,6 @@ class Event extends React.Component {
               </div>
             </Grid>
             <div className="overview-tour"></div>
-            <div className="report-tour"></div>
             <Grid item xs={12}>
               <Grid container spacing={16}>
                 <div className="company-card-tour"></div>
