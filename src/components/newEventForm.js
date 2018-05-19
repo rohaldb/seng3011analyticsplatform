@@ -18,9 +18,9 @@ import ChipInput from 'material-ui-chip-input'
 import Button from 'material-ui/Button'
 import TextField from 'material-ui/TextField'
 
-import InputLabel from '@material-ui/core/InputLabel';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
+import InputLabel from '@material-ui/core/InputLabel'
+import FormControl from '@material-ui/core/FormControl'
+import Select from '@material-ui/core/Select'
 
 const styles = theme => ({
   textField: {
@@ -115,7 +115,6 @@ class NewEventForm extends React.Component {
     delete related_companies[key]
     this.setState({related_companies})
   }
-
 
   render () {
     const { classes } = this.props

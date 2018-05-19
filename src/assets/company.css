@@ -2,3 +2,7 @@
   flex-direction: column-reverse;
   color: blue;
 }
+
+.share-button {
+  cursor: pointer;
+}
