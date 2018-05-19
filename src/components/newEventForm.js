@@ -58,6 +58,11 @@ class NewEventForm extends React.Component {
   }
 
   handleClose = () => {
+    this.resetFields()
+    this.props.closeCallback()
+  }
+
+  resetFields = () => {
     this.setState({
       name: '',
       description: '',
@@ -70,7 +75,6 @@ class NewEventForm extends React.Component {
       companyName: '',
       invalid: ''
     })
-    this.props.closeCallback()
   }
 
   addEvent = () => {
@@ -87,20 +91,27 @@ class NewEventForm extends React.Component {
     if (name === '' || description === '' || start_date === '' || end_date === '') {
       this.setState({invalid: 'Fields marked * are required.'})
     } else {
-      let keywordsHash = {}
-      _.map(keywords, (keyword, i) => keywordsHash[i] = keyword)
+      const start = moment(start_date)
+      const end = moment(end_date)
+      if (!end.isAfter(start)) {
+        this.setState({invalid: 'Start date must precede end date.'})
+      } else {
+        let keywordsHash = {}
+        _.map(keywords, (keyword, i) => keywordsHash[i] = keyword)
 
-      fb.database().ref('timeline/' + Math.random().toString(36).substr(2, 5)).set({
-        description,
-        start_date: new moment(start_date).unix(),
-        end_date : new moment(end_date).unix(),
-        keywords: keywordsHash,
-        category,
-        name,
-        related_companies,
-      })
+        fb.database().ref('timeline/' + Math.random().toString(36).substr(2, 5)).set({
+          description,
+          start_date: start.unix(),
+          end_date: end.unix(),
+          keywords: keywordsHash,
+          category,
+          name,
+          related_companies,
+        })
 
-      this.props.closeCallback()
+        this.resetFields()
+        this.props.closeCallback()
+      }
     }
   }
 
