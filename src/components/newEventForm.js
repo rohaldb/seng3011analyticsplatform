@@ -54,9 +54,24 @@ class NewEventForm extends React.Component {
     category: 'other',
     companyCode: '',
     companyName: '',
+    invalid: ''
   }
 
-  handleClose = () => this.props.closeCallback()
+  handleClose = () => {
+    this.setState({
+      name: '',
+      description: '',
+      start_date: '',
+      end_date: '',
+      related_companies: {},
+      keywords: [],
+      category: 'other',
+      companyCode: '',
+      companyName: '',
+      invalid: ''
+    })
+    this.props.closeCallback()
+  }
 
   addEvent = () => {
     let {
@@ -69,20 +84,24 @@ class NewEventForm extends React.Component {
       category
     } = this.state
 
-    let keywordsHash = {}
-    _.map(keywords, (keyword, i) => keywordsHash[i] = keyword)
+    if (name === '' || description === '' || start_date === '' || end_date === '') {
+      this.setState({invalid: 'Fields marked * are required.'})
+    } else {
+      let keywordsHash = {}
+      _.map(keywords, (keyword, i) => keywordsHash[i] = keyword)
 
-    fb.database().ref('timeline/' + Math.random().toString(36).substr(2, 5)).set({
-      description,
-      start_date: new moment(start_date).unix(),
-      end_date : new moment(end_date).unix(),
-      keywords: keywordsHash,
-      category,
-      name,
-      related_companies,
-    })
+      fb.database().ref('timeline/' + Math.random().toString(36).substr(2, 5)).set({
+        description,
+        start_date: new moment(start_date).unix(),
+        end_date : new moment(end_date).unix(),
+        keywords: keywordsHash,
+        category,
+        name,
+        related_companies,
+      })
 
-    this.props.closeCallback()
+      this.props.closeCallback()
+    }
   }
 
   handleChange = name => event => {
@@ -101,13 +120,17 @@ class NewEventForm extends React.Component {
     this.state.keywords.length < 4 ? this.setState({keywords: [...this.state.keywords, chip]}) : null
 
   addNewCompany = () => {
-    let related_companies = this.state.related_companies
-    related_companies[this.state.companyName] = this.state.companyCode
-    this.setState({
-      related_companies,
-      companyName: '',
-      companyCode: ''
-    })
+    if (this.state.companyName.match(/^\s*$/) || this.state.companyCode.match(/^\s*$/)) {
+      this.setState({invalid: 'Enter both a name and code first.'})
+    } else {
+      let related_companies = this.state.related_companies
+      related_companies[this.state.companyName] = this.state.companyCode
+      this.setState({
+        related_companies,
+        companyName: '',
+        companyCode: ''
+      })
+    }
   }
 
   deleteRelatedCompany = (key) => {
@@ -236,6 +259,11 @@ class NewEventForm extends React.Component {
               Add
             </Button>
           </form>
+          {this.state.invalid !== '' ?
+            <Typography gutterBottom variant="subheading" color="red">
+              <i>{this.state.invalid}</i>
+            </Typography>
+          : null}
           </DialogContent>
           <DialogActions>
             <Button
