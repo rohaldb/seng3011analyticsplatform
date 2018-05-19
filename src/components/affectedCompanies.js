@@ -72,13 +72,16 @@ class Company extends React.Component {
                 infoJSON ?
                 (
                 <CardContent>
-                  <Typography>
+                  <Typography noWrap>
                     <b>{infoJSON.name} - {infoJSON.code}</b>
-                    <br></br>
+                  </Typography>
+                  <Typography noWrap>
                     <b>Operations:</b> {infoJSON.category}
-                    <br></br>
+                  </Typography>
+                  <Typography noWrap>
                     <b>Followers:</b> <NumericLabel>{infoJSON.fan_count}</NumericLabel>
-                    <br></br>
+                  </Typography>
+                  <Typography noWrap>
                     <b>Website:</b> <a target="_blank" href={infoJSON.website}>{infoJSON.website}</a>
                   </Typography>
                 </CardContent>
@@ -100,18 +103,25 @@ class Company extends React.Component {
             aria-describedby="alert-dialog-description"
             maxWidth={false}
         >
-          <DialogTitle id="alert-dialog-title">{infoJSON.name} - {infoJSON.code}</DialogTitle>
+          <DialogTitle
+            id="alert-dialog-title"
+            style={{background: 'linear-gradient(60deg, #26c6da, #00acc1)'}}
+            >
+              {infoJSON.name} - {infoJSON.code}
+          </DialogTitle>
           <DialogContent>
             <CardContent>
-              <Typography>
+              <Typography noWrap>
                 <b>Operations:</b> {infoJSON.category}
-                <br></br>
+              </Typography>
+              <Typography noWrap>
                 <b>Followers:</b> <NumericLabel>{infoJSON.fan_count}</NumericLabel>
-                <br></br>
+              </Typography>
+              <Typography noWrap>
                 <b>Website:</b> <a target="_blank" href={infoJSON.website}>{infoJSON.website}</a>
-                <br></br>
+              </Typography>
+              <Typography noWrap>
                 <b>Description:</b> <span dangerouslySetInnerHTML={this.rawMarkup(infoJSON.description)} />
-                <br></br>
               </Typography>
               <br></br>
               <Social posts={infoJSON.posts} start={start} end={end} />

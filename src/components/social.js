@@ -146,17 +146,7 @@ class Social extends React.Component {
 
     return (
       <Fade in timeout={500}>
-        <Card>
-          <CardHeader
-            title="Social Activity"
-            className={classes.cardHeader}
-          />
-          <CardContent>
-            <Fade in timeout={500}>
-              <AmCharts.React className="lineChart" style={{ width: "100%", height: "750px" }} options={this.declareConfig(posts, start, end)} />
-            </Fade>
-          </CardContent>
-        </Card>
+        <AmCharts.React className="lineChart" style={{ width: "100%", height: "750px" }} options={this.declareConfig(posts, start, end)} />
       </Fade>
     )
   }
