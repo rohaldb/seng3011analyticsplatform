@@ -32,6 +32,7 @@
     "react-pretty-numbers": "^3.0.0",
     "react-router-dom": "^4.2.2",
     "react-scripts": "latest",
+    "react-share": "^2.1.1",
     "react-user-tour": "^3.0.0",
     "react-vertical-timeline-component": "^2.0.6",
     "typeface-roboto": "^0.0.54"
