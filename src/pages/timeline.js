@@ -129,7 +129,6 @@ class Timeline extends React.Component {
   constructor (props) {
     super(props)
     document.getElementById('global').style.overflow = 'scroll'
-this.fn = this.fn.bind(this)
   }
 
   handleChange = name => event => {
