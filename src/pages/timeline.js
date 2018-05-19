@@ -12,12 +12,8 @@ import { Link } from 'react-router-dom'
 import moment from 'moment'
 import { Grid, Chip, Typography, withStyles } from 'material-ui'
 import Drawer from '@material-ui/core/Drawer'
-import Divider from '@material-ui/core/Divider'
-import { ExpandMore } from 'material-ui-icons'
+import Button from '@material-ui/core/Button'
 
-import ExpansionPanel from '@material-ui/core/ExpansionPanel'
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
 import TextField from '@material-ui/core/TextField'
 import Switch from '@material-ui/core/Switch'
 
@@ -33,8 +29,7 @@ import { Navigation } from '../components'
 
 const styles = theme => ({
   root: {
-    // need to fix the background
-    backgroundColor: theme.palette.background.default,
+    backgroundColor: 'rgb(227,227,227)',
     minHeight: '100vh'
   },
   chip: {
@@ -60,7 +55,9 @@ const styles = theme => ({
     marginTop: 20,
     textAlign: 'center'
   },
-
+  button: {
+    marginTop: theme.spacing.unit * 2,
+  },
   appFrame: {
     zIndex: 1,
     overflow: 'hidden',
@@ -75,7 +72,6 @@ const styles = theme => ({
   toolbar: theme.mixins.toolbar,
   content: {
     flexGrow: 1,
-    backgroundColor: theme.palette.background.default,
     padding: theme.spacing.unit * 3,
   },
   expansionHeading: {
@@ -104,6 +100,7 @@ class Timeline extends React.Component {
     filterEndDate: moment().format('YYYY-MM-DD'),
     filterCategories: {}, // filled in with categories from Firebase
     categoryIcons: {}, // filled in with data from Firebase
+    drawerOpen: false
   }
 
   componentDidMount() {
@@ -126,9 +123,6 @@ class Timeline extends React.Component {
     })
   }
 
-  constructor (props) {
-    super(props)
-  }
 
   handleChange = name => event => {
     this.setState({
@@ -148,21 +142,22 @@ class Timeline extends React.Component {
 
     const drawer = (
       <Drawer
-        variant="permanent"
+        open={this.state.drawerOpen}
+        onClose={() => this.setState({drawerOpen: false})}
         classes={{
           paper: classes.drawerPaper,
         }}
         anchor={"left"}
+        style={{width: 375}}
       >
-        <div className={classes.toolbar} />
-        <Divider />
-        <ExpansionPanel defaultExpanded>
-          <ExpansionPanelSummary expandIcon={<ExpandMore />}>
-            <Typography className={classes.heading}>Start Date Range</Typography>
+        <List style={{width: '100%'}}>
+          <ListItem>
+            <ListItemText primary="Date Range"/>
+          </ListItem>
+          <ListItem>
             <div className="filter-date-tour"></div>
-          </ExpansionPanelSummary>
-          <ExpansionPanelDetails>
             <TextField
+              fullWidth
               label="Start Date"
               type="date"
               value={filterStartDate}
@@ -172,8 +167,10 @@ class Timeline extends React.Component {
                 shrink: true,
               }}
             />
-
+          </ListItem>
+          <ListItem>
             <TextField
+              fullWidth
               required
               label="End Date"
               type="date"
@@ -184,43 +181,37 @@ class Timeline extends React.Component {
                 shrink: true,
               }}
             />
-          </ExpansionPanelDetails>
-        </ExpansionPanel>
-        <Divider />
-
-        <ExpansionPanel defaultExpanded>
-          <ExpansionPanelSummary expandIcon={<ExpandMore />}>
-            <Typography className={classes.heading}>Categories</Typography>
-          </ExpansionPanelSummary>
-          <ExpansionPanelDetails>
-            <div className="filter-category-tour"></div>
-            <List style={{width: '100%'}}>
-              { _.map(_.keys(filterCategories), (k, i) =>
-                <ListItem key={i}>
-                  <ListItemIcon>
-                    {categoryIcons[k] ?
-                      <i className="material-icons">
-                        {categoryIcons[k]}
-                      </i>
-                      :
-                      <i className="material-icons">
-                        label
-                      </i>
-                    }
-                  </ListItemIcon>
-                  <ListItemText primary={_.startCase(_.toLower(k))} />
-                  <ListItemSecondaryAction>
-                    <Switch
-                      onChange={this.handleCategoryChange(k)}
-                      checked={filterCategories[k]}
-                    />
-                  </ListItemSecondaryAction>
-                </ListItem>
-              )}
-            </List>
-          </ExpansionPanelDetails>
-        </ExpansionPanel>
-        <Divider />
+          </ListItem>
+        </List>
+        <List style={{width: '100%'}}>
+          <ListItem>
+            <ListItemText primary="Categories">
+              <div className="filter-category-tour"></div>
+            </ListItemText>
+          </ListItem>
+          { _.map(_.keys(filterCategories), (k, i) =>
+            <ListItem key={i}>
+              <ListItemIcon>
+                {categoryIcons[k] ?
+                  <i className="material-icons">
+                    {categoryIcons[k]}
+                  </i>
+                  :
+                  <i className="material-icons">
+                    label
+                  </i>
+                }
+              </ListItemIcon>
+              <ListItemText primary={_.startCase(_.toLower(k))} />
+              <ListItemSecondaryAction>
+                <Switch
+                  onChange={this.handleCategoryChange(k)}
+                  checked={filterCategories[k]}
+                />
+              </ListItemSecondaryAction>
+            </ListItem>
+          )}
+        </List>
       </Drawer>
     )
 
@@ -264,9 +255,10 @@ class Timeline extends React.Component {
                     <Grid container alignItems='center' direction='column'>
                       <Grid item>
                         <div className="welcome-tour">
-                        <Typography variant='display3' gutterBottom className={classes.title}>
-                          EventStock
-                        </Typography></div>
+                          <Typography variant='display3' gutterBottom className={classes.title}>
+                            EventStock
+                          </Typography>
+                        </div>
                       </Grid>
                       <Grid item>
                         <Typography variant='subheading' gutterBottom className={classes.subTitle}>
@@ -285,38 +277,49 @@ class Timeline extends React.Component {
                         <CircularProgress size={60}/>
                       </div>
                       :
-                      <VerticalTimeline>
-                        { _.map(_.keys(sortedEvents), (k, i) =>
-                          <VerticalTimelineElement
-                            key={i}
-                            className='vertical-timeline-element--work'
-                            date={`${moment(sortedEvents[k].start_date * 1000).format('DD MMM YY')} - ${getDate(sortedEvents[k].end_date)}`}
-                            iconStyle={{ background: bgCols[i % bgCols.length], color: '#fff' }}
-                            icon={<Event />}
-                          >
-                            <Link to={{
-                              pathname: `event/${k}`,
-                              state: {currentUser: currentUser, eventData: sortedEvents[k]}
-                            }}
-                                  className={classes.link}>
-                              <Typography variant='title' className='vertical-timeline-element-title' gutterBottom>
-                                {sortedEvents[k].name}
+                      <div>
+                        <div style={{textAlign: 'center'}}>
+                          <Button
+                            variant="raised"
+                            color="secondary"
+                            className={classes.button}
+                            onClick={() => this.setState({drawerOpen: true})}>
+                            Filter Timeline
+                          </Button>
+                        </div>
+                        <VerticalTimeline>
+                          { _.map(_.keys(sortedEvents), (k, i) =>
+                            <VerticalTimelineElement
+                              key={i}
+                              className='vertical-timeline-element--work'
+                              date={`${moment(sortedEvents[k].start_date * 1000).format('DD MMM YY')} - ${getDate(sortedEvents[k].end_date)}`}
+                              iconStyle={{ background: bgCols[i % bgCols.length], color: '#fff' }}
+                              icon={<Event />}
+                            >
+                              <Link to={{
+                                pathname: `event/${k}`,
+                                state: {currentUser: currentUser, eventData: sortedEvents[k]}
+                              }}
+                                    className={classes.link}>
+                                <Typography variant='title' className='vertical-timeline-element-title' gutterBottom>
+                                  {sortedEvents[k].name}
+                                </Typography>
+                              </Link>
+                              <Typography variant='subheading' className='vertical-timeline-element-subtitle' gutterBottom>
+                                {sortedEvents[k].category}
                               </Typography>
-                            </Link>
-                            <Typography variant='subheading' className='vertical-timeline-element-subtitle' gutterBottom>
-                              {sortedEvents[k].category}
-                            </Typography>
-                            <Typography gutterBottom>
-                              {sortedEvents[k].description}
-                            </Typography>
-                            <div>
-                              {_.map(sortedEvents[k].related_companies, (c, i) =>
-                                <Chip label={i} className={classes.chip} key={i} />
-                              )}
-                            </div>
-                          </VerticalTimelineElement>
-                        )}
-                      </VerticalTimeline>
+                              <Typography gutterBottom>
+                                {sortedEvents[k].description}
+                              </Typography>
+                              <div>
+                                {_.map(sortedEvents[k].related_companies, (c, i) =>
+                                  <Chip label={i} className={classes.chip} key={i} />
+                                )}
+                              </div>
+                            </VerticalTimelineElement>
+                          )}
+                        </VerticalTimeline>
+                      </div>
                     }
                   </Grid>
                 </Grid>
