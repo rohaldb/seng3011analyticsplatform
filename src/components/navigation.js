@@ -4,7 +4,7 @@ import withRoot from '../withRoot'
 import { base } from '../config'
 import AppBar from 'material-ui/AppBar'
 import Toolbar from 'material-ui/Toolbar'
-import { Home, Help } from 'material-ui-icons'
+import { Home, Help, Timeline } from 'material-ui-icons'
 import Button from 'material-ui/Button'
 import IconButton from 'material-ui/IconButton'
 import { Link } from 'react-router-dom'
@@ -87,9 +87,19 @@ class Navigation extends React.Component {
         <AppBar position='static' color='primary'>
           <Toolbar>
             <div style={{flex: 1}}>
-            <IconButton className={classes.menuicon} color='inherit' aria-label='menu'>
+            <IconButton className={classes.menuicon} color='inherit' aria-label='menu'
+              onClick={() => this.props.history.push('/')}
+              >
               <Home />
             </IconButton>
+            {this.props.location.pathname.startsWith('/event') ? 
+              <IconButton className={classes.menuicon} color='inherit' aria-label='menu'
+                onClick={() => this.props.history.goBack()}
+                >
+                <Timeline />
+              </IconButton>
+              : null
+            }
             <IconButton className={classes.menuicon} color='inherit' aria-label='menu' onClick={this.startTour}>
               <Help />
             </IconButton>
