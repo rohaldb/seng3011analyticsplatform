@@ -19,9 +19,9 @@ const styles = theme => ({
 class Social extends React.Component {
 
   static propTypes = {
-    posts: PropTypes.object.isRequired,
-    start: PropTypes.object.isRequired,
-    end: PropTypes.object.isRequired,
+    posts: PropTypes.array.isRequired,
+    start: PropTypes.number.isRequired,
+    end: PropTypes.number.isRequired,
   }
 
   configGraph = (chartData) => {

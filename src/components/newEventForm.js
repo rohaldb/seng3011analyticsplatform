@@ -271,7 +271,7 @@ class NewEventForm extends React.Component {
             </Button>
           </form>
           {this.state.invalid !== '' ?
-            <Typography gutterBottom variant="subheading" color="red">
+            <Typography gutterBottom variant="subheading">
               <i>{this.state.invalid}</i>
             </Typography>
           : null}
