@@ -276,19 +276,35 @@ class Event extends React.Component {
     const base = 'https://content.guardianapis.com/search'
     const params = 'page-size=100&show-blocks=main,body&show-fields=bodyText,thumbnail'
     const apiKey = 'api-key=35b90e54-3944-4e4f-9b0e-a511d0dda44d'
-    const query = `q=${keywords}`
+    var query = `q=${keywords}`
     var dates = `from-date=${start.format('YYYY-MM-DD')}`
     if (eventInfo.end_date !== 'ongoing') {
       dates += `&to-date=${end.format('YYYY-MM-DD')}`
     }
 
-    // console.log(`fetching ${base}?${query}&${dates}&${params}&${apiKey}`)
+    console.log(`fetching ${base}?${query}&${dates}&${params}&${apiKey}`)
     fetch(`${base}?${query}&${dates}&${params}&${apiKey}`)
     .then((response) => {
       if (response.ok) {
         response.json().then(data => {
           // console.log(data)
-          this.setState({ newsJSON: data, loadingNews: false })
+          if (!data || !data.response || !data.response.results || data.response.results.length === 0) {
+            /* if no results, try again with less keywords */
+            const keywords = eventInfo.keywords.toString().replace(/([^,]+),([^,]+).*/, '$1,$2').replace(/,/g, '%20AND%20')
+            query = `q=${keywords}`
+            console.log(`fetching ${base}?${query}&${dates}&${params}&${apiKey}`)
+            fetch(`${base}?${query}&${dates}&${params}&${apiKey}`)
+            .then((response) => {
+              if (response.ok) {
+                response.json().then(data => {
+                  // console.log(data)
+                  this.setState({ newsJSON: data, loadingNews: false })
+                })
+              }
+            })
+          } else {
+            this.setState({ newsJSON: data, loadingNews: false })
+          }
         })
       }
     }).catch(error => console.error(error))
