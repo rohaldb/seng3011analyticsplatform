@@ -212,7 +212,7 @@ class Event extends React.Component {
       if (companies.hasOwnProperty(companyName) && companies[companyName]) {
         const companyCode = companies[companyName]
         let params = `statistics=id,name,website,description,category,fan_count,posts{likes,comments,created_time}&${dates}&workaround=true`
-        console.log(`https://unassigned-api.herokuapp.com/api/${companyCode}?${params}`)
+        // console.log(`https://unassigned-api.herokuapp.com/api/${companyCode}?${params}`)
         fetch(`https://unassigned-api.herokuapp.com/api/${companyCode}?${params}`)
           // eslint-disable-next-line
           .then((response) => {
@@ -238,7 +238,7 @@ class Event extends React.Component {
                         }
                         data.data.code = companyCode
                         infoJSON[companyName] = data.data
-                        console.log(infoJSON)
+                        // console.log(infoJSON)
                         companiesProcessed++
                         if (companiesProcessed === Object.keys(companies).length) {
                           this.setState({ infoJSON: infoJSON, loadingInfo: false })
@@ -249,7 +249,7 @@ class Event extends React.Component {
                 } else {
                   data.data.code = companyCode
                   infoJSON[companyName] = data.data
-                  console.log(infoJSON)
+                  // console.log(infoJSON)
                   companiesProcessed++
                   if (companiesProcessed === Object.keys(companies).length) {
                     this.setState({ infoJSON: infoJSON, loadingInfo: false })
@@ -282,7 +282,7 @@ class Event extends React.Component {
       dates += `&to-date=${end.format('YYYY-MM-DD')}`
     }
 
-    console.log(`fetching ${base}?${query}&${dates}&${params}&${apiKey}`)
+    // console.log(`fetching ${base}?${query}&${dates}&${params}&${apiKey}`)
     fetch(`${base}?${query}&${dates}&${params}&${apiKey}`)
     .then((response) => {
       if (response.ok) {
@@ -292,7 +292,7 @@ class Event extends React.Component {
             /* if no results, try again with less keywords */
             const keywords = eventInfo.keywords.toString().replace(/([^,]+),([^,]+).*/, '$1,$2').replace(/,/g, '%20AND%20')
             query = `q=${keywords}`
-            console.log(`fetching ${base}?${query}&${dates}&${params}&${apiKey}`)
+            // console.log(`fetching ${base}?${query}&${dates}&${params}&${apiKey}`)
             fetch(`${base}?${query}&${dates}&${params}&${apiKey}`)
             .then((response) => {
               if (response.ok) {
@@ -394,7 +394,7 @@ class Event extends React.Component {
               <Grid container alignItems="center" spacing={0}>
                 <Grid item xs={1}>
                   <FacebookShareButton
-                    url={document.location}
+                    url={String(document.location)}
                     quote={eventData.name}
                     className="share-button">
                     <FacebookIcon
@@ -405,7 +405,7 @@ class Event extends React.Component {
                 </Grid>
                 <Grid item xs={1}>
                   <TwitterShareButton
-                    url={document.location}
+                    url={String(document.location)}
                     title={eventData.name}
                     className="share-button">
                     <TwitterIcon
@@ -416,7 +416,7 @@ class Event extends React.Component {
                 </Grid>
                 <Grid item xs={1}>
                   <GooglePlusShareButton
-                    url={document.location}
+                    url={String(document.location)}
                     className="share-button">
                     <GooglePlusIcon
                       size={32}
@@ -426,7 +426,7 @@ class Event extends React.Component {
                 </Grid>
                 <Grid item xs={1}>
                   <RedditShareButton
-                    url={document.location}
+                    url={String(document.location)}
                     title={eventData.name}
                     windowWidth={660}
                     windowHeight={460}
@@ -439,7 +439,7 @@ class Event extends React.Component {
                 </Grid>
                 <Grid item xs={1}>
                   <EmailShareButton
-                    url={document.location}
+                    url={String(document.location)}
                     subject={eventData.name}
                     body={eventData.description}
                     className="share-button">

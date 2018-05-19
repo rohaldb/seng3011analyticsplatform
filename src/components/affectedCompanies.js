@@ -35,8 +35,8 @@ class Company extends React.Component {
     name: PropTypes.string.isRequired,
     loading: PropTypes.bool.isRequired,
     infoJSON: PropTypes.object,
-    start: PropTypes.object,
-    end: PropTypes.object
+    start: PropTypes.number,
+    end: PropTypes.number
   }
 
   state = {

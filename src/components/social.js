@@ -2,7 +2,6 @@ import React from 'react'
 import { withStyles } from 'material-ui/styles'
 import withRoot from '../withRoot'
 import PropTypes from 'prop-types'
-import Card, { CardContent, CardHeader } from 'material-ui/Card'
 import Fade from 'material-ui/transitions/Fade'
 import moment from 'moment'
 import 'amstock3/amcharts/amcharts.js'
@@ -136,13 +135,13 @@ class Social extends React.Component {
         'comments': Math.ceil(chartData[i].comments / chartData[i].posts)
       })
     }
-    console.log('chartData: ' + JSON.stringify(chartData) + '\n' + JSON.stringify(chartArr))
+    // console.log('chartData: ' + JSON.stringify(chartData) + '\n' + JSON.stringify(chartArr))
     const config = this.configGraph(chartArr)
     return config
   }
 
   render () {
-    const { classes, posts, start, end } = this.props
+    const { posts, start, end } = this.props
 
     return (
       <Fade in timeout={500}>
