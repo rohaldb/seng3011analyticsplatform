@@ -291,7 +291,7 @@ class Event extends React.Component {
         response.json().then(data => {
           // console.log(data)
           if (!data || !data.response || !data.response.results || data.response.results.length === 0) {
-            /* if no results, try again with less keywords */
+            /* if no results, try again with two keywords */
             const keywords = eventInfo.keywords.toString().replace(/([^,]+),([^,]+).*/, '$1,$2').replace(/,/g, '%20AND%20')
             query = `q=${keywords}`
             // console.log(`fetching ${base}?${query}&${dates}&${params}&${apiKey}`)
@@ -300,7 +300,23 @@ class Event extends React.Component {
               if (response.ok) {
                 response.json().then(data => {
                   // console.log(data)
-                  this.setState({ newsJSON: data, loadingNews: false })
+                  if (!data || !data.response || !data.response.results || data.response.results.length === 0) {
+                    /* if no results, try again with one keyword */
+                    const keywords = eventInfo.keywords.toString().replace(/([^,]+),.*/, '$1')
+                    query = `q=${keywords}`
+                    // console.log(`fetching ${base}?${query}&${dates}&${params}&${apiKey}`)
+                    fetch(`${base}?${query}&${dates}&${params}&${apiKey}`)
+                    .then((response) => {
+                      if (response.ok) {
+                        response.json().then(data => {
+                          // console.log(data)
+                          this.setState({ newsJSON: data, loadingNews: false })
+                        })
+                      }
+                    })
+                  } else {
+                    this.setState({ newsJSON: data, loadingNews: false })
+                  }
                 })
               }
             })
