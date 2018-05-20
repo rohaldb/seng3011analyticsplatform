@@ -220,6 +220,7 @@ class Event extends React.Component {
               response.json().then(data => {
                 // console.log(data)
                 let infoJSON = this.state.infoJSON
+                if (data.data.website) data.data.website = data.data.website.replace(/.*(www\.[^ ]+).*/, '$1') /* extract 1st site only */
                 if (data.data.website && !data.data.website.match(/^http/)) data.data.website = "http://" + data.data.website
                 if (!data.data.website || data.data.website.match(/^\s*$/)) data.data.website = 'Not provided'
                 if (!data.data.description) {
