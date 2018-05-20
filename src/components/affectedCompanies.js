@@ -82,7 +82,12 @@ class Company extends React.Component {
                     <b>Followers:</b> <NumericLabel>{infoJSON.fan_count}</NumericLabel>
                   </Typography>
                   <Typography noWrap>
-                    <b>Website:</b> <a target="_blank" href={infoJSON.website}>{infoJSON.website}</a>
+                    <b>Website: </b>
+                    {infoJSON.website.match(/^http/) ?
+                      <a target="_blank" href={infoJSON.website}>{infoJSON.website}</a>
+                    :
+                      <span>{infoJSON.website}</span>
+                    }
                   </Typography>
                 </CardContent>
                 ):
@@ -118,7 +123,12 @@ class Company extends React.Component {
                 <b>Followers:</b> <NumericLabel>{infoJSON.fan_count}</NumericLabel>
               </Typography>
               <Typography noWrap>
-                <b>Website:</b> <a target="_blank" href={infoJSON.website}>{infoJSON.website}</a>
+                <b>Website: </b>
+                {infoJSON.website.match(/^http/) ?
+                  <a target="_blank" href={infoJSON.website}>{infoJSON.website}</a>
+                :
+                  <span>{infoJSON.website}</span>
+                }
               </Typography>
               <Typography noWrap>
                 <b>Description:</b> <span dangerouslySetInnerHTML={this.rawMarkup(infoJSON.description)} />

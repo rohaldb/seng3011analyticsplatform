@@ -221,6 +221,7 @@ class Event extends React.Component {
                 // console.log(data)
                 let infoJSON = this.state.infoJSON
                 if (data.data.website && !data.data.website.match(/^http/)) data.data.website = "http://" + data.data.website
+                if (!data.data.website || data.data.website.match(/^\s*$/)) data.data.website = 'Not provided'
                 if (!data.data.description) {
                   var url = 'https://en.wikipedia.org/w/api.php?action=query&origin=*&prop=extracts'
                   url += '&format=json&exintro=&explaintext=&titles=' + companyName + '&rvprop=content&redirects&callback=?'
