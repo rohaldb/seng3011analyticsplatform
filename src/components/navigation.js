@@ -54,13 +54,14 @@ class Navigation extends React.Component {
   static propTypes = {
     isAdmin: PropTypes.bool.isRequired,
     backgroundImg: PropTypes.string.isRequired,
+    filterFavourites: PropTypes.func.isRequired,
     //tour: PropTypes.object
   }
 
   state = {
     modalOpen: false,
     isTourActive: false,
-    tourStep: 1
+    tourStep: 1,
   }
 
   constructor (props) {
@@ -88,6 +89,10 @@ class Navigation extends React.Component {
   }
   toggle() {
 
+  }
+
+  filterFavourites (favourite) {
+    this.props.filterFavourites(favourite);
   }
 
   render () {
@@ -118,11 +123,11 @@ class Navigation extends React.Component {
 
             {this.props.backgroundImg == 'av' ?
                 <Tooltip id="tooltip-fab" title="Your Favorite Industry is Aviation">
-                    <a className={classes.fav}>Aviation</a>
+                    <a className={classes.fav} onClick={() => {this.filterFavourites('aviation')}}>Aviation</a>
                 </Tooltip>
                 :
                 <Tooltip id="tooltip-fab" title="Your Favorite Industry is Gaming">
-                      <a className={classes.fav}>Gaming</a>
+                      <a className={classes.fav} onClick={() => {this.filterFavourites('gaming')}}>Gaming</a>
                 </Tooltip>
             }
 
