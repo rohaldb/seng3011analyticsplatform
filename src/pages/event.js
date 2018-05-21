@@ -418,7 +418,7 @@ class Event extends React.Component {
     document.title = 'EventStock - ' + eventData.name
     return (
       <div>
-        <Navigation isAdmin={currentUser.admin} tour={EventTour} />
+        <Navigation isAdmin={currentUser.admin} tour={EventTour} filterFavourites={null}/>
         <div className={classes.root}>
           <Grid container spacing={24}>
             <Grid item xs={8}>

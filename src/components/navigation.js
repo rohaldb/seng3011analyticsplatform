@@ -92,7 +92,9 @@ class Navigation extends React.Component {
   }
 
   filterFavourites (favourite) {
-    this.props.filterFavourites(favourite);
+    if (!this.props.location.pathname.startsWith('/event')) {
+      this.props.filterFavourites(favourite);
+    }
   }
 
   render () {
