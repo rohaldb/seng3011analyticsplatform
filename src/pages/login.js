@@ -10,8 +10,6 @@ import Dialog, {
 } from 'material-ui/Dialog'
 import Button from '@material-ui/core/Button';
 import RadioGroup from '@material-ui/core/RadioGroup';
-import Typography from 'material-ui/Typography'
-import { CardContent } from 'material-ui/Card'
 import Radio from '@material-ui/core/Radio';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import DialogContentText from '@material-ui/core/DialogContentText';
