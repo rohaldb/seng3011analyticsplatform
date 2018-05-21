@@ -133,27 +133,25 @@ class Login extends React.Component {
         <div className='form_logo'>
           Event<span>S</span>tock
         </div>
-        <div className='form_title'>
-            The who, why and how of the <span>Financial</span> Markets
-        </div>
 
         <div className='form_items'>
-          <div className='form_inputs'>
-            <label>Username</label>
-            <input ref="name" type='text' required/>
-          </div>
-          <div className='form_inputs'>
-            <input
-              type='password'/>
-            <label>Password</label>
-          </div>
-          <Button variant="raised" className='form_button' onClick={(e) => this.getUserId(e, this.refs.name.value)}>
+          <form autoComplete="off">
+            <div className='form_inputs'>
+              <label style={{marginBottom: '20px', fontSize: '20px'}}>Username</label>
+              <input style={{fontSize: '16px'}} ref="name" type='text' required/>
+            </div>
+            <div className='form_inputs'>
+              <label style={{marginBottom: '20px', fontSize: '20px'}}>Password</label>
+              <input
+                style={{fontSize: '16px'}} 
+                type='password'/>
+            </div>
+          </form>
+          <Button variant="raised" color="secondary" className='form_button' style={{margin: 10}} onClick={(e) => this.getUserId(e, this.refs.name.value)}>
             Log In
           </Button>
-        </div>
-        <div className='form_other'>
-          <Button style={{color: '#AB47B8'}}>forgot password?</Button>
-          <Button style={{color: '#AB47B8'}}
+          <Button variant="raised" color="secondary" className='form_button' style={{margin: 10}} >forgot password?</Button>
+          <Button variant="raised" color="secondary" className='form_button' style={{margin: 10}} 
           onClick={() => this.handleOpen()}
           >Join Now</Button>
         </div>
