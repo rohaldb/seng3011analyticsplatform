@@ -16,6 +16,7 @@ import PrintIcon from 'react-material-icon-svg/dist/PrinterIcon'
 import { Line } from 'rc-progress'
 import { EventTour } from '../tour'
 import '../assets/company.css'
+import domtoimage from 'dom-to-image'
 
 import {
   FacebookShareButton,
@@ -81,22 +82,30 @@ class Event extends React.Component {
   }
 
   printDocument(eventData) {
+    if (this.state.loadingInfo || this.state.loadingStock) {
+      alert('Some information has not loaded yet. Please try again once the page has loaded.')
+      return
+    }
     this.startProgressBar()
+    const pdf = new jsPDF()
     const companies = eventData.related_companies
     const summary = document.getElementById('summary')
-    const summaryW = document.getElementById('summary').offsetWidth / 7
-    const summaryH = document.getElementById('summary').offsetHeight / 7
+    /* const summaryW = document.getElementById('summary').offsetWidth / 7 */
+    /* const summaryH = document.getElementById('summary').offsetHeight / 7 */
+    const summaryW = pdf.internal.pageSize.width * 2
+    const summaryH = pdf.internal.pageSize.height / 8
     var info = []
     for (let name in companies) {
       const company = document.getElementById(name)
-      const companyW = document.getElementById(name).offsetWidth / 6
-      const companyH = document.getElementById(name).offsetHeight / 6
+      /* const companyW = document.getElementById(name).offsetWidth / 7 */
+      /* const companyH = document.getElementById(name).offsetHeight / 7 */
+      const companyW = pdf.internal.pageSize.width / 1.5
+      const companyH = pdf.internal.pageSize.height / 6.5
       info.push({'component': company, 'width': companyW, 'height': companyH})
     }
     const stock = document.getElementById('stock')
     const map = document.getElementById('map')
 
-    const pdf = new jsPDF()
     var pg = 1
     pdf.setProperties({
       title: eventData.name + ' report',
@@ -117,32 +126,35 @@ class Event extends React.Component {
       this.newPDFPage(pdf, true, pg)
     }
 
-    html2canvas(summary)
-    .then((canvas) => {
-      const imgData = canvas.toDataURL('image/png')
-      pdf.addImage(imgData, 'JPEG', 10, 10, summaryW, summaryH)
+  domtoimage.toPng(summary)
+    .then((imgData) => {
+      pdf.addImage(imgData, 'PNG', 10, 10, summaryW, summaryH)
+
+      /* crop right edge of summary box */
+      pdf.setDrawColor(255, 255, 255)
+      pdf.setFillColor(255, 255, 255)
+      pdf.rect(pdf.internal.pageSize.width - 12, 9, 18, 18, 'F')
+
       this.renderNextCompany(info, 0, 45, pdf, function(pg) {
-        html2canvas(stock)
-        .then((canvas) => {
-          const imgData = canvas.toDataURL('image/png')
+        domtoimage.toPng(stock)
+        .then((imgData) => {
           if (info.length === 1) {
-            pdf.addImage(imgData, 'JPEG', 10, 90, width, height)
+            pdf.addImage(imgData, 'PNG', 10, 90, width, height)
           } else if (info.length === 2) {
-            pdf.addImage(imgData, 'JPEG', 10, 135, width, height)
+            pdf.addImage(imgData, 'PNG', 10, 135, width, height)
           } else {
             makePage(pdf, ++pg)
-            pdf.addImage(imgData, 'JPEG', 10, 10, width, height)
+            pdf.addImage(imgData, 'PNG', 10, 10, width, height)
           }
-          html2canvas(map)
-          .then((canvas) => {
-            const imgData = canvas.toDataURL('image/png')
+          domtoimage.toPng(map)
+          .then((imgData) => {
             if (info.length === 1) {
-              pdf.addImage(imgData, 'JPEG', 10, 190, width, height)
+              pdf.addImage(imgData, 'PNG', 10, 190, width, height)
             } else if (info.length === 2) {
               makePage(pdf, ++pg)
-              pdf.addImage(imgData, 'JPEG', 10, 10, width, height)
+              pdf.addImage(imgData, 'PNG', 10, 10, width, height)
             } else {
-              pdf.addImage(imgData, 'JPEG', 10, 120, width, height)
+              pdf.addImage(imgData, 'PNG', 10, 120, width, height)
             }
             exportComplete()
             pdf.save('event-report.pdf')
@@ -153,6 +165,7 @@ class Event extends React.Component {
   }
 
   renderNextCompany(info, i, offset, pdf, callback, pg) {
+    /* dom2image seems to break here, so use html2canvas */
     html2canvas(info[i].component)
     .then((canvas) => {
       const imgData = canvas.toDataURL('image/png')
@@ -160,7 +173,7 @@ class Event extends React.Component {
         offset = 10
         this.newPDFPage(pdf, true, ++pg)
       }
-      pdf.addImage(imgData, 'JPEG', 10, offset, info[i].width, info[i].height)
+      pdf.addImage(imgData, 'PNG', 10, offset, info[i].width, info[i].height)
       if (info[i + 1]) {
         this.renderNextCompany(info, i + 1, offset + 45, pdf, callback, pg)
       } else {
