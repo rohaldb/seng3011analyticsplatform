@@ -34,7 +34,7 @@ class Company extends React.Component {
   static propTypes = {
     name: PropTypes.string.isRequired,
     loading: PropTypes.bool.isRequired,
-    infoJSON: PropTypes.array,
+    infoJSON: PropTypes.object,
     start: PropTypes.number,
     end: PropTypes.number
   }
