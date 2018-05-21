@@ -77,10 +77,6 @@ const styles = theme => ({
     flexGrow: 1,
     padding: theme.spacing.unit * 3,
   },
-  backgrounds: {
-    width: "100%",
-    backgroundImage: `url(${AviationBG})`
-  },
   expansionHeading: {
     fontSize: theme.typography.pxToRem(15),
     fontWeight: theme.typography.fontWeightRegular,
@@ -299,7 +295,7 @@ class Timeline extends React.Component {
                               key={i}
                               className='vertical-timeline-element--work'
                               date={`${moment(sortedEvents[k].start_date * 1000).format('DD MMM YY')} - ${getDate(sortedEvents[k].end_date)}`}
-                              iconStyle={{ background: bgCols[i % bgCols.length], color: '#fff', backgroundImage: `url(${currentUser.fav})` }}
+                              iconStyle={{ background: bgCols[i % bgCols.length], color: '#fff', backgroundImage: `url(${AviationBG})` }}
                               // icon={<Event />}
                             >
                               <Link to={{

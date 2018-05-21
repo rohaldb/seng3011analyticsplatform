@@ -34,6 +34,10 @@ body {
   color: var(--primary-color);
 }
 
+.form_input_new {
+    color: var(--primary-color);
+}
+
 .form_title{
   font-weight: bold;
   margin-bottom: 8px;
