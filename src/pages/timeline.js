@@ -288,7 +288,7 @@ class Timeline extends React.Component {
                       </Grid>
                       <Grid item>
                         <Typography variant='subheading' gutterBottom className={classes.subTitle}>
-                          Please browse the timeline below to see the events that impact major listed stocks
+                          Discover the impact of events on industries you're interested in
                         </Typography>
                       </Grid>
                     </Grid>

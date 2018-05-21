@@ -181,6 +181,10 @@ class Login extends React.Component {
           Event<span>S</span>tock
         </div>
 
+        <div className='form_title'>
+          Discover the impact of events on industries you're interested in
+        </div>
+
         <div className='form_items'>
           <form autoComplete="off">
             <div className='form_inputs'>
