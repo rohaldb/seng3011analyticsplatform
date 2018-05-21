@@ -159,9 +159,6 @@ class Login extends React.Component {
         <div className='form_logo'>
           Event<span>S</span>tock
         </div>
-        <div className='form_title'>
-          Log<span>I</span>n
-        </div>
         <div className='form_items'>
           <div className='form_inputs'>
             <div className='form_inputs'>
@@ -179,8 +176,8 @@ class Login extends React.Component {
           </button>
         </div>
         <div className='form_other'>
-          <Button style={{color: 'red'}}>forgot password?</Button>
-          <Button style={{color: 'red'}}
+          <Button style={{color: '#AB47B8'}}>forgot password?</Button>
+          <Button style={{color: '#AB47B8'}}
           onClick={() => this.handleOpen()}
           >Join Now</Button>
         </div>
