@@ -1,5 +1,4 @@
 import React from 'react'
-import moment from 'moment'
 import { withStyles } from 'material-ui/styles'
 import withRoot from '../withRoot'
 import PropTypes from 'prop-types'

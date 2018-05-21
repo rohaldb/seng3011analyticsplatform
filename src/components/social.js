@@ -123,15 +123,8 @@ class Social extends React.Component {
       var entry = posts[post]['created_time'].substring(0, 10)
       if (chartData[entry]) {
         chartData[entry].posts += 1
-        chartData[entry].posts += posts[post]['likes']
-        chartData[entry].posts += posts[post]['comments']
-      } else {
-        var dat = {
-          'posts': 1,
-          'likes': posts[post]['likes'],
-          'comments': posts[post]['comments']
-        }
-        chartData[entry] = dat
+        chartData[entry].likes += posts[post]['likes']
+        chartData[entry].comments += posts[post]['comments']
       }
     }
     var chartArr = []
