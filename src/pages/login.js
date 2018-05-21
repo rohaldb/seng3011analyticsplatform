@@ -40,30 +40,36 @@ class Login extends React.Component {
     return (
       <div className='form'>
         <div className='form_logo'>
-          Logo Goes Here...
+          Event<span>S</span>tock
         </div>
         <div className='form_title'>
-          Login
+          Log<span>I</span>n
         </div>
-        <div className='form_inputs'>
-          <label>Username</label>
-          <input ref="name" type='text' required/>
+        <div className='form_items'>
+          <div className='form_inputs'>
+            <div className='form_inputs'>
+              <label>Username</label>
+              <input ref="name" type='text' required/>
+            </div>
+          </div>
+          <div className='form_inputs'>
+            <input
+              type='password'/>
+            <label>password</label>
+          </div>
+          <button className='form_button' onClick={(e) => this.getUserId(e, this.refs.name.value)}>
+            Log In
+          </button>
         </div>
-        <div className='form_inputs'>
-          <label>Password</label>
-          <input type='password'/>
+        <div className='form_other'>
+          <a>forgot password?</a>
+          <a>Join Now</a>
         </div>
-        <button className='form_button' onClick={(e) => this.getUserId(e, this.refs.name.value)}>
-          Log In
-        </button>
-        {this.state.isValid
-          ? null
-          : <p>
-            Invalid credentials
-          </p>}
+        {this.state.isValid ? null : <p> Username or password is incorrect, please try again </p>}
       </div>
-    )
+    );
   }
+
 }
 
 export default withRouter(withRoot(withStyles(styles)(Login)))
