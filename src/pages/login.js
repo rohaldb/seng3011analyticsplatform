@@ -23,7 +23,6 @@ const options = [
   'Aviation',
   'Financial',
   'Gaming',
-  'Social Media',
   'Technology',
   'Commodities',
 ]
