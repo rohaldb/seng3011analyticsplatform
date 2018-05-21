@@ -40,65 +40,36 @@ class Login extends React.Component {
     return (
       <div className='form'>
         <div className='form_logo'>
-          Lo<span>g</span>o
+          Event<span>S</span>tock
         </div>
         <div className='form_title'>
           Log<span>I</span>n
         </div>
-        <form className='form_items'>
+        <div className='form_items'>
           <div className='form_inputs'>
-            <input
-              type='text'
-              required
-              />
-            <label>username or email</label>
+            <div className='form_inputs'>
+              <label>Username</label>
+              <input ref="name" type='text' required/>
+            </div>
           </div>
           <div className='form_inputs'>
             <input
-              type='password'
-              required
-              />
+              type='password'/>
             <label>password</label>
           </div>
-          <button className='form_button'>Log In</button>
-        </form>
-        <div className='form_other'>
-          <a href='#'>forgot password?</a>
-          <a href='#'>Join Now</a>
+          <button className='form_button' onClick={(e) => this.getUserId(e, this.refs.name.value)}>
+            Log In
+          </button>
         </div>
+        <div className='form_other'>
+          <a>forgot password?</a>
+          <a>Join Now</a>
+        </div>
+        {this.state.isValid ? null : <p> Username or password is incorrect, please try again </p>}
       </div>
     );
   }
 
 }
-
-// render() {
-//   return (
-//     <div className='form'>
-//       <div className='form_logo'>
-//         Logo Goes Here...
-//       </div>
-//       <div className='form_title'>
-//         Login
-//       </div>
-//       <div className='form_inputs'>
-//         <label>Username</label>
-//         <input ref="name" type='text' required/>
-//       </div>
-//       <div className='form_inputs'>
-//         <label>Password</label>
-//         <input type='password'/>
-//       </div>
-//       <button className='form_button' onClick={(e) => this.getUserId(e, this.refs.name.value)}>
-//         Log In
-//       </button>
-//       {this.state.isValid
-//         ? null
-//         : <p>
-//           Invalid credentials
-//         </p>}
-//     </div>
-//   )
-// }
 
 export default withRouter(withRoot(withStyles(styles)(Login)))
