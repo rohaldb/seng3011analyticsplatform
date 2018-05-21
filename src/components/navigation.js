@@ -23,10 +23,10 @@ const styles = {
     flexGrow: 1,
     color: 'blue'
   },
-  menuIcon: {
-    marginLeft: -12,
-    marginRight: 20
-  },
+  // menuIcon: {
+  //   marginLeft: -12,
+  //   marginRight: 20
+  // },
   menuButton: {
       magin: 20
   }
@@ -111,11 +111,11 @@ class Navigation extends React.Component {
 
             {this.props.backgroundImg == 'av' ?
                 <Tooltip id="tooltip-fab" title="Your Favorite Industry is Aviation">
-                    <a  className={classes.fav}>Aviation</a>
+                    <a className={classes.fav}>Aviation</a>
                 </Tooltip>
                 :
                 <Tooltip id="tooltip-fab" title="Your Favorite Industry is Gaming">
-                      <a  className={classes.fav}>Gaming</a>
+                      <a className={classes.fav}>Gaming</a>
                 </Tooltip>
             }
 
