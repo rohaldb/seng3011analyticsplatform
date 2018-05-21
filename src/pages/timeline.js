@@ -135,19 +135,29 @@ class Timeline extends React.Component {
   }
 
   handleCategoryChange = name => event => {
-    let filterCategories = this.state.filterCategories
-    filterCategories[name] = event.target.checked
+    let filterCategories = this.state.filterCategories;
+    filterCategories[name] = event.target.checked;
     this.setState({ filterCategories })
   }
 
   filterAllCategories (option) {
-    let filterCategories = this.state.filterCategories
+    let filterCategories = this.state.filterCategories;
     for (let category in filterCategories) {
       if (filterCategories.hasOwnProperty(category)) {
         filterCategories[category] = option
       }
     }
     this.setState({ filterCategories })
+  }
+
+  handleFilterFavourite (option) {
+    let filterCategories = this.state.filterCategories;
+    for (let category in filterCategories) {
+      if (filterCategories.hasOwnProperty(category)) {
+        filterCategories[category] = (category === option);
+      }
+    }
+    this.setState({ filterCategories });
   }
 
   render () {
@@ -270,7 +280,7 @@ class Timeline extends React.Component {
 
     return (
       <div>
-        <Navigation isAdmin={currentUser.admin} backgroundImg={currentUser.fav} tour={TimelineTour} />
+        <Navigation isAdmin={currentUser.admin} backgroundImg={currentUser.fav} tour={TimelineTour} filterFavourites={(category) => {this.handleFilterFavourite(category)}}/>
         <Grid container direction='row'>
           <Grid container direction='column' className={classes.root}>
             <div className={classes.appFrame}>
