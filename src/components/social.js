@@ -24,7 +24,7 @@ class Social extends React.Component {
     end: PropTypes.number.isRequired,
   }
 
-  configGraph = (chartData) => {
+  configGraph = (chartData, start, end) => {
     return {
       "type": "serial",
       "theme": "light",
@@ -90,7 +90,15 @@ class Social extends React.Component {
       "categoryAxis": {
           "parseDates": true,
           "axisColor": "#DADADA",
-          "minorGridEnabled": true
+          "minorGridEnabled": true,
+          // Add a vertical band displaying the date range of the event
+          "guides": [{
+            "lineAlpha": 0,
+            "fillColor": "#cc0000",
+            "fillAlpha": 0.1,
+            "date": moment(start).toDate(),
+            "toDate": moment(end).toDate(),
+          }]
       },
       "export": {
         "enabled": true,
@@ -101,8 +109,8 @@ class Social extends React.Component {
 
   declareConfig = (posts, start, end) => {
     var chartData = {}
-    var currDate = moment(start)
-    var maxDate = moment(end)
+    var currDate = moment(start).subtract(7, 'days')
+    var maxDate = moment.min([moment(end).add(7, 'days'), moment()])
     while (currDate <= maxDate) {
       chartData[moment(currDate).format('YYYY-MM-DD')] = {
         'posts': 0,
@@ -136,7 +144,7 @@ class Social extends React.Component {
       })
     }
     // console.log('chartData: ' + JSON.stringify(chartData) + '\n' + JSON.stringify(chartArr))
-    const config = this.configGraph(chartArr)
+    const config = this.configGraph(chartArr, start, end)
     return config
   }
 

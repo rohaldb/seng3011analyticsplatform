@@ -1,4 +1,5 @@
 import React from 'react'
+import moment from 'moment'
 import { withStyles } from 'material-ui/styles'
 import withRoot from '../withRoot'
 import PropTypes from 'prop-types'
@@ -34,7 +35,7 @@ class Company extends React.Component {
   static propTypes = {
     name: PropTypes.string.isRequired,
     loading: PropTypes.bool.isRequired,
-    infoJSON: PropTypes.array,
+    infoJSON: PropTypes.object,
     start: PropTypes.number,
     end: PropTypes.number
   }

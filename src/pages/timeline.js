@@ -272,6 +272,7 @@ class Timeline extends React.Component {
                 </Grid>
                 <Grid item container direction='row'>
                   <div className="browse-tour"></div>
+                  <div className="filter-tour"></div>
                   <Grid item xs={12}>
                     <div style={{textAlign: 'center'}}>
                       <Button
@@ -282,7 +283,6 @@ class Timeline extends React.Component {
                         Filter Timeline
                       </Button>
                     </div>
-                    <div className="filter-tour"></div>
                     { _.isEmpty(sortedEvents) ?
                       <div className={classes.loader}>
                         <CircularProgress size={60}/>
