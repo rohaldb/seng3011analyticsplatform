@@ -5,6 +5,7 @@ import { withStyles } from 'material-ui'
 import '../assets/login.css'
 import { fb } from '../config'
 import _ from 'lodash'
+import { base } from '../config'
 import Dialog, {
   DialogContent,
   DialogTitle
@@ -46,7 +47,8 @@ class Login extends React.Component {
       password: '',
       confirmpass: '',
       industry: 'Aviation',
-      invalid: ''
+      invalid: '',
+      users: []
     }
   }
 
@@ -105,26 +107,50 @@ class Login extends React.Component {
       confirmpass
     } = this.state
 
-    if (username.match(/^\s*$/) || email.match(/^\s*$/) || password === '' || confirmpass === '') {
-      this.setState({invalid: 'Please complete all fields.'})
-    } else if (username.length < 6) {
-      this.setState({invalid: 'Username is too short. At least 3 characters required.'})
-    } else if (!email.match(/^[^@]+@[^@.][^@]*(\.[^@.]{2,})+$/)) {
-      this.setState({invalid: 'Email is invalid.'})
-    } else if (password.length < 6) {
-      this.setState({invalid: 'Password is too short. At least 6 characters required.'})
-    } else if (password !== confirmpass) {
-      this.setState({invalid: 'Passwords do not match.'})
-    } else {
-      fb.database().ref('users/' + Math.random().toString(36).substr(2, 5)).set({
-        username,
-        email,
-        password,
-        admin: false
+    base.fetch('users', {
+      context: this,
+    }).then((users) => {
+      this.ref = base.syncState(`timeline`, {
+        context: this,
+        state: 'users',
       })
 
-      this.handleClose()
-    }
+      var err = ''
+      Object.entries(users).forEach(
+        ([key, value]) => {
+            if (value.username === username && err === '') {
+              err = 'Username is taken.'
+            } else if (value.email === email && err === '') {
+              err = 'An account with this email already exists.'
+            }
+          }
+      )
+
+      if (username.match(/^\s*$/) || email.match(/^\s*$/) || password === '' || confirmpass === '') {
+        this.setState({invalid: 'Please complete all fields.'})
+      } else if (username.length < 3) {
+        this.setState({invalid: 'Username is too short. At least 3 characters required.'})
+      } else if (err.match(/username/i)) {
+        this.setState({invalid: err})
+      } else if (!email.match(/^[^@]+@[^@.][^@]*(\.[^@.]{2,})+$/)) {
+        this.setState({invalid: 'Email is invalid.'})
+      } else if (err.match(/email/i)) {
+        this.setState({invalid: err})
+      } else if (password.length < 6) {
+        this.setState({invalid: 'Password is too short. At least 6 characters required.'})
+      } else if (password !== confirmpass) {
+        this.setState({invalid: 'Passwords do not match.'})
+      } else {
+        fb.database().ref('users/' + Math.random().toString(36).substr(2, 5)).set({
+          username,
+          email,
+          password,
+          admin: false
+        })
+        this.handleClose()
+      }
+
+    })
   }
 
   render() {
@@ -180,7 +206,7 @@ class Login extends React.Component {
               <TextField
                 autoFocus
                 margin="dense"
-                id="name"
+                id="email"
                 label="Email Address"
                 type="email"
                 fullWidth
@@ -189,7 +215,7 @@ class Login extends React.Component {
               <TextField
                 autoFocus
                 margin="dense"
-                id="name"
+                id="password"
                 label="Password"
                 type="password"
                 onChange={this.handleChange('password')}
@@ -198,7 +224,7 @@ class Login extends React.Component {
               <TextField
                 autoFocus
                 margin="dense"
-                id="name"
+                id="confirm-password"
                 label="Confirm Password"
                 type="password"
                 onChange={this.handleChange('confirmpass')}
