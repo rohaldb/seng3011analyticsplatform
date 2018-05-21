@@ -4,7 +4,6 @@ import withRoot from '../withRoot'
 import { withStyles } from 'material-ui'
 import '../assets/login.css'
 import { fb } from '../config'
-import _ from 'lodash'
 import { base } from '../config'
 import Dialog, {
   DialogContent,
@@ -38,8 +37,9 @@ class Login extends React.Component {
       userId: null,
       isValid: true,
 
-      /* sign-up modal */
+      /* modal flags */
       open: false,
+      openReset: false,
 
       /* signup fields */
       username: '',
@@ -48,7 +48,11 @@ class Login extends React.Component {
       confirmpass: '',
       industry: 'Aviation',
       invalid: '',
-      users: []
+      users: [],
+
+      /* reset password form*/
+      emailReset: '',
+      invalidReset: ''
     }
   }
 
@@ -66,9 +70,14 @@ class Login extends React.Component {
     this.setState({open: true})
   }
 
+  handleOpenReset = () => {
+    this.setState({openReset: true})
+  }
+
   handleClose = () => {
     this.resetFields()
     this.setState({open: false})
+    this.setState({openReset: false})
   }
 
   resetFields = () => {
@@ -78,7 +87,9 @@ class Login extends React.Component {
       password: '',
       confirmpass: '',
       industry: 'Aviation',
-      invalid: ''
+      invalid: '',
+      emailReset: '',
+      invalidReset: ''
     })
   }
 
@@ -97,6 +108,16 @@ class Login extends React.Component {
         this.setState({isValid: false})
       }
     })
+  }
+
+  resetPass = () => {
+    let { emailReset } = this.state
+    if (!emailReset.match(/^[^@]+@[^@.][^@]*(\.[^@.]{2,})+$/)) {
+      this.setState({invalidReset: 'Email is invalid.'})
+    } else {
+      /* would normally actually reset the password here ... */
+      this.handleClose()
+    }
   }
 
   signup = () => {
@@ -176,9 +197,11 @@ class Login extends React.Component {
           </button>
         </div>
         <div className='form_other'>
-          <Button style={{color: '#AB47B8'}}>forgot password?</Button>
           <Button style={{color: '#AB47B8'}}
-          onClick={() => this.handleOpen()}
+            onClick={() => this.handleOpenReset()}
+          >Forgot Password?</Button>
+          <Button style={{color: '#AB47B8'}}
+            onClick={() => this.handleOpen()}
           >Join Now</Button>
         </div>
         {this.state.isValid ? null : <p> Username or password is incorrect, please try again. </p>}
@@ -252,6 +275,40 @@ class Login extends React.Component {
 
             <Button className='form_button' onClick={this.signup} color="primary" autoFocus>
               Sign Up
+            </Button>
+
+          </DialogContent>
+        </Dialog>
+        <Dialog
+          open={this.state.openReset}
+          onClose={() => this.handleClose()}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+          maxWidth={false}
+        >
+          <DialogTitle id="alert-dialog-title" style={{textAlign: 'center', background: 'linear-gradient(60deg, #66bb6a, #338a3e)'}}>Reset Password</DialogTitle>
+          <DialogContent>
+              <br></br>
+              <Typography gutterBottom variant="subheading">
+                Enter the email associated with your account to reset your password.
+              </Typography>
+              <TextField
+                autoFocus
+                margin="dense"
+                id="email"
+                label="Email Address"
+                type="email"
+                fullWidth
+                onChange={this.handleChange('emailReset')}
+              />
+            {this.state.invalidReset !== '' ?
+              <Typography gutterBottom variant="subheading">
+                <i>{this.state.invalidReset}</i>
+              </Typography>
+            : null}
+
+            <Button className='form_button' onClick={this.resetPass} color="primary" autoFocus>
+              Reset Password
             </Button>
 
           </DialogContent>
