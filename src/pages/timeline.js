@@ -5,7 +5,6 @@ import withRoot from '../withRoot'
 import { CircularProgress } from 'material-ui/Progress'
 import { VerticalTimeline, VerticalTimelineElement } from 'react-vertical-timeline-component'
 import 'react-vertical-timeline-component/style.min.css'
-import { Event } from 'material-ui-icons'
 import { base } from '../config'
 import _ from 'lodash'
 import { Link } from 'react-router-dom'
@@ -27,8 +26,8 @@ import { TimelineTour } from '../tour'
 import { getDate } from '../time'
 import { Navigation } from '../components'
 
-import AviationBG from '../assets/backgrounds/aviation.jpg'
-import TechBG from '../assets/backgrounds/tech.jpg'
+//import AviationBG from '../assets/backgrounds/aviation.jpg'
+//import TechBG from '../assets/backgrounds/tech.jpg'
 
 const styles = theme => ({
   root: {

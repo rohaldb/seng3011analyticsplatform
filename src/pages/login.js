@@ -8,12 +8,12 @@ import Dialog, {
   DialogContent,
   DialogTitle
 } from 'material-ui/Dialog'
-import Button from '@material-ui/core/Button';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import Radio from '@material-ui/core/Radio';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button'
+import RadioGroup from '@material-ui/core/RadioGroup'
+import Radio from '@material-ui/core/Radio'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
+import DialogContentText from '@material-ui/core/DialogContentText'
+import TextField from '@material-ui/core/TextField'
 
 const styles = theme => ({})
 
@@ -23,8 +23,7 @@ const options = [
   'Sports',
   'Social Media',
   'Commodities',
-];
-
+]
 
 class Login extends React.Component {
 
@@ -38,19 +37,17 @@ class Login extends React.Component {
       open: false,
       value: 'Tech',
     }
-
     this.handleOpen = this.handleOpen.bind(this)
     this.handleClose = this.handleClose.bind(this)
-
   }
 
   handleClickListItem = () => {
-      this.setState({ open: true });
-  };
+    this.setState({ open: true })
+  }
 
   handleChange = (event, value) => {
-      this.setState({ value });
-  };
+    this.setState({ value })
+  }
 
   handleOpen = () => {
     this.setState({open: true})
@@ -155,7 +152,7 @@ class Login extends React.Component {
             </DialogContentText>
             <RadioGroup
               ref={node => {
-                this.radioGroup = node;
+                this.radioGroup = node
               }}
               aria-label="ringtone"
               name="ringtone"
@@ -174,7 +171,7 @@ class Login extends React.Component {
           </DialogContent>
         </Dialog>
       </div>
-    );
+    )
   }
 
 }
