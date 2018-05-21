@@ -14,6 +14,7 @@ import Typography from 'material-ui/Typography'
 import { CardContent } from 'material-ui/Card'
 import Radio from '@material-ui/core/Radio';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import DialogContentText from '@material-ui/core/DialogContentText';
 import TextField from '@material-ui/core/TextField';
 
 const styles = theme => ({})
@@ -135,6 +136,9 @@ class Login extends React.Component {
                 type="password"
                 fullWidth
               />
+            <DialogContentText style={{color: 'black', fontStyle: 'bold', marginTop: '20px'}}>
+                Favourite Industry
+            </DialogContentText>
             <RadioGroup
               ref={node => {
                 this.radioGroup = node;
