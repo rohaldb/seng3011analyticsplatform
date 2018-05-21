@@ -27,6 +27,9 @@ import { TimelineTour } from '../tour'
 import { getDate } from '../time'
 import { Navigation } from '../components'
 
+import AviationBG from '../assets/backgrounds/aviation.jpg'
+import TechBG from '../assets/backgrounds/tech.jpg'
+
 const styles = theme => ({
   root: {
     backgroundColor: 'rgb(227,227,227)',
@@ -292,8 +295,8 @@ class Timeline extends React.Component {
                               key={i}
                               className='vertical-timeline-element--work'
                               date={`${moment(sortedEvents[k].start_date * 1000).format('DD MMM YY')} - ${getDate(sortedEvents[k].end_date)}`}
-                              iconStyle={{ background: bgCols[i % bgCols.length], color: '#fff' }}
-                              icon={<Event />}
+                              iconStyle={{ background: bgCols[i % bgCols.length], color: '#fff', backgroundImage: `url("${currentUser.fav}")` }}
+                              // icon={<Event />}
                             >
                               <Link to={{
                                 pathname: `event/${k}`,
