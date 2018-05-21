@@ -288,7 +288,7 @@ class Login extends React.Component {
           aria-describedby="alert-dialog-description"
           maxWidth={false}
         >
-          <DialogTitle id="alert-dialog-title" style={{textAlign: 'center', background: 'linear-gradient(60deg, #66bb6a, #338a3e)'}}>Reset Password</DialogTitle>
+          <DialogTitle id="alert-dialog-title" style={{textAlign: 'center', background: '#AB47B8'}}>Reset Password</DialogTitle>
           <DialogContent>
               <br></br>
               <Typography gutterBottom variant="subheading">
