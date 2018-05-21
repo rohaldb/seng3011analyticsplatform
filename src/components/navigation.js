@@ -119,6 +119,7 @@ class Navigation extends React.Component {
           onBack={(step) => this.setState({tourStep: step})}
           onCancel={() => this.setState({isTourActive: false})}
           steps={this.props.tour}
+          closeButtonText={"X"}
         />
       </div>
     )
