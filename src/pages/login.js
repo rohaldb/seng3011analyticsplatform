@@ -133,21 +133,23 @@ class Login extends React.Component {
         <div className='form_logo'>
           Event<span>S</span>tock
         </div>
+        <div className='form_title'>
+            The who, why and how of the <span>Financial</span> Markets
+        </div>
+
         <div className='form_items'>
           <div className='form_inputs'>
-            <div className='form_inputs'>
-              <label>Username</label>
-              <input ref="name" type='text' required/>
-            </div>
+            <label>Username</label>
+            <input ref="name" type='text' required/>
           </div>
           <div className='form_inputs'>
             <input
               type='password'/>
             <label>Password</label>
           </div>
-          <button className='form_button' onClick={(e) => this.getUserId(e, this.refs.name.value)}>
+          <Button variant="raised" className='form_button' onClick={(e) => this.getUserId(e, this.refs.name.value)}>
             Log In
-          </button>
+          </Button>
         </div>
         <div className='form_other'>
           <Button style={{color: '#AB47B8'}}>forgot password?</Button>
@@ -163,7 +165,7 @@ class Login extends React.Component {
           aria-describedby="alert-dialog-description"
           maxWidth={false}
         >
-          <DialogTitle id="alert-dialog-title" style={{textAlign: 'center', background: 'linear-gradient(60deg, #66bb6a, #338a3e)'}}>Create an Account</DialogTitle>
+          <DialogTitle id="alert-dialog-title" style={{textAlign: 'center', background: '#AB47B8'}}>Create an Account</DialogTitle>
           <DialogContent>
               <TextField
                 autoFocus
@@ -237,3 +239,10 @@ class Login extends React.Component {
 }
 
 export default withRouter(withRoot(withStyles(styles)(Login)))
+// <div className='form_inputs'>
+//   <label>Username</label>
+//   <input ref="name" type='text' required/>
+// </div>
+//           <Button variant="raised" className='form_button' onClick={(e) => this.getUserId(e, this.refs.name.value)}>
+            // Log In
+          // </Button>
