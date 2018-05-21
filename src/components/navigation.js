@@ -100,16 +100,20 @@ class Navigation extends React.Component {
           <Toolbar>
             <div style={{flex: 1}}>
             {this.props.location.pathname.startsWith('/event') ?
-              <IconButton className={classes.menuicon} color='inherit' aria-label='menu'
-                onClick={() => this.props.history.goBack()}
-                >
-                <Timeline />
-              </IconButton>
+              <Tooltip id="tooltip-timeline" title="Timeline">
+                <IconButton className={classes.menuicon} color='inherit' aria-label='menu'
+                  onClick={() => this.props.history.goBack()}
+                  >
+                  <Timeline />
+                </IconButton>
+              </Tooltip>
               : null
             }
-            <IconButton className={classes.menuicon} color='inherit' aria-label='menu' onClick={this.startTour}>
-              <Help />
-            </IconButton>
+            <Tooltip id="tooltip-tour" title="Site Tour">
+              <IconButton className={classes.menuicon} color='inherit' aria-label='menu' onClick={this.startTour}>
+                <Help />
+              </IconButton>
+            </Tooltip>
 
 
             {this.props.backgroundImg == 'av' ?
