@@ -16,7 +16,7 @@ const TimelineTour = [
     step: 1,
     selector: ".welcome-tour",
     title: <div style={styles.title}>1. Welcome to EventStock!</div>,
-    body: <div style={styles.body}>To continue the site tour, press "Next". To exit the tour, press "X".</div>,
+    body: <div style={styles.body}>To continue the site tour, press "Next". To exit the tour, press "Close".</div>,
   },
   {
     step: 2,
