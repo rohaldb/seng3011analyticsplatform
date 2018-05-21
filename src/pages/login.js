@@ -21,9 +21,10 @@ const styles = theme => ({})
 
 const options = [
   'Aviation',
-  'Tech',
-  'Sports',
+  'Financial',
+  'Gaming',
   'Social Media',
+  'Technology',
   'Commodities',
 ]
 

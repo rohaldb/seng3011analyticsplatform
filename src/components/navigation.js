@@ -125,8 +125,8 @@ class Navigation extends React.Component {
                     <a className={classes.fav} onClick={() => {this.filterFavourites('aviation')}}>Aviation</a>
                 </Tooltip>
                 :
-                <Tooltip id="tooltip-fab" title="Your Favorite Industry is Gaming">
-                      <a className={classes.fav} onClick={() => {this.filterFavourites('gaming')}}>Gaming</a>
+                <Tooltip id="tooltip-fab" title="Your Favorite Industry is Technology">
+                      <a className={classes.fav} onClick={() => {this.filterFavourites('technology')}}>Technology</a>
                 </Tooltip>
             }
 
