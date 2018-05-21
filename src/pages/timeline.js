@@ -293,7 +293,7 @@ class Timeline extends React.Component {
                               key={i}
                               className='vertical-timeline-element--work'
                               date={`${moment(sortedEvents[k].start_date * 1000).format('DD MMM YY')} - ${getDate(sortedEvents[k].end_date)}`}
-                              iconStyle={ currentUser.fav == "av" ?  { background: bgCols[i % bgCols.length], color: '#fff', backgroundImage: `url("${AviationBG}")` } :  { background: bgCols[i % bgCols.length], color: '#fff', backgroundImage: `url("${TechBG}")` } }
+                              iconStyle={ currentUser.fav === "av" ?  { background: bgCols[i % bgCols.length], color: '#fff', backgroundImage: `url("${AviationBG}")` } :  { background: bgCols[i % bgCols.length], color: '#fff', backgroundImage: `url("${TechBG}")` } }
                               // icon={<Event />}
                             >
                               <Link to={{
