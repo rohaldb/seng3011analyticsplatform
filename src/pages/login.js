@@ -4,6 +4,7 @@ import withRoot from '../withRoot'
 import { withStyles } from 'material-ui'
 import '../assets/login.css'
 import { fb } from '../config'
+import _ from 'lodash'
 import Dialog, {
   DialogContent,
   DialogTitle
@@ -14,6 +15,7 @@ import Radio from '@material-ui/core/Radio'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import DialogContentText from '@material-ui/core/DialogContentText'
 import TextField from '@material-ui/core/TextField'
+import Typography from 'material-ui/Typography'
 
 const styles = theme => ({})
 
@@ -34,19 +36,28 @@ class Login extends React.Component {
       name: null,
       userId: null,
       isValid: true,
+
+      /* sign-up modal */
       open: false,
-      value: 'Tech',
+
+      /* signup fields */
+      username: '',
+      email: '',
+      password: '',
+      confirmpass: '',
+      industry: 'Aviation',
+      invalid: ''
     }
-    this.handleOpen = this.handleOpen.bind(this)
-    this.handleClose = this.handleClose.bind(this)
   }
 
   handleClickListItem = () => {
     this.setState({ open: true })
   }
 
-  handleChange = (event, value) => {
-    this.setState({ value })
+  handleChange = name => event => {
+    this.setState({
+      [name]: event.target.value,
+    })
   }
 
   handleOpen = () => {
@@ -54,7 +65,19 @@ class Login extends React.Component {
   }
 
   handleClose = () => {
+    this.resetFields()
     this.setState({open: false})
+  }
+
+  resetFields = () => {
+    this.setState({
+      username: '',
+      email: '',
+      password: '',
+      confirmpass: '',
+      industry: 'Aviation',
+      invalid: ''
+    })
   }
 
   getUserId = (username) => {
@@ -72,6 +95,36 @@ class Login extends React.Component {
         this.setState({isValid: false})
       }
     })
+  }
+
+  signup = () => {
+    let {
+      username,
+      email,
+      password,
+      confirmpass
+    } = this.state
+
+    if (username.match(/^\s*$/) || email.match(/^\s*$/) || password === '' || confirmpass === '') {
+      this.setState({invalid: 'Please complete all fields.'})
+    } else if (username.length < 6) {
+      this.setState({invalid: 'Username is too short. At least 3 characters required.'})
+    } else if (!email.match(/^[^@]+@[^@.][^@]*(\.[^@.]{2,})+$/)) {
+      this.setState({invalid: 'Email is invalid.'})
+    } else if (password.length < 6) {
+      this.setState({invalid: 'Password is too short. At least 6 characters required.'})
+    } else if (password !== confirmpass) {
+      this.setState({invalid: 'Passwords do not match.'})
+    } else {
+      fb.database().ref('users/' + Math.random().toString(36).substr(2, 5)).set({
+        username,
+        email,
+        password,
+        admin: false
+      })
+
+      this.handleClose()
+    }
   }
 
   render() {
@@ -122,6 +175,7 @@ class Login extends React.Component {
                 label="Username"
                 type="username"
                 fullWidth
+                onChange={this.handleChange('username')}
               />
               <TextField
                 autoFocus
@@ -130,6 +184,7 @@ class Login extends React.Component {
                 label="Email Address"
                 type="email"
                 fullWidth
+                onChange={this.handleChange('email')}
               />
               <TextField
                 autoFocus
@@ -137,6 +192,7 @@ class Login extends React.Component {
                 id="name"
                 label="Password"
                 type="password"
+                onChange={this.handleChange('password')}
                 fullWidth
               />
               <TextField
@@ -144,7 +200,8 @@ class Login extends React.Component {
                 margin="dense"
                 id="name"
                 label="Confirm Password"
-                type="confim-password"
+                type="password"
+                onChange={this.handleChange('confirmpass')}
                 fullWidth
               />
             <DialogContentText style={{color: 'black', fontStyle: 'bold', marginTop: '20px'}}>
@@ -156,15 +213,21 @@ class Login extends React.Component {
               }}
               aria-label="ringtone"
               name="ringtone"
-              value={this.state.value}
-              onChange={this.handleChange}
+              value={this.state.industry}
+              onChange={this.handleChange('industry')}
             >
               {options.map(option => (
                 <FormControlLabel value={option} key={option} control={<Radio />} label={option} />
               ))}
             </RadioGroup>
 
-            <Button className='form_button' onClick={this.handleClose} color="primary" autoFocus>
+            {this.state.invalid !== '' ?
+              <Typography gutterBottom variant="subheading">
+                <i>{this.state.invalid}</i>
+              </Typography>
+            : null}
+
+            <Button className='form_button' onClick={this.signup} color="primary" autoFocus>
               Sign Up
             </Button>
 
