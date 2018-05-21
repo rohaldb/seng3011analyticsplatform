@@ -12,11 +12,11 @@ import PropTypes from 'prop-types'
 import { withRouter } from 'react-router'
 import NewEventForm from './newEventForm'
 //import hopscotch from 'hopscotch'
+import Tooltip from '@material-ui/core/Tooltip'
 import Tour from "react-user-tour"
 
 import AviationBG from '../assets/backgrounds/aviation.jpg'
 import TechBG from '../assets/backgrounds/tech.jpg'
-import PharamBG from '../assets/backgrounds/pharma.jpg'
 
 const styles = {
   root: {
@@ -28,19 +28,15 @@ const styles = {
     marginRight: 20
   },
   menuButton: {
-    magin: 20
- },
- avImg: {
-    width: '30px',
-    height: '30px',
-    backgroundImage: `url("${PharamBG}")`,
- },
- techImg: {
-    width: '30px',
-    height: '30px',
-    backgroundImage: `url("${TechBG}")`,
- }
-
+      magin: 20
+  },
+  fav: {
+      marginTop: '10px',
+      fontSize: '20px'
+  },
+  menuicon: {
+      marginLeft: '30px'
+  }
 }
 
 /*
@@ -74,6 +70,7 @@ class Navigation extends React.Component {
   constructor (props) {
     super(props)
     this.startTour = this.startTour.bind(this)
+    this.toggle = this.toggle.bind(this)
   }
 
   componentDidMount () {
@@ -92,6 +89,9 @@ class Navigation extends React.Component {
     //})
     //hopscotch.startTour(tour)
     this.setState({isTourActive: true})
+  }
+  toggle() {
+
   }
 
   render () {
@@ -115,12 +115,19 @@ class Navigation extends React.Component {
               <Help />
             </IconButton>
 
+
             {this.props.backgroundImg == 'av' ?
-                <IconButton className={classes.avImg} color='inherit' aria-label='menu'>
-                </IconButton>
+                <Tooltip id="tooltip-fab" title="Your Favorite Industry is Aviation">
+                    <IconButton className={classes.menuicon} color='inherit' aria-label='menu'>
+                      Aviation
+                    </IconButton>
+                </Tooltip>
                 :
-                <IconButton className={classes.techImg} color='inherit' aria-label='menu'>
-                </IconButton>
+                <Tooltip id="tooltip-fab" title="Your Favorite Industry is Technology">
+                    <IconButton className={classes.menuicon} color='inherit' aria-label='menu'>
+                      Technology
+                    </IconButton>
+                </Tooltip>
             }
 
            </div>
