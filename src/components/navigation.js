@@ -115,8 +115,7 @@ class Navigation extends React.Component {
               </IconButton>
             </Tooltip>
 
-
-            {this.props.backgroundImg == 'av' ?
+            {this.props.backgroundImg === 'av' ?
                 <Tooltip id="tooltip-fab" title="Your Favorite Industry is Aviation">
                     <a className={classes.fav}>Aviation</a>
                 </Tooltip>

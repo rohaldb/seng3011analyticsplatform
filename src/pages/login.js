@@ -34,6 +34,7 @@ class Login extends React.Component {
     this.database = fb.database().ref()
     this.state = {
       name: null,
+      pass: null,
       userId: null,
       isValid: true,
 
@@ -93,21 +94,25 @@ class Login extends React.Component {
     })
   }
 
-  getUserId = (username) => {
-    this.database.child('users').orderByChild('username').equalTo(this.refs.name.value).on("value", snap => {
-      if (snap.val() != null) {
-        snap.forEach(data => {
-          this.props.history.push({
-            pathname: `/timeline`,
-            state: {
-              currentUser: data.val()
-            }
+  getUserId = (username, password) => {
+    if (this.refs.pass.value.length < 1) {
+      this.setState({isValid: false})
+    } else {
+      this.database.child('users').orderByChild('username').equalTo(this.refs.name.value).on("value", snap => {
+        if (snap.val() != null) {
+          snap.forEach(data => {
+            this.props.history.push({
+              pathname: `/timeline`,
+              state: {
+                currentUser: data.val()
+              }
+            })
           })
-        })
-      } else {
-        this.setState({isValid: false})
-      }
-    })
+        } else {
+          this.setState({isValid: false})
+        }
+      })
+    }
   }
 
   resetPass = () => {
@@ -125,7 +130,8 @@ class Login extends React.Component {
       username,
       email,
       password,
-      confirmpass
+      confirmpass,
+      industry
     } = this.state
 
     base.fetch('users', {
@@ -166,7 +172,8 @@ class Login extends React.Component {
           username,
           email,
           password,
-          admin: false
+          admin: false,
+          fav: industry
         })
         this.handleClose()
       }
@@ -189,22 +196,20 @@ class Login extends React.Component {
           <form autoComplete="off">
             <div className='form_inputs'>
               <label style={{marginBottom: '20px', fontSize: '20px'}}>Username</label>
-              <input style={{fontSize: '16px'}} ref="name" type='text' required/>
+              <input style={{fontSize: '16px'}} ref='name' type='text' required/>
             </div>
             <div className='form_inputs'>
               <label style={{marginBottom: '20px', fontSize: '20px'}}>Password</label>
-              <input
-                style={{fontSize: '16px'}} 
-                type='password'/>
+              <input style={{fontSize: '16px'}} ref='pass' type='password' required/>
             </div>
           </form>
-          <Button variant="raised" color="secondary" className='form_button' style={{margin: 10}} onClick={(e) => this.getUserId(e, this.refs.name.value)}>
+          <Button variant="raised" color="secondary" className='form_button' style={{margin: 10}} onClick={(e) => this.getUserId(e, this.refs.name.value, this.refs.pass.value)}>
             Log In
           </Button>
           <Button variant="raised" color="secondary" className='form_button' style={{margin: 10}}
             onClick={() => this.handleOpenReset()}
              >forgot password?</Button>
-          <Button variant="raised" color="secondary" className='form_button' style={{margin: 10}} 
+          <Button variant="raised" color="secondary" className='form_button' style={{margin: 10}}
           onClick={() => this.handleOpen()}
           >Join Now</Button>
         </div>
@@ -219,6 +224,7 @@ class Login extends React.Component {
           <DialogTitle id="alert-dialog-title" style={{textAlign: 'center', background: '#AB47B8'}}>Create an Account</DialogTitle>
           <DialogContent>
               <TextField
+                required
                 autoFocus
                 margin="dense"
                 id="name"
@@ -228,6 +234,7 @@ class Login extends React.Component {
                 onChange={this.handleChange('username')}
               />
               <TextField
+                required
                 autoFocus
                 margin="dense"
                 id="email"
@@ -237,6 +244,7 @@ class Login extends React.Component {
                 onChange={this.handleChange('email')}
               />
               <TextField
+                required
                 autoFocus
                 margin="dense"
                 id="password"
@@ -246,6 +254,7 @@ class Login extends React.Component {
                 fullWidth
               />
               <TextField
+                required
                 autoFocus
                 margin="dense"
                 id="confirm-password"
@@ -297,6 +306,7 @@ class Login extends React.Component {
                 Enter the email associated with your account to reset your password.
               </Typography>
               <TextField
+                required
                 autoFocus
                 margin="dense"
                 id="email"
@@ -324,10 +334,3 @@ class Login extends React.Component {
 }
 
 export default withRouter(withRoot(withStyles(styles)(Login)))
-// <div className='form_inputs'>
-//   <label>Username</label>
-//   <input ref="name" type='text' required/>
-// </div>
-//           <Button variant="raised" className='form_button' onClick={(e) => this.getUserId(e, this.refs.name.value)}>
-            // Log In
-          // </Button>

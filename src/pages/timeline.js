@@ -144,10 +144,10 @@ class Timeline extends React.Component {
     let filterCategories = this.state.filterCategories
     for (let category in filterCategories) {
       if (filterCategories.hasOwnProperty(category)) {
-        filterCategories[category] = option;
+        filterCategories[category] = option
       }
     }
-    this.setState({ filterCategories });
+    this.setState({ filterCategories })
   }
 
   render () {

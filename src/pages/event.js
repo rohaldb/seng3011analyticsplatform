@@ -214,9 +214,8 @@ class Event extends React.Component {
   getInfo () {
     const companies = this.props.eventData.related_companies
     const eventInfo = this.props.eventData
-
-    const start = moment(eventInfo.start_date * 1000).subtract(7, 'days');
-    const end = moment.min([moment(eventInfo.end_date * 1000).add(7, 'days'), moment()]);
+    const start = moment(eventInfo.start_date * 1000).subtract(7, 'days')
+    const end = moment.min([moment(eventInfo.end_date * 1000).add(7, 'days'), moment()])
     var dates = `start_date=${start.format('YYYY-MM-DD')}`
     if (eventInfo.end_date !== 'ongoing') {
       dates += `&end_date=${end.format('YYYY-MM-DD')}`

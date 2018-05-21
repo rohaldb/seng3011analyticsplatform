@@ -155,16 +155,15 @@ class NewEventForm extends React.Component {
   }
 
   handleClick = () => {
-    this.setState({ snackbarOpen: true });
-  };
+    this.setState({ snackbarOpen: true })
+  }
 
   snackbarClose = (event, reason) => {
     if (reason === 'clickaway') {
-      return;
+      return
     }
-
-    this.setState({ snackbarOpen: false });
-  };
+    this.setState({ snackbarOpen: false })
+  }
 
   render () {
     const { classes } = this.props
@@ -314,7 +313,7 @@ class NewEventForm extends React.Component {
         ContentProps={{
           'aria-describedby': 'message-id',
         }}
-        message={<span id="message-id">A new event has been added to your favourite category.</span>}
+        message={<span id="message-id">A new event has been added.</span>}
         action={[
           <IconButton
             key="close"
