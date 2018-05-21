@@ -14,6 +14,8 @@ import Dialog, {
   DialogActions
 } from 'material-ui/Dialog'
 
+import { Close } from 'material-ui-icons'
+import Snackbar from '@material-ui/core/Snackbar'
 import ChipInput from 'material-ui-chip-input'
 import Button from 'material-ui/Button'
 import TextField from 'material-ui/TextField'
@@ -54,7 +56,8 @@ class NewEventForm extends React.Component {
     category: 'other',
     companyCode: '',
     companyName: '',
-    invalid: ''
+    invalid: '',
+    snackbarOpen: false
   }
 
   handleClose = () => {
@@ -73,7 +76,7 @@ class NewEventForm extends React.Component {
       category: 'other',
       companyCode: '',
       companyName: '',
-      invalid: ''
+      invalid: '',
     })
   }
 
@@ -110,6 +113,7 @@ class NewEventForm extends React.Component {
         })
 
         this.resetFields()
+        this.setState({snackbarOpen: true})
         this.props.closeCallback()
       }
     }
@@ -150,11 +154,24 @@ class NewEventForm extends React.Component {
     this.setState({related_companies})
   }
 
+  handleClick = () => {
+    this.setState({ snackbarOpen: true });
+  };
+
+  snackbarClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    this.setState({ snackbarOpen: false });
+  };
+
   render () {
     const { classes } = this.props
     const { related_companies } = this.state
 
     return (
+      <div>
       <Dialog open={this.props.isOpen} onClose={this.handleClose} aria-labelledby="simple-dialog-title" >
         <DialogTitle id="simple-dialog-title">Create New Event</DialogTitle>
         <DialogContent>
@@ -286,6 +303,31 @@ class NewEventForm extends React.Component {
             </Button>
           </DialogActions>
       </Dialog>
+      <Snackbar
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+        open={this.state.snackbarOpen}
+        autoHideDuration={4000}
+        onClose={this.snackbarClose}
+        ContentProps={{
+          'aria-describedby': 'message-id',
+        }}
+        message={<span id="message-id">A new event has been added to your favourite category.</span>}
+        action={[
+          <IconButton
+            key="close"
+            aria-label="Close"
+            color="inherit"
+            className={classes.close}
+            onClick={this.snackbarClose}
+          >
+            <Close />
+          </IconButton>,
+        ]}
+      />
+    </div>
     )
   }
 }

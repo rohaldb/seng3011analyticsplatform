@@ -29,6 +29,9 @@ const styles = {
   // },
   menuButton: {
       magin: 20
+  },
+  fav: {
+    fontSize: 12
   }
 }
 
