@@ -29,13 +29,6 @@ const styles = {
   },
   menuButton: {
       magin: 20
-  },
-  fav: {
-      marginTop: '10px',
-      fontSize: '20px'
-  },
-  menuicon: {
-      marginLeft: '30px'
   }
 }
 
@@ -118,15 +111,11 @@ class Navigation extends React.Component {
 
             {this.props.backgroundImg == 'av' ?
                 <Tooltip id="tooltip-fab" title="Your Favorite Industry is Aviation">
-                    <IconButton className={classes.menuicon} color='inherit' aria-label='menu'>
-                      Aviation
-                    </IconButton>
+                    <a  className={classes.fav}>Aviation</a>
                 </Tooltip>
                 :
-                <Tooltip id="tooltip-fab" title="Your Favorite Industry is Technology">
-                    <IconButton className={classes.menuicon} color='inherit' aria-label='menu'>
-                      Technology
-                    </IconButton>
+                <Tooltip id="tooltip-fab" title="Your Favorite Industry is Gaming">
+                      <a  className={classes.fav}>Gaming</a>
                 </Tooltip>
             }
 
@@ -151,7 +140,6 @@ class Navigation extends React.Component {
           onBack={(step) => this.setState({tourStep: step})}
           onCancel={() => this.setState({isTourActive: false})}
           steps={this.props.tour}
-          closeButtonText={"X"}
         />
       </div>
     )
