@@ -87,11 +87,6 @@ class Navigation extends React.Component {
         <AppBar position='static' color='primary'>
           <Toolbar>
             <div style={{flex: 1}}>
-            <IconButton className={classes.menuicon} color='inherit' aria-label='menu'
-              onClick={() => this.props.history.push('/')}
-              >
-              <Home />
-            </IconButton>
             {this.props.location.pathname.startsWith('/event') ?
               <IconButton className={classes.menuicon} color='inherit' aria-label='menu'
                 onClick={() => this.props.history.goBack()}
