@@ -12,7 +12,11 @@ import PropTypes from 'prop-types'
 import { withRouter } from 'react-router'
 import NewEventForm from './newEventForm'
 //import hopscotch from 'hopscotch'
+import Tooltip from '@material-ui/core/Tooltip'
 import Tour from "react-user-tour"
+
+import AviationBG from '../assets/backgrounds/aviation.jpg'
+import TechBG from '../assets/backgrounds/tech.jpg'
 
 const styles = {
   root: {
@@ -24,7 +28,14 @@ const styles = {
     marginRight: 20
   },
   menuButton: {
-    magin: 20
+      magin: 20
+  },
+  fav: {
+      marginTop: '10px',
+      fontSize: '20px'
+  },
+  menuicon: {
+      marginLeft: '30px'
   }
 }
 
@@ -46,6 +57,7 @@ class Navigation extends React.Component {
 
   static propTypes = {
     isAdmin: PropTypes.bool.isRequired,
+    backgroundImg: PropTypes.string.isRequired,
     //tour: PropTypes.object
   }
 
@@ -58,6 +70,7 @@ class Navigation extends React.Component {
   constructor (props) {
     super(props)
     this.startTour = this.startTour.bind(this)
+    this.toggle = this.toggle.bind(this)
   }
 
   componentDidMount () {
@@ -76,6 +89,9 @@ class Navigation extends React.Component {
     //})
     //hopscotch.startTour(tour)
     this.setState({isTourActive: true})
+  }
+  toggle() {
+
   }
 
   render () {
@@ -98,6 +114,22 @@ class Navigation extends React.Component {
             <IconButton className={classes.menuicon} color='inherit' aria-label='menu' onClick={this.startTour}>
               <Help />
             </IconButton>
+
+
+            {this.props.backgroundImg == 'av' ?
+                <Tooltip id="tooltip-fab" title="Your Favorite Industry is Aviation">
+                    <IconButton className={classes.menuicon} color='inherit' aria-label='menu'>
+                      Aviation
+                    </IconButton>
+                </Tooltip>
+                :
+                <Tooltip id="tooltip-fab" title="Your Favorite Industry is Technology">
+                    <IconButton className={classes.menuicon} color='inherit' aria-label='menu'>
+                      Technology
+                    </IconButton>
+                </Tooltip>
+            }
+
            </div>
            <div>
              { this.props.isAdmin ?
@@ -119,6 +151,7 @@ class Navigation extends React.Component {
           onBack={(step) => this.setState({tourStep: step})}
           onCancel={() => this.setState({isTourActive: false})}
           steps={this.props.tour}
+          closeButtonText={"X"}
         />
       </div>
     )
