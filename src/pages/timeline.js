@@ -26,6 +26,8 @@ import { TimelineTour } from '../tour'
 import { getDate } from '../time'
 import { Navigation } from '../components'
 
+import { Event } from 'material-ui-icons'
+
 import AviationBG from '../assets/backgrounds/aviation.jpg'
 import TechBG from '../assets/backgrounds/tech.jpg'
 
@@ -244,7 +246,7 @@ class Timeline extends React.Component {
 
     return (
       <div>
-        <Navigation isAdmin={currentUser.admin} tour={TimelineTour} />
+        <Navigation isAdmin={currentUser.admin} backgroundImg={currentUser.fav} tour={TimelineTour} />
         <Grid container direction='row'>
           <Grid container direction='column' className={classes.root}>
             <div className={classes.appFrame}>
@@ -293,8 +295,8 @@ class Timeline extends React.Component {
                               key={i}
                               className='vertical-timeline-element--work'
                               date={`${moment(sortedEvents[k].start_date * 1000).format('DD MMM YY')} - ${getDate(sortedEvents[k].end_date)}`}
-                              iconStyle={ currentUser.fav == "av" ?  { background: bgCols[i % bgCols.length], color: '#fff', backgroundImage: `url("${AviationBG}")` } :  { background: bgCols[i % bgCols.length], color: '#fff', backgroundImage: `url("${TechBG}")` } }
-                              // icon={<Event />}
+                              iconStyle={{background: bgCols[i % bgCols.length], color: '#fff'}}
+                              icon={<Event />}
                             >
                               <Link to={{
                                 pathname: `event/${k}`,

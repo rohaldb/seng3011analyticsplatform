@@ -14,6 +14,10 @@ import NewEventForm from './newEventForm'
 //import hopscotch from 'hopscotch'
 import Tour from "react-user-tour"
 
+import AviationBG from '../assets/backgrounds/aviation.jpg'
+import TechBG from '../assets/backgrounds/tech.jpg'
+import PharamBG from '../assets/backgrounds/pharma.jpg'
+
 const styles = {
   root: {
     flexGrow: 1,
@@ -25,7 +29,18 @@ const styles = {
   },
   menuButton: {
     magin: 20
-  }
+ },
+ avImg: {
+    width: '30px',
+    height: '30px',
+    backgroundImage: `url("${PharamBG}")`,
+ },
+ techImg: {
+    width: '30px',
+    height: '30px',
+    backgroundImage: `url("${TechBG}")`,
+ }
+
 }
 
 /*
@@ -46,6 +61,7 @@ class Navigation extends React.Component {
 
   static propTypes = {
     isAdmin: PropTypes.bool.isRequired,
+    backgroundImg: PropTypes.string.isRequired,
     //tour: PropTypes.object
   }
 
@@ -98,6 +114,15 @@ class Navigation extends React.Component {
             <IconButton className={classes.menuicon} color='inherit' aria-label='menu' onClick={this.startTour}>
               <Help />
             </IconButton>
+
+            {this.props.backgroundImg == 'av' ?
+                <IconButton className={classes.avImg} color='inherit' aria-label='menu'>
+                </IconButton>
+                :
+                <IconButton className={classes.techImg} color='inherit' aria-label='menu'>
+                </IconButton>
+            }
+
            </div>
            <div>
              { this.props.isAdmin ?
