@@ -140,6 +140,16 @@ class Timeline extends React.Component {
     this.setState({ filterCategories })
   }
 
+  filterAllCategories (option) {
+    let filterCategories = this.state.filterCategories
+    for (let category in filterCategories) {
+      if (filterCategories.hasOwnProperty(category)) {
+        filterCategories[category] = option;
+      }
+    }
+    this.setState({ filterCategories });
+  }
+
   render () {
     const { classes } = this.props
     const { currentUser, eventData, filterStartDate, filterEndDate, filterCategories, categoryIcons } = this.state
@@ -190,6 +200,20 @@ class Timeline extends React.Component {
           <ListItem>
             <ListItemText primary="Categories">
             </ListItemText>
+            <Button
+              variant="raised"
+              color="secondary"
+              className={classes.button}
+              onClick={() => this.filterAllCategories(true)}>
+              All
+            </Button>
+            <Button
+              variant="raised"
+              color="secondary"
+              className={classes.button}
+              onClick={() => this.filterAllCategories(false)}>
+              None
+            </Button>
           </ListItem>
           { _.map(_.keys(filterCategories), (k, i) =>
             <ListItem key={i}>
