@@ -39,8 +39,10 @@ body {
 }
 
 .form_title{
+  text-align: center;
   font-weight: bold;
-  margin-bottom: 8px;
+  width: 100%;
+  margin-bottom: 18px;
 }
 
 .form_title span {

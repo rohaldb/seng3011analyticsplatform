@@ -26,8 +26,8 @@ import { TimelineTour } from '../tour'
 import { getDate } from '../time'
 import { Navigation } from '../components'
 
-//import AviationBG from '../assets/backgrounds/aviation.jpg'
-//import TechBG from '../assets/backgrounds/tech.jpg'
+import AviationBG from '../assets/backgrounds/aviation.jpg'
+import TechBG from '../assets/backgrounds/tech.jpg'
 
 const styles = theme => ({
   root: {
@@ -262,8 +262,7 @@ class Timeline extends React.Component {
                       </Grid>
                       <Grid item>
                         <Typography variant='subheading' gutterBottom className={classes.subTitle}>
-                          Welcome to EventStock! Here to answer the Who, Why and How of the Financial Markets.
-                          Please browse the timeline below to see the events that have, and continue to, significantly impact major listed stocks.
+                          Please browse the timeline below to see the events that impact major listed stocks
                         </Typography>
                       </Grid>
                     </Grid>
@@ -294,7 +293,7 @@ class Timeline extends React.Component {
                               key={i}
                               className='vertical-timeline-element--work'
                               date={`${moment(sortedEvents[k].start_date * 1000).format('DD MMM YY')} - ${getDate(sortedEvents[k].end_date)}`}
-                              iconStyle={{ background: bgCols[i % bgCols.length], color: '#fff', backgroundImage: `url("${currentUser.fav}")` }}
+                              iconStyle={ currentUser.fav == "av" ?  { background: bgCols[i % bgCols.length], color: '#fff', backgroundImage: `url("${AviationBG}")` } :  { background: bgCols[i % bgCols.length], color: '#fff', backgroundImage: `url("${TechBG}")` } }
                               // icon={<Event />}
                             >
                               <Link to={{
