@@ -61,7 +61,7 @@ class Login extends React.Component {
   }
 
   getUserId = (username) => {
-    this.database.child('users').orderByChild('firstname').equalTo(this.refs.name.value).on("value", snap => {
+    this.database.child('users').orderByChild('username').equalTo(this.refs.name.value).on("value", snap => {
       if (snap.val() != null) {
         snap.forEach(data => {
           this.props.history.push({
@@ -96,7 +96,7 @@ class Login extends React.Component {
           <div className='form_inputs'>
             <input
               type='password'/>
-            <label>password</label>
+            <label>Password</label>
           </div>
           <button className='form_button' onClick={(e) => this.getUserId(e, this.refs.name.value)}>
             Log In
@@ -108,7 +108,7 @@ class Login extends React.Component {
           onClick={() => this.handleOpen()}
           >Join Now</Button>
         </div>
-        {this.state.isValid ? null : <p> Username or password is incorrect, please try again </p>}
+        {this.state.isValid ? null : <p> Username or password is incorrect, please try again. </p>}
         <Dialog
           open={this.state.open}
           onClose={() => this.handleClose()}
@@ -122,6 +122,14 @@ class Login extends React.Component {
                 autoFocus
                 margin="dense"
                 id="name"
+                label="Username"
+                type="username"
+                fullWidth
+              />
+              <TextField
+                autoFocus
+                margin="dense"
+                id="name"
                 label="Email Address"
                 type="email"
                 fullWidth
@@ -130,8 +138,16 @@ class Login extends React.Component {
                 autoFocus
                 margin="dense"
                 id="name"
-                label="password"
+                label="Password"
                 type="password"
+                fullWidth
+              />
+              <TextField
+                autoFocus
+                margin="dense"
+                id="name"
+                label="Confirm Password"
+                type="confim-password"
                 fullWidth
               />
             <DialogContentText style={{color: 'black', fontStyle: 'bold', marginTop: '20px'}}>
