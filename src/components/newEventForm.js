@@ -313,7 +313,7 @@ class NewEventForm extends React.Component {
         ContentProps={{
           'aria-describedby': 'message-id',
         }}
-        message={<span id="message-id">A new event has been added.</span>}
+        message={<span id="message-id">A new event has been added to your favourite category.</span>}
         action={[
           <IconButton
             key="close"
