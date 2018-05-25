@@ -177,6 +177,18 @@ class Timeline extends React.Component {
       >
         <List style={{width: '100%'}}>
           <ListItem>
+            <TextField
+              fullWidth
+              id="search-textfield"
+              label="Search"
+              placeholder="Search"
+              value={searchString}
+              onChange={this.handleChange('searchString')}
+              className={classes.textField}
+              margin="normal"
+            />
+          </ListItem>
+          <ListItem>
             <ListItemText primary="Date Range"/>
           </ListItem>
           <ListItem>
@@ -204,18 +216,6 @@ class Timeline extends React.Component {
               InputLabelProps={{
                 shrink: true,
               }}
-            />
-          </ListItem>
-          <ListItem>
-            <TextField
-              fullWidth
-              id="search-textfield"
-              label="Search"
-              placeholder="Search"
-              value={searchString}
-              onChange={this.handleChange('searchString')}
-              className={classes.textField}
-              margin="normal"
             />
           </ListItem>
         </List>
