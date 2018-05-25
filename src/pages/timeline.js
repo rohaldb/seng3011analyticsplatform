@@ -378,7 +378,8 @@ class Timeline extends React.Component {
                                 </Grid>
                                 <Grid container xs={2} direction="column" alignItems="flex-end">
                                   { _.map(_.take(_.keys(sortedEvents[k].related_companies), 1), (c, i) => { // Take first company's logo - adjust 2nd arg of _.take for more logos
-                                    const logoUrl = `https://logo.clearbit.com/${_.split(_.replace(_.toLower(c), /\s*the\s*/, ''), /\s+/)[0]}.com?size=50`;
+                                    const companyName = _.split(_.replace(_.toLower(c), /\s*the\s*/, ''), /\s+/)[0]; // Remove 'the', take first word in companyName and hope that NAME.com gives a logo
+                                    const logoUrl = `https://logo.clearbit.com/${companyName}.com?size=50`;
                                     return (<img key={i} src={logoUrl} alt='' />);
                                   })}
                                 </Grid>
