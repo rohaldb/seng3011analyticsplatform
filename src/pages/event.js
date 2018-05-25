@@ -224,8 +224,9 @@ class Event extends React.Component {
     for (let companyName in companies) {
       if (companies.hasOwnProperty(companyName) && companies[companyName]) {
         const companyCode = companies[companyName]
-        const token = 'EAACEdEose0cBAOMzYD5b8IDWGWaP90DDIOw7YVWFI8iLmUaM2juUqxuSp2EIsVuNFMJzZA76hhBX1TNyjaB9LfSvKQlPIEkaK7CrxHXsxPrMejiI09cmvQjR252wJw18tNvSyb3L18BbyLs1z9AVZCh4SdvhXbTRWqaKaa7HdZCY7ByyBvsgcutf8gcL9TmxbiaFwJWQAZDZD'
-        let params = `statistics=id,name,website,description,category,fan_count,posts{likes,comments,created_time}&${dates}&access_token=${token}`
+        //const token = 'EAACEdEose0cBAOMzYD5b8IDWGWaP90DDIOw7YVWFI8iLmUaM2juUqxuSp2EIsVuNFMJzZA76hhBX1TNyjaB9LfSvKQlPIEkaK7CrxHXsxPrMejiI09cmvQjR252wJw18tNvSyb3L18BbyLs1z9AVZCh4SdvhXbTRWqaKaa7HdZCY7ByyBvsgcutf8gcL9TmxbiaFwJWQAZDZD'
+        //let params = `statistics=id,name,website,description,category,fan_count,posts{likes,comments,created_time}&${dates}&access_token=${token}`
+        let params = `statistics=id,name,website,description,category,fan_count,posts{likes,comments,created_time}&${dates}&workaround=true`
         // console.log(`https://unassigned-api.herokuapp.com/api/${companyCode}?${params}`)
         fetch(`https://unassigned-api.herokuapp.com/api/${companyCode}?${params}`)
           // eslint-disable-next-line
