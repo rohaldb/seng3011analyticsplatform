@@ -104,7 +104,8 @@ class Timeline extends React.Component {
     filterEndDate: moment().format('YYYY-MM-DD'),
     filterCategories: {}, // filled in with categories from Firebase
     categoryIcons: {}, // filled in with data from Firebase
-    drawerOpen: false
+    drawerOpen: false,
+    searchString: null
   }
 
   componentDidMount() {
@@ -162,7 +163,7 @@ class Timeline extends React.Component {
 
   render () {
     const { classes } = this.props
-    const { currentUser, eventData, filterStartDate, filterEndDate, filterCategories, categoryIcons } = this.state
+    const { currentUser, eventData, filterStartDate, filterEndDate, filterCategories, categoryIcons, searchString } = this.state
 
     const drawer = (
       <Drawer
@@ -175,12 +176,27 @@ class Timeline extends React.Component {
         style={{width: 375}}
       >
         <List style={{width: '100%'}}>
+          <ListItem style={{paddingBottom: 0}}>
+            <ListItemText primary="Search"/>
+          </ListItem>
+          <ListItem style={{paddingTop: 0}}>
+            <TextField
+              fullWidth
+              id="search-textfield"
+              placeholder="Search string"
+              value={searchString}
+              onChange={this.handleChange('searchString')}
+              className={classes.textField}
+              margin="normal"
+            />
+          </ListItem>
           <ListItem>
             <ListItemText primary="Date Range"/>
           </ListItem>
           <ListItem>
             <TextField
               fullWidth
+              required
               label="Start Date"
               type="date"
               value={filterStartDate}
@@ -207,10 +223,11 @@ class Timeline extends React.Component {
           </ListItem>
         </List>
         <List style={{width: '100%'}}>
-          <ListItem>
+          <ListItem style={{paddingTop: 0}}>
             <ListItemText primary="Categories">
             </ListItemText>
             <Button
+              style={{marginRight: '10px'}}
               variant="raised"
               color="secondary"
               className={classes.button}
@@ -252,29 +269,45 @@ class Timeline extends React.Component {
     )
 
     //need to clean data up a bit
-    let sortedEvents = {}
-    _.map(_.pickBy(eventData, _.identity), (x,i) => sortedEvents[i] = x)
+    let sortedEvents = {};
+    _.map(_.pickBy(eventData, _.identity), (x,i) => sortedEvents[i] = x);
 
-    // Filter by date
+    // Filter events by date, category and search string
     sortedEvents = _.filter(sortedEvents, x => {
-      let startDate = moment.unix(x.start_date)
-      let filterStart = moment(filterStartDate, 'YYYY-MM-DD')
-      let filterEnd = moment(filterEndDate, 'YYYY-MM-DD')
-      return startDate.isBetween(filterStart, filterEnd, null, '[]') // Inclusive date range match
-    })
+      // Filter by date
+      const startDate   = moment.unix(x.start_date);
+      const filterStart = moment(filterStartDate, 'YYYY-MM-DD');
+      const filterEnd   = moment(filterEndDate, 'YYYY-MM-DD');
 
-    // Filter by category
-    sortedEvents = _.filter(sortedEvents, x => {
+      const dateMatch = startDate.isBetween(filterStart, filterEnd, null, '[]'); // Inclusive date range match;
+      if (!dateMatch) return false; // Early exit
+
+      // Filter by category
       // Handle events with no category/category is not on Firebase list
-      const categoryNotOnFirebase = !filterCategories.hasOwnProperty(_.toLower(x.category))
-      const uncategorisedSelected = filterCategories['uncategorised'] === true
-      let categoryToggled = filterCategories[_.toLower(x.category)] === true
+      const categoryNotOnFirebase = !_.includes(_.keys(filterCategories), _.toLower(x.category));
+      const uncategorisedSelected = filterCategories['uncategorised'] === true;
+      const categoryToggled       = filterCategories[_.toLower(x.category)] === true;
 
-      return categoryToggled || (categoryNotOnFirebase && uncategorisedSelected)
-    })
+      const categoryMatch = categoryToggled || (categoryNotOnFirebase && uncategorisedSelected);
+      if (!categoryMatch) return false; // Early exit
+
+      // Filter by search string
+      if (!searchString) {
+        return true;
+      } else {
+        let search = _.toLower(searchString);
+        const titleSearchMatch        = _.includes(_.toLower(x.name), search);
+        const categorySearchMatch     = _.includes(_.toLower(x.category), search);
+        const descriptionSearchMatch  = _.includes(_.toLower(x.description), search);
+        const companySearchMatch      = _.includes(_.map(_.keys(x.related_companies), _.toLower), search);
+        const searchStringMatch = descriptionSearchMatch || titleSearchMatch || categorySearchMatch || companySearchMatch;
+
+        return searchStringMatch;
+      }
+    });
 
     // Sort by start date
-    sortedEvents = _.sortBy(sortedEvents, x => x.start_date).reverse()
+    sortedEvents = _.reverse(_.sortBy(sortedEvents, x => x.start_date));
 
     document.title = 'EventStock'
 
