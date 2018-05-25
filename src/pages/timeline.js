@@ -268,36 +268,39 @@ class Timeline extends React.Component {
     let sortedEvents = {}
     _.map(_.pickBy(eventData, _.identity), (x,i) => sortedEvents[i] = x)
 
-    // Filter by date
+    // Filter events by date, category and search string
     sortedEvents = _.filter(sortedEvents, x => {
+      // Filter by date
       let startDate = moment.unix(x.start_date)
       let filterStart = moment(filterStartDate, 'YYYY-MM-DD')
       let filterEnd = moment(filterEndDate, 'YYYY-MM-DD')
-      return startDate.isBetween(filterStart, filterEnd, null, '[]') // Inclusive date range match
-    })
 
-    // Filter by category
-    sortedEvents = _.filter(sortedEvents, x => {
+      const dateMatch = startDate.isBetween(filterStart, filterEnd, null, '[]') // Inclusive date range match;
+      if (!dateMatch) return false; // Early exit
+
+      // Filter by category
       // Handle events with no category/category is not on Firebase list
       const categoryNotOnFirebase = !filterCategories.hasOwnProperty(_.toLower(x.category))
       const uncategorisedSelected = filterCategories['uncategorised'] === true
-      let categoryToggled = filterCategories[_.toLower(x.category)] === true
+      const categoryToggled = filterCategories[_.toLower(x.category)] === true
 
-      return categoryToggled || (categoryNotOnFirebase && uncategorisedSelected)
-    })
+      const categoryMatch = categoryToggled || (categoryNotOnFirebase && uncategorisedSelected)
+      if (!categoryMatch) return false; // Early exit
 
-    // Filter by search string
-    if (searchString) {
-      let search = searchString.toString().toLowerCase();
-      sortedEvents = _.filter(sortedEvents, x => {
-        //
+      // Filter by search string
+      if (searchString) {
+        let search = searchString.toString().toLowerCase();
         const titleMatch = _.includes(_.lowerCase(x.name), search);
         const categoryMatch = _.includes(_.lowerCase(x.category), search);
         const descriptionMatch = _.includes(_.lowerCase(x.description), search);
         const companyMatch = _.includes(_.map(_.keys(x.related_companies), _.lowerCase), search);
-        return descriptionMatch || titleMatch || categoryMatch || companyMatch;
-      })
-    }
+        const searchStringMatch = descriptionMatch || titleMatch || categoryMatch || companyMatch;
+
+        return searchStringMatch;
+      } else {
+        return true;
+      }
+    });
 
     // Sort by start date
     sortedEvents = _.sortBy(sortedEvents, x => x.start_date).reverse()
