@@ -105,7 +105,7 @@ class Timeline extends React.Component {
     filterCategories: {}, // filled in with categories from Firebase
     categoryIcons: {}, // filled in with data from Firebase
     drawerOpen: false,
-    searchString: null
+    searchString: ""
   }
 
   componentDidMount() {
