@@ -360,7 +360,9 @@ class Map extends React.Component {
             className={classes.cardHeader}
           />
           <CardContent className={classes.map}>
-            <AmCharts.React style={{width: '100%', height: '500px'}} options={config} />
+            <div id="map">
+              <AmCharts.React style={{width: '100%', height: '500px'}} options={config} />
+            </div>
           </CardContent>
         </Card>
       </Fade>

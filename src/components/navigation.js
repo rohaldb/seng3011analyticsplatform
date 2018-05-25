@@ -13,10 +13,10 @@ import { withRouter } from 'react-router'
 import NewEventForm from './newEventForm'
 //import hopscotch from 'hopscotch'
 import Tooltip from '@material-ui/core/Tooltip'
-import Tour from "react-user-tour"
+import Tour from 'react-user-tour'
 
-import AviationBG from '../assets/backgrounds/aviation.jpg'
-import TechBG from '../assets/backgrounds/tech.jpg'
+//import AviationBG from '../assets/backgrounds/aviation.jpg'
+//import TechBG from '../assets/backgrounds/tech.jpg'
 
 const styles = {
   root: {
@@ -53,8 +53,8 @@ class Navigation extends React.Component {
 
   static propTypes = {
     isAdmin: PropTypes.bool.isRequired,
-    backgroundImg: PropTypes.string.isRequired,
-    filterFavourites: PropTypes.func.isRequired,
+    backgroundImg: PropTypes.string,
+    filterFavourites: PropTypes.func,
     //tour: PropTypes.object
   }
 
@@ -93,7 +93,7 @@ class Navigation extends React.Component {
 
   filterFavourites (favourite) {
     if (!this.props.location.pathname.startsWith('/event')) {
-      this.props.filterFavourites(favourite);
+      this.props.filterFavourites(favourite)
     }
   }
 

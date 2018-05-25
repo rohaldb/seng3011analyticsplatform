@@ -179,7 +179,9 @@ class Stock extends React.Component {
               </div>
             :
               <Fade in timeout={500}>
-                <AmCharts.React className="stockChart" style={{ width: "100%", height: "500px" }} options={this.declareConfig()} />
+                <div id="stock">
+                  <AmCharts.React className="stockChart" style={{ width: "100%", height: "500px" }} options={this.declareConfig()} />
+                </div>
               </Fade>
             }
           </CardContent>

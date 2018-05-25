@@ -9,7 +9,7 @@ const styles = {
     color: "394b59",
     padding: 10,
   }
-};
+}
 
 const TimelineTour = [
   {

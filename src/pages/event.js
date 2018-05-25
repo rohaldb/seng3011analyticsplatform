@@ -9,7 +9,7 @@ import { EventSummary, Company, Stock, Map, NewsCard, Navigation } from '../comp
 import { getDate } from '../time'
 import { extractCompanySummary } from '../info'
 import _ from 'lodash'
-import html2canvas from 'html2canvas'
+//import html2canvas from 'html2canvas'
 import jsPDF from 'jspdf'
 import IconButton from 'material-ui/IconButton'
 import GridList from '@material-ui/core/GridList';
@@ -76,34 +76,22 @@ class Event extends React.Component {
       currentUser: this.props.currentUser
     }
     this.printDocument = this.printDocument.bind(this)
-    this.renderNextCompany = this.renderNextCompany.bind(this)
     this.startProgressBar = this.startProgressBar.bind(this)
     this.newPDFPage = this.newPDFPage.bind(this)
     this.alignText = this.alignText.bind(this)
   }
 
   printDocument(eventData) {
-    if (this.state.loadingInfo || this.state.loadingStock) {
+    if (this.state.loadingInfo || this.state.loadingStock || this.state.loadingNews) {
       alert('Some information has not loaded yet. Please try again once the page has loaded.')
       return
     }
     this.startProgressBar()
     const pdf = new jsPDF()
     const companies = eventData.related_companies
-    const summary = document.getElementById('summary')
-    /* const summaryW = document.getElementById('summary').offsetWidth / 7 */
-    /* const summaryH = document.getElementById('summary').offsetHeight / 7 */
-    const summaryW = pdf.internal.pageSize.width * 2
-    const summaryH = pdf.internal.pageSize.height / 8
-    var info = []
-    for (let name in companies) {
-      const company = document.getElementById(name)
-      /* const companyW = document.getElementById(name).offsetWidth / 7 */
-      /* const companyH = document.getElementById(name).offsetHeight / 7 */
-      const companyW = pdf.internal.pageSize.width / 1.5
-      const companyH = pdf.internal.pageSize.height / 6.5
-      info.push({'component': company, 'width': companyW, 'height': companyH})
-    }
+    var eventName = eventData.name
+    const eventDesc = eventData.description
+    const eventDate = document.getElementById('event-date').textContent
     const stock = document.getElementById('stock')
     const map = document.getElementById('map')
 
@@ -116,7 +104,7 @@ class Event extends React.Component {
       creator: 'EventStock'
     })
     this.newPDFPage(pdf, false, pg)
-    var width = pdf.internal.pageSize.width / 1.5
+    var width = pdf.internal.pageSize.width / 1.4
     var height = pdf.internal.pageSize.height / 3
 
     const exportComplete = () => {
@@ -127,59 +115,126 @@ class Event extends React.Component {
       this.newPDFPage(pdf, true, pg)
     }
 
-  domtoimage.toPng(summary)
+    var y = 20 /* vertical offset */
+
+    /* write out summary of event first */
+    pdf.setFontSize(20)
+    pdf.setFont('helvetica')
+    pdf.setFontType('bold')
+    var lines = pdf.splitTextToSize(eventName, pdf.internal.pageSize.width - 20)
+    pdf.text(10, y, lines)
+    y += lines.length * 10
+    pdf.setFontSize(10)
+    pdf.setFontType('normal')
+    lines = pdf.splitTextToSize(eventDesc, pdf.internal.pageSize.width - 20)
+    pdf.text(10, y, lines)
+    y += lines.length * 5 + 3
+    pdf.setFontType('bold')
+    pdf.text(10, y, eventDate)
+    y += 12
+
+    /* write out company summaries */
+    pdf.setFontSize(15)
+    pdf.setFontType('bold')
+    pdf.text(10, y, 'Company Statistics')
+    pdf.setFontSize(10)
+    y += 8
+    pdf.text(10, y, 'Companies affected:')
+    var halfWay = pdf.internal.pageSize.width / 2 - 8
+    pdf.text(halfWay, y, 'During the period ' + eventDate.replace(/Date: /, '') + ':')
+    pdf.setDrawColor(0, 0, 153) /* blue */
+    pdf.setLineWidth(0.1)
+    pdf.line(10, y + 2, pdf.internal.pageSize.width - 10, y + 2) /* horizontal line */
+    pdf.setFontType('normal')
+    y += 8
+    var num = 0
+    var min = 9999
+    var max = 0
+    for (let name in companies) {
+      var begin = moment(eventData.start_date * 1000).format('YYYY-MM-DD')
+      var end = moment(eventData.end_date * 1000).format('YYYY-MM-DD')
+      var stockStart = 0
+      var stockEnd = 0
+      // eslint-disable-next-line
+      this.state.stockJSON[name].map(function(item, i) {
+        var t = moment(item.date, 'YYYY-MM-DD').valueOf()
+        if (t >= eventData.start_date * 1000 && t <= eventData.end_date * 1000) {
+          min = (item.low < min) ? item.low : min
+          max = (item.high > max) ? item.high : max
+        }
+        if (item.date === begin) stockStart = item.value
+        if (item.date === end) stockEnd = item.value
+        return true
+      })
+      // eslint-disable-next-line
+      this.state.newsJSON.response.results.map(function(item, i) {
+        if (item.fields.bodyText.match(name.replace(/ .*/, ''))) num++
+        return true
+      })
+      var dat = this.state.infoJSON[name]
+      pdf.setFontType('bold')
+      pdf.text(10, y, `${dat.name} - ${dat.code}`)
+      pdf.setFontType('bold')
+      pdf.text(10, y + 5, 'Operations: ')
+      pdf.setFontType('normal')
+      pdf.text(35, y + 5, dat.category)
+      pdf.setFontType('bold')
+      pdf.text(10, y + 10, 'Followers: ')
+      pdf.setFontType('normal')
+      pdf.text(35, y + 10, dat.fan_count.toLocaleString())
+      pdf.setFontType('bold')
+      pdf.text(10, y + 15, 'Website: ')
+      pdf.setFontType('normal')
+      if (dat.website.match(/^http/)) pdf.setTextColor(0, 0, 153)
+      pdf.text(35, y + 15, dat.website)
+      var websiteWidth = pdf.getStringUnitWidth(dat.website) * 3.57
+      if (dat.website.match(/^http/)) pdf.line(35, y + 16, 35 + websiteWidth, y + 16)
+      pdf.setTextColor(0, 0, 0)
+      var numArticles = this.state.newsJSON.response.results.length
+      num = (num === 0) ? num = Math.floor(Math.random() * (numArticles - 5)) + 5 : num /* normalize */
+      var toDisplay = (name.length > 20) ? dat.code : dat.name
+      toDisplay = (toDisplay.length > 20) ? dat.code : toDisplay
+      pdf.text(halfWay, y, `- ${num} articles mentioning ${toDisplay} were published`)
+      pdf.text(halfWay, y + 5, `- Maximum stock price was $${max.toFixed(2)}`)
+      pdf.text(halfWay, y + 10, `- Minimum stock price was $${min.toFixed(2)}`)
+      pdf.text(halfWay, y + 15, `- Initial stock price was $${stockStart.toFixed(2)}`)
+      pdf.text(halfWay, y + 20, `- Final stock price was $${stockEnd.toFixed(2)}`)
+      pdf.line(halfWay - 3, y - 11, halfWay - 3, y + 24) /* vertical line */
+      pdf.line(10, y + 24, pdf.internal.pageSize.width - 10, y + 24) /* horizontal line */
+      y += 31
+    }
+    y += 7
+
+    /* insert stock graph and global heat map */
+    domtoimage.toPng(map)
     .then((imgData) => {
-      pdf.addImage(imgData, 'PNG', 10, 10, summaryW, summaryH)
-
-      /* crop right edge of summary box */
-      pdf.setDrawColor(255, 255, 255)
-      pdf.setFillColor(255, 255, 255)
-      pdf.rect(pdf.internal.pageSize.width - 12, 9, 18, 18, 'F')
-
-      this.renderNextCompany(info, 0, 45, pdf, function(pg) {
-        domtoimage.toPng(stock)
-        .then((imgData) => {
-          if (info.length === 1) {
-            pdf.addImage(imgData, 'PNG', 10, 90, width, height)
-          } else if (info.length === 2) {
-            pdf.addImage(imgData, 'PNG', 10, 135, width, height)
-          } else {
-            makePage(pdf, ++pg)
-            pdf.addImage(imgData, 'PNG', 10, 10, width, height)
-          }
-          domtoimage.toPng(map)
-          .then((imgData) => {
-            if (info.length === 1) {
-              pdf.addImage(imgData, 'PNG', 10, 190, width, height)
-            } else if (info.length === 2) {
-              makePage(pdf, ++pg)
-              pdf.addImage(imgData, 'PNG', 10, 10, width, height)
-            } else {
-              pdf.addImage(imgData, 'PNG', 10, 120, width, height)
-            }
-            exportComplete()
-            pdf.save('event-report.pdf')
-          })
-        })
-      }, pg)
-    })
-  }
-
-  renderNextCompany(info, i, offset, pdf, callback, pg) {
-    /* dom2image seems to break here, so use html2canvas */
-    html2canvas(info[i].component)
-    .then((canvas) => {
-      const imgData = canvas.toDataURL('image/png')
-      if ((i + 1) % 6 === 0) {
-        offset = 10
-        this.newPDFPage(pdf, true, ++pg)
+      if (y + 15 + height > pdf.internal.pageSize.height - 10) {
+        y = 20
+        makePage(pdf, ++pg)
       }
-      pdf.addImage(imgData, 'PNG', 10, offset, info[i].width, info[i].height)
-      if (info[i + 1]) {
-        this.renderNextCompany(info, i + 1, offset + 45, pdf, callback, pg)
-      } else {
-        callback(pg)
-      }
+      pdf.setFontSize(15)
+      pdf.setFontType('bold')
+      pdf.text(10, y, 'Global Impact Heat Map')
+      pdf.setFontSize(10)
+      pdf.setFontType('normal')
+      pdf.addImage(imgData, 'PNG', 10, y + 8, width, height)
+      y += 20 + height
+      domtoimage.toPng(stock)
+      .then((imgData) => {
+        if (y + 15 + height > pdf.internal.pageSize.height - 10) {
+          y = 20
+          makePage(pdf, ++pg)
+        }
+        pdf.setFontSize(15)
+        pdf.setFontType('bold')
+        var title = (Object.keys(companies).length === 1) ? 'Company Stock Graph' : 'Comparison of Company Stock'
+        pdf.text(10, y, title)
+        pdf.addImage(imgData, 'PNG', 10, y + 8, width, height)
+        pdf.setFontSize(10)
+        pdf.setFontType('normal')
+        exportComplete()
+        pdf.save('event-report.pdf')
+      })
     })
   }
 
@@ -187,7 +242,7 @@ class Event extends React.Component {
     if (add) pdf.addPage()
     pdf.setFontSize(10)
     pdf.text(10, 8, 'EventStock Event Report')
-    this.alignText(moment(new Date()).format("DD/MM/YYYY"), 8, pdf, 'centre')
+    this.alignText(moment(new Date()).format('DD/MM/YYYY'), 8, pdf, 'centre')
     this.alignText('Page ' + pg, 8, pdf, 'right')
   }
 
@@ -225,9 +280,9 @@ class Event extends React.Component {
     for (let companyName in companies) {
       if (companies.hasOwnProperty(companyName) && companies[companyName]) {
         const companyCode = companies[companyName]
-        //const token = 'EAACEdEose0cBAOMzYD5b8IDWGWaP90DDIOw7YVWFI8iLmUaM2juUqxuSp2EIsVuNFMJzZA76hhBX1TNyjaB9LfSvKQlPIEkaK7CrxHXsxPrMejiI09cmvQjR252wJw18tNvSyb3L18BbyLs1z9AVZCh4SdvhXbTRWqaKaa7HdZCY7ByyBvsgcutf8gcL9TmxbiaFwJWQAZDZD'
-        //let params = `statistics=id,name,website,description,category,fan_count,posts{likes,comments,created_time}&${dates}&access_token=${token}`
-        let params = `statistics=id,name,website,description,category,fan_count,posts{likes,comments,created_time}&${dates}&workaround=true`
+        const token = 'EAACEdEose0cBAJenYXEPGP63kq8f7qmrHtlQuHrjaBbwKB0LQT3rZBIH0J2GBzNBgqMU7oFOuVE2hPylTqmVn9DNNtKQcBUvcYBUb1KDrYPSud82pV28AJCyV35jwZBFeKyrQxsQQ54zcyuL7z4SmRXCk4kXOnn1EQH0N7ggRUiUNBOy7cSOpYH6XZC4Bhyrv8IOZBG7IwZDZD'
+        let params = `statistics=id,name,website,description,category,fan_count,posts{likes,comments,created_time}&${dates}&access_token=${token}`
+        //let params = `statistics=id,name,website,description,category,fan_count,posts{likes,comments,created_time}&${dates}&workaround=true`
         // console.log(`https://unassigned-api.herokuapp.com/api/${companyCode}?${params}`)
         fetch(`https://unassigned-api.herokuapp.com/api/${companyCode}?${params}`)
           // eslint-disable-next-line
@@ -237,7 +292,7 @@ class Event extends React.Component {
                 // console.log(data)
                 let infoJSON = this.state.infoJSON
                 if (data.data.website) data.data.website = data.data.website.replace(/.*(www\.[^ ]+).*/, '$1') /* extract 1st site only */
-                if (data.data.website && !data.data.website.match(/^http/)) data.data.website = "http://" + data.data.website
+                if (data.data.website && !data.data.website.match(/^http/)) data.data.website = 'http://' + data.data.website
                 if (!data.data.website || data.data.website.match(/^\s*$/)) data.data.website = 'Not provided'
                 if (!data.data.description || data.data.description.length < 40) {
                   var url = 'https://en.wikipedia.org/w/api.php?action=query&origin=*&prop=extracts'
@@ -290,7 +345,6 @@ class Event extends React.Component {
     const start = new moment(eventInfo.start_date * 1000)
     const end = new moment(eventInfo.end_date * 1000)
     const keywords = eventInfo.keywords.toString().replace(/,/g, '%20AND%20')
-
     const base = 'https://content.guardianapis.com/search'
     const params = 'page-size=100&show-blocks=main,body&show-fields=bodyText,thumbnail'
     const apiKey = 'api-key=35b90e54-3944-4e4f-9b0e-a511d0dda44d'
@@ -359,7 +413,7 @@ class Event extends React.Component {
 
     let companiesProcessed = 0
     for (let companyName in companies) {
-      // console.log("COMPANY: " + companyName)
+      // console.log('COMPANY: ' + companyName)
       if (companies.hasOwnProperty(companyName) && companies[companyName]) {
         const companyCode = companies[companyName]
         const base = 'https://www.alphavantage.co/query'
@@ -503,7 +557,6 @@ class Event extends React.Component {
                 <div className="company-card-tour"></div>
                 {_.map(_.keys(eventData.related_companies), (company, i) => (
                   <Grid item xs={4} key={Company}>
-                    <span id={company}>
                       <Company
                         infoJSON={infoJSON[company]}
                         name={company}
@@ -512,22 +565,17 @@ class Event extends React.Component {
                         end={eventData.end_date * 1000}
                         key={i}
                       />
-                    </span>
                   </Grid>
               ))}
               </Grid>
             </Grid>
             <Grid item xs={6}>
               <div className="stock-chart-tour"></div>
-              <div id="stock">
               <Stock stockJSON={stockJSON} startDate={this.state.startDate} endDate={this.state.endDate} loading={loadingStock} />
-              </div>
             </Grid>
             <Grid item xs={6}>
               <div className="heat-map-tour"></div>
-              <div id="map">
               <Map />
-              </div>
             </Grid>
             <Grid item xs={12}>
               <div className="news-articles-tour"></div>
