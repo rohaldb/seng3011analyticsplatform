@@ -176,12 +176,14 @@ class Timeline extends React.Component {
         style={{width: 375}}
       >
         <List style={{width: '100%'}}>
-          <ListItem>
+          <ListItem style={{paddingBottom: 0}}>
+            <ListItemText primary="Search"/>
+          </ListItem>
+          <ListItem style={{paddingTop: 0}}>
             <TextField
               fullWidth
               id="search-textfield"
-              label="Search"
-              placeholder="Search"
+              placeholder="Search string"
               value={searchString}
               onChange={this.handleChange('searchString')}
               className={classes.textField}
@@ -220,10 +222,11 @@ class Timeline extends React.Component {
           </ListItem>
         </List>
         <List style={{width: '100%'}}>
-          <ListItem>
+          <ListItem style={{paddingTop: 0}}>
             <ListItemText primary="Categories">
             </ListItemText>
             <Button
+              style={{marginRight: '10px'}}
               variant="raised"
               color="secondary"
               className={classes.button}
