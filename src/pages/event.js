@@ -556,7 +556,7 @@ class Event extends React.Component {
               <Grid container spacing={16}>
                 <div className="company-card-tour"></div>
                 {_.map(_.keys(eventData.related_companies), (company, i) => (
-                  <Grid item xs={4} key={Company}>
+                  <Grid item xs={4} key={company}>
                       <Company
                         infoJSON={infoJSON[company]}
                         name={company}
