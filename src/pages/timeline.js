@@ -365,26 +365,37 @@ class Timeline extends React.Component {
                               iconStyle={{background: bgCols[i % bgCols.length], color: '#fff'}}
                               icon={<Event />}
                             >
-                              <Link to={{
-                                pathname: `event/${k}`,
-                                state: {currentUser: currentUser, eventData: sortedEvents[k]}
-                              }}
-                                    className={classes.link}>
-                                <Typography variant='title' className='vertical-timeline-element-title' gutterBottom>
-                                  {sortedEvents[k].name}
+                              <Grid container direction="row">
+                                <Grid item xs={10}>
+                                  <Link className={classes.link} to={{
+                                    pathname: `event/${k}`,
+                                    state: {currentUser: currentUser, eventData: sortedEvents[k]}
+                                  }}>
+                                    <Typography variant='title' className='vertical-timeline-element-title' gutterBottom>
+                                      {sortedEvents[k].name}
+                                    </Typography>
+                                  </Link>
+                                </Grid>
+                                <Grid container xs={2} direction="column" alignItems="flex-end">
+                                  { _.map(sortedEvents[k].related_companies, (c, i) => {
+                                    const logoUrl = `https://logo.clearbit.com/${_.toLower(_.split(i, /\s+/)[0])}.com?size=50`;
+                                    return (<img key={i} src={logoUrl} alt='' />);
+                                  })}
+                                </Grid>
+                              </Grid>
+                              <Grid container direction="row">
+                                <Typography variant='subheading' className='vertical-timeline-element-subtitle' gutterBottom>
+                                  {sortedEvents[k].category}
                                 </Typography>
-                              </Link>
-                              <Typography variant='subheading' className='vertical-timeline-element-subtitle' gutterBottom>
-                                {sortedEvents[k].category}
-                              </Typography>
-                              <Typography gutterBottom>
-                                {sortedEvents[k].description}
-                              </Typography>
-                              <div>
-                                {_.map(sortedEvents[k].related_companies, (c, i) =>
-                                  <Chip label={i} className={classes.chip} key={i} />
-                                )}
-                              </div>
+                                <Typography gutterBottom>
+                                  {sortedEvents[k].description}
+                                </Typography>
+                                <div>
+                                  {_.map(sortedEvents[k].related_companies, (c, i) =>
+                                    <Chip label={i} className={classes.chip} key={i} />
+                                  )}
+                                </div>
+                              </Grid>
                             </VerticalTimelineElement>
                           )}
                         </VerticalTimeline>
