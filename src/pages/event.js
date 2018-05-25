@@ -9,7 +9,6 @@ import { EventSummary, Company, Stock, Map, NewsCard, Navigation } from '../comp
 import { getDate } from '../time'
 import { extractCompanySummary } from '../info'
 import _ from 'lodash'
-//import html2canvas from 'html2canvas'
 import jsPDF from 'jspdf'
 import IconButton from 'material-ui/IconButton'
 import GridList from '@material-ui/core/GridList';
@@ -18,7 +17,9 @@ import PrintIcon from 'react-material-icon-svg/dist/PrinterIcon'
 import { Line } from 'rc-progress'
 import { EventTour } from '../tour'
 import '../assets/company.css'
+//import html2canvas from 'html2canvas'
 import domtoimage from 'dom-to-image'
+import { prettyDate } from '../time'
 
 import {
   FacebookShareButton,
@@ -232,10 +233,60 @@ class Event extends React.Component {
         pdf.addImage(imgData, 'PNG', 10, y + 8, width, height)
         pdf.setFontSize(10)
         pdf.setFontType('normal')
+        y += 20 + height
+
+        /* insert a news timeline for top 5 articles */
+        if (y + 90 > pdf.internal.pageSize.height - 10) {
+          y = 20
+          makePage(pdf, ++pg)
+        }
+        pdf.setFontSize(15)
+        pdf.setFontType('bold')
+        pdf.text(10, y, 'Top News Headlines')
+        y += 10
+        var topOfArticles = y
+        pdf.setFontSize(10)
+        pdf.setFontType('normal')
+        var numArticles = 1
+        var articles = this.state.newsJSON.response.results.slice(0, 5)
+        articles = articles.sort(function(a, b) {
+          const t1 = new Date(a.blocks.main.publishedDate).valueOf()
+          const t2 = new Date(b.blocks.main.publishedDate).valueOf()
+          return t1 < t2
+        })
+        articles.map(function(item, i) {
+          const date = new Date(item.webPublicationDate)
+          const timestamp = moment(date).format('ddd') + ' ' + prettyDate(date)
+          pdf.setFontSize(8)
+          pdf.text(23, y + 5, timestamp.replace(/ at.*/, ''))
+          pdf.setFontSize(10)
+          const datePos = y + 4
+          pdf.setFontSize(12)
+          pdf.setFontType('bold')
+          lines = pdf.splitTextToSize(item.webTitle, pdf.internal.pageSize.width - 85)
+          pdf.text(65, y, lines)
+          y += lines.length * 5
+          pdf.setFontSize(10)
+          pdf.setFontType('normal')
+          const articleText = item.fields.bodyText.substring(0, 150).replace(/\s[^\s]*$/, '').replace(/\s*[^a-z]+$/i, '') + ' ... '
+          lines = pdf.splitTextToSize(articleText, pdf.internal.pageSize.width - 85)
+          pdf.text(65, y, lines)
+          y += 5 + lines.length * 5
+          pdf.setDrawColor(0, 0, 153) /* blue */
+          pdf.line(52, datePos, 62, datePos) /* horizontal line */
+          pdf.setDrawColor(255, 255, 255) /* white */
+          pdf.setFillColor(0, 0, 153) /* blue */
+          pdf.circle(52, datePos, 2, 'FD')
+          pdf.circle(62, datePos, 2, 'FD')
+          pdf.setDrawColor(0, 0, 153) /* blue */
+          pdf.line(57, topOfArticles - 5, 57, y - 5) /* vertical line */
+       })
+
         exportComplete()
         pdf.save('event-report.pdf')
       })
     })
+
   }
 
   newPDFPage(pdf, add, pg) {
@@ -280,7 +331,7 @@ class Event extends React.Component {
     for (let companyName in companies) {
       if (companies.hasOwnProperty(companyName) && companies[companyName]) {
         const companyCode = companies[companyName]
-        const token = 'EAACEdEose0cBAJenYXEPGP63kq8f7qmrHtlQuHrjaBbwKB0LQT3rZBIH0J2GBzNBgqMU7oFOuVE2hPylTqmVn9DNNtKQcBUvcYBUb1KDrYPSud82pV28AJCyV35jwZBFeKyrQxsQQ54zcyuL7z4SmRXCk4kXOnn1EQH0N7ggRUiUNBOy7cSOpYH6XZC4Bhyrv8IOZBG7IwZDZD'
+        const token = 'EAACEdEose0cBAA2l5t7TazUeNB1BT7MHiDW7eYrZBunFPZCOpvcgsINcyp7pmhnugL0ST2RxPVirzq5CFM5LjBufz6lh70tdu9su9TimaHFwCYUSyz0IYZCM4wMLeXc7ZAbX2zHDWVJC9h7zRJccdzZCaEQx37DUzKca9qztedRZAFfVHd5vo8cSU4o1xWSB7d7B6ZBHCatEgZDZD'
         let params = `statistics=id,name,website,description,category,fan_count,posts{likes,comments,created_time}&${dates}&access_token=${token}`
         //let params = `statistics=id,name,website,description,category,fan_count,posts{likes,comments,created_time}&${dates}&workaround=true`
         // console.log(`https://unassigned-api.herokuapp.com/api/${companyCode}?${params}`)
