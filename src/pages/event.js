@@ -12,6 +12,8 @@ import _ from 'lodash'
 import html2canvas from 'html2canvas'
 import jsPDF from 'jspdf'
 import IconButton from 'material-ui/IconButton'
+import GridList from '@material-ui/core/GridList';
+import GridListTile from '@material-ui/core/GridListTile';
 import PrintIcon from 'react-material-icon-svg/dist/PrinterIcon'
 import { Line } from 'rc-progress'
 import { EventTour } from '../tour'
@@ -44,12 +46,11 @@ const styles = theme => ({
   navBar: {
     textAlign: 'center'
   },
-  large: {
-    width: 120,
-    height: 120,
-    padding: 5
-  }
-
+  gridListHorizontal: {
+    flexWrap: 'nowrap',
+    // Promote the list into his own layer on Chrome. This cost memory but helps keeping high FPS.
+    transform: 'translateZ(0)',
+  },
 })
 
 class Event extends React.Component {
@@ -423,83 +424,6 @@ class Event extends React.Component {
         <Navigation isAdmin={currentUser.admin} tour={EventTour} filterFavourites={null}/>
         <div className={classes.root}>
           <Grid container spacing={24}>
-            <Grid item xs={8}>
-              <Grid container alignItems="center" spacing={0}>
-                <Grid item xs={1}>
-                  <FacebookShareButton
-                    url={String(document.location)}
-                    quote={eventData.name}
-                    className="share-button">
-                    <FacebookIcon
-                      size={32}
-                      round
-                    />
-                  </FacebookShareButton>
-                </Grid>
-                <Grid item xs={1}>
-                  <TwitterShareButton
-                    url={String(document.location)}
-                    title={eventData.name}
-                    className="share-button">
-                    <TwitterIcon
-                      size={32}
-                      round
-                    />
-                  </TwitterShareButton>
-                </Grid>
-                <Grid item xs={1}>
-                  <GooglePlusShareButton
-                    url={String(document.location)}
-                    className="share-button">
-                    <GooglePlusIcon
-                      size={32}
-                      round
-                    />
-                  </GooglePlusShareButton>
-                </Grid>
-                <Grid item xs={1}>
-                  <RedditShareButton
-                    url={String(document.location)}
-                    title={eventData.name}
-                    windowWidth={660}
-                    windowHeight={460}
-                    className="share-button">
-                    <RedditIcon
-                      size={32}
-                      round
-                    />
-                  </RedditShareButton>
-                </Grid>
-                <Grid item xs={1}>
-                  <EmailShareButton
-                    url={String(document.location)}
-                    subject={eventData.name}
-                    body={eventData.description}
-                    className="share-button">
-                    <EmailIcon
-                      size={32}
-                      round
-                    />
-                  </EmailShareButton>
-                </Grid>
-                <div className="report-tour"></div>
-                <Grid item xs={1}>
-                  <IconButton
-                    tooltip="Generate Event Report"
-                    onClick={() => this.printDocument(eventData)}
-                    style={styles.large}
-                  >
-                    <PrintIcon />
-                  </IconButton>
-                </Grid>
-                <Grid item xs={5}>
-                  {this.state.percent > 0 && this.state.percent < 100 ?
-                    <Line strokeWidth="1" trailColor="#e3e3e3" percent={this.state.percent} />
-                  : null
-                  }
-                </Grid>
-              </Grid>
-            </Grid>
             <Grid item xs={12}>
               <div id="summary">
                 <EventSummary
@@ -509,6 +433,69 @@ class Event extends React.Component {
                   end_date={getDate(eventData.end_date)}
                 />
               </div>
+            </Grid>
+            <Grid item xs={12}>
+              <Grid container direction="row" alignItems="center">
+                <GridList className={classes.gridListHorizontal} cellHeight="auto" cols={6}>
+                  <GridListTile cols={1}>
+                    <FacebookShareButton
+                      url={String(document.location)}
+                      quote={eventData.name}
+                      className="share-button">
+                      <FacebookIcon round size={48} />
+                    </FacebookShareButton>
+                  </GridListTile>
+                  <GridListTile cols={1}>
+                    <TwitterShareButton
+                      url={String(document.location)}
+                      title={eventData.name}
+                      className="share-button">
+                      <TwitterIcon round size={48} />
+                    </TwitterShareButton>
+                  </GridListTile>
+                  <GridListTile cols={1}>
+                    <GooglePlusShareButton
+                      url={String(document.location)}
+                      className="share-button">
+                      <GooglePlusIcon round size={48} />
+                    </GooglePlusShareButton>
+                  </GridListTile>
+                  <GridListTile cols={1}>
+                    <RedditShareButton
+                      url={String(document.location)}
+                      title={eventData.name}
+                      windowWidth={660}
+                      windowHeight={460}
+                      className="share-button">
+                      <RedditIcon round size={48} />
+                    </RedditShareButton>
+                  </GridListTile>
+                  <GridListTile cols={1}>
+                    <EmailShareButton
+                      url={String(document.location)}
+                      subject={eventData.name}
+                      body={eventData.description}
+                      className="share-button">
+                      <EmailIcon round size={48} />
+                    </EmailShareButton>
+                  </GridListTile>
+                  <GridListTile cols={1}>
+                    <div className="report-tour"></div>
+                    <IconButton
+                      tooltip="Generate Event Report"
+                      onClick={() => this.printDocument(eventData)}
+                      disableRipple={true}
+                      styles={{height: '100%', width: '100%'}}
+                    >
+                      <PrintIcon />
+                    </IconButton>
+                  </GridListTile>
+                </GridList>
+                {this.state.percent > 0 && this.state.percent < 100 ?
+                  <Line strokeWidth="1" trailColor="#e3e3e3" percent={this.state.percent} />
+                  : null
+                }
+              </Grid>
             </Grid>
             <div className="overview-tour"></div>
             <Grid item xs={12}>
