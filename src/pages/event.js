@@ -148,10 +148,11 @@ class Event extends React.Component {
     pdf.line(10, y + 2, pdf.internal.pageSize.width - 10, y + 2) /* horizontal line */
     pdf.setFontType('normal')
     y += 8
-    var num = 0
-    var min = 9999
-    var max = 0
     for (let name in companies) {
+      var num = 0
+      var min = 9999
+      var max = 0
+
       var begin = moment(eventData.start_date * 1000).format('YYYY-MM-DD')
       var end = moment(eventData.end_date * 1000).format('YYYY-MM-DD')
       var stockStart = 0
@@ -541,7 +542,7 @@ class Event extends React.Component {
             </Grid>
             <Grid item xs={12}>
               <Grid container direction="row" alignItems="center">
-                <GridList className={classes.gridListHorizontal} cellHeight="auto" cols={6}>
+                <GridList className={classes.gridListHorizontal} cellHeight="auto" cols={6} spacing={16} >
                   <GridListTile cols={1}>
                     <FacebookShareButton
                       url={String(document.location)}
@@ -607,7 +608,7 @@ class Event extends React.Component {
               <Grid container spacing={16}>
                 <div className="company-card-tour"></div>
                 {_.map(_.keys(eventData.related_companies), (company, i) => (
-                  <Grid item xs={4} key={Company}>
+                  <Grid item xs={4} key={company}>
                       <Company
                         infoJSON={infoJSON[company]}
                         name={company}

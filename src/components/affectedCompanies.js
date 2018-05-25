@@ -8,10 +8,12 @@ import { CircularProgress } from 'material-ui/Progress'
 import Typography from 'material-ui/Typography'
 import NumericLabel from 'react-pretty-numbers'
 import Social from './social'
+import Avatar from '@material-ui/core/Avatar';
 import Dialog, {
   DialogContent,
   DialogTitle
 } from 'material-ui/Dialog'
+import _ from "lodash";
 
 const styles = theme => ({
   cardHeader: {
@@ -40,7 +42,8 @@ class Company extends React.Component {
   }
 
   state = {
-    open: false
+    open: false,
+    backupAvatarStrings: {}
   }
 
   handleOpen = () => {
@@ -58,12 +61,20 @@ class Company extends React.Component {
   render () {
     const { name, loading, infoJSON, start, end } = this.props
     const { classes } = this.props
+    const { backupAvatarStrings } = this.state;
 
     return (
       <div>
         <Fade in timeout={500}>
           <Card className={infoJSON ? classes.card : null} onClick={() => infoJSON ? this.handleOpen() : null}>
-            <CardHeader title={name} className={classes.cardHeader} />
+            <CardHeader title={name} className={classes.cardHeader}
+              avatar={<Avatar src={`https://logo.clearbit.com/${_.split(_.replace(_.toLower(name), /\s*the\s*/, ''), /\s+/)[0]}.com?size=50`} alt=''
+                              onError={()=>{
+                                backupAvatarStrings[name] = _.capitalize(name)[0];
+                                console.log(backupAvatarStrings);
+                                this.setState({backupAvatarStrings});
+                              }}>{backupAvatarStrings.hasOwnProperty(name) ? backupAvatarStrings[name] : null}</Avatar>
+            }/>
               {loading ?
                 <div style={{textAlign: 'center'}}>
                   <CircularProgress />
