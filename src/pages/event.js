@@ -490,7 +490,7 @@ class Event extends React.Component {
             </Grid>
             <Grid item xs={12}>
               <Grid container direction="row" alignItems="center">
-                <GridList className={classes.gridListHorizontal} cellHeight="auto" cols={6}>
+                <GridList className={classes.gridListHorizontal} cellHeight="auto" cols={6} spacing={16} >
                   <GridListTile cols={1}>
                     <FacebookShareButton
                       url={String(document.location)}
