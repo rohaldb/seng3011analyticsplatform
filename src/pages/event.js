@@ -14,6 +14,9 @@ import jsPDF from 'jspdf'
 import IconButton from 'material-ui/IconButton'
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
+import Paper from '@material-ui/core/Paper';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
 import PrintIcon from 'react-material-icon-svg/dist/PrinterIcon'
 import { Line } from 'rc-progress'
 import { EventTour } from '../tour'
@@ -35,6 +38,9 @@ import {
 
 const styles = theme => ({
   root: {
+    flexGrow: 1,
+  },
+  content: {
     flexGrow: 1,
     padding: '4%',
     backgroundColor: 'rgb(227,227,227)',
@@ -73,7 +79,8 @@ class Event extends React.Component {
       startDate: null,
       endDate: null,
       percent: 0,
-      currentUser: this.props.currentUser
+      currentUser: this.props.currentUser,
+      currentTab: 0,
     }
     this.printDocument = this.printDocument.bind(this)
     this.startProgressBar = this.startProgressBar.bind(this)
@@ -280,7 +287,7 @@ class Event extends React.Component {
     for (let companyName in companies) {
       if (companies.hasOwnProperty(companyName) && companies[companyName]) {
         const companyCode = companies[companyName]
-        const token = 'EAACEdEose0cBAJenYXEPGP63kq8f7qmrHtlQuHrjaBbwKB0LQT3rZBIH0J2GBzNBgqMU7oFOuVE2hPylTqmVn9DNNtKQcBUvcYBUb1KDrYPSud82pV28AJCyV35jwZBFeKyrQxsQQ54zcyuL7z4SmRXCk4kXOnn1EQH0N7ggRUiUNBOy7cSOpYH6XZC4Bhyrv8IOZBG7IwZDZD'
+        const token = 'EAACEdEose0cBALSEDNpz8kmvTnS5dpLKc8EKrz90WpwMlqSYzqRsW2UMoP20iZAasyZC5EGiH2PgZBvJeB9SV6wZBJWYdQkQ5PITA1k4jkxXPz6JJ27EFIauSdZAeXHFMVqeviLbE9cHZCldVJlZB2RbPVoQcfUePRKr7W8rfr9d4oD48CZA3ybk1ZCsNEuhJivwZBdtZBn8D9DV9IWZBR7CIlUW9EZBwnQUnsgYZD'
         let params = `statistics=id,name,website,description,category,fan_count,posts{likes,comments,created_time}&${dates}&access_token=${token}`
         //let params = `statistics=id,name,website,description,category,fan_count,posts{likes,comments,created_time}&${dates}&workaround=true`
         // console.log(`https://unassigned-api.herokuapp.com/api/${companyCode}?${params}`)
@@ -461,6 +468,10 @@ class Event extends React.Component {
     }
   }
 
+  handleTabChange = (event, currentTab) => {
+    this.setState({ currentTab });
+  };
+
   componentDidMount () {
     this.getInfo()
     this.getStockPrices()
@@ -469,94 +480,106 @@ class Event extends React.Component {
   }
 
   render () {
-    const { infoJSON, stockJSON, newsJSON, loadingInfo, loadingStock, loadingNews, currentUser } = this.state
+    const { infoJSON, stockJSON, newsJSON, loadingInfo, loadingStock, loadingNews, currentUser, currentTab } = this.state
     const { classes, eventData } = this.props
 
     document.title = 'EventStock - ' + eventData.name
     return (
-      <div>
+      <Paper className={classes.root}>
         <Navigation isAdmin={currentUser.admin} tour={EventTour} filterFavourites={null}/>
-        <div className={classes.root}>
-          <Grid container spacing={24}>
-            <Grid item xs={12}>
-              <div id="summary">
-                <EventSummary
-                  name={eventData.name}
-                  description={eventData.description}
-                  start_date={`${moment(eventData.start_date * 1000).format('DD MMM YY')}`}
-                  end_date={getDate(eventData.end_date)}
-                />
-              </div>
-            </Grid>
-            <Grid item xs={12}>
-              <Grid container direction="row" alignItems="center">
-                <GridList className={classes.gridListHorizontal} cellHeight="auto" cols={6} spacing={16} >
-                  <GridListTile cols={1}>
-                    <FacebookShareButton
-                      url={String(document.location)}
-                      quote={eventData.name}
-                      className="share-button">
-                      <FacebookIcon round size={48} />
-                    </FacebookShareButton>
-                  </GridListTile>
-                  <GridListTile cols={1}>
-                    <TwitterShareButton
-                      url={String(document.location)}
-                      title={eventData.name}
-                      className="share-button">
-                      <TwitterIcon round size={48} />
-                    </TwitterShareButton>
-                  </GridListTile>
-                  <GridListTile cols={1}>
-                    <GooglePlusShareButton
-                      url={String(document.location)}
-                      className="share-button">
-                      <GooglePlusIcon round size={48} />
-                    </GooglePlusShareButton>
-                  </GridListTile>
-                  <GridListTile cols={1}>
-                    <RedditShareButton
-                      url={String(document.location)}
-                      title={eventData.name}
-                      windowWidth={660}
-                      windowHeight={460}
-                      className="share-button">
-                      <RedditIcon round size={48} />
-                    </RedditShareButton>
-                  </GridListTile>
-                  <GridListTile cols={1}>
-                    <EmailShareButton
-                      url={String(document.location)}
-                      subject={eventData.name}
-                      body={eventData.description}
-                      className="share-button">
-                      <EmailIcon round size={48} />
-                    </EmailShareButton>
-                  </GridListTile>
-                  <GridListTile cols={1}>
-                    <div className="report-tour"></div>
-                    <IconButton
-                      tooltip="Generate Event Report"
-                      onClick={() => this.printDocument(eventData)}
-                      disableRipple={true}
-                      styles={{height: '100%', width: '100%'}}
-                    >
-                      <PrintIcon />
-                    </IconButton>
-                  </GridListTile>
-                </GridList>
-                {this.state.percent > 0 && this.state.percent < 100 ?
-                  <Line strokeWidth="1" trailColor="#e3e3e3" percent={this.state.percent} />
-                  : null
-                }
+        <Tabs
+          value={currentTab}
+          onChange={this.handleTabChange}
+          indicatorColor="primary"
+          textColor="primary"
+          centered
+        >
+          <Tab label="Explore" />
+          <Tab label="Insights" />
+        </Tabs>
+
+        {currentTab === 0 &&
+          <div className={classes.content}>
+            <Grid container spacing={24}>
+              <Grid item xs={12}>
+                <div id="summary">
+                  <EventSummary
+                    name={eventData.name}
+                    description={eventData.description}
+                    start_date={`${moment(eventData.start_date * 1000).format('DD MMM YY')}`}
+                    end_date={getDate(eventData.end_date)}
+                  />
+                </div>
               </Grid>
-            </Grid>
-            <div className="overview-tour"></div>
-            <Grid item xs={12}>
-              <Grid container spacing={16}>
-                <div className="company-card-tour"></div>
-                {_.map(_.keys(eventData.related_companies), (company, i) => (
-                  <Grid item xs={4} key={company}>
+              <Grid item xs={12}>
+                <Grid container direction="row" alignItems="center">
+                  <GridList className={classes.gridListHorizontal} cellHeight="auto" cols={6} spacing={16} >
+                    <GridListTile cols={1}>
+                      <FacebookShareButton
+                        url={String(document.location)}
+                        quote={eventData.name}
+                        className="share-button">
+                        <FacebookIcon round size={48} />
+                      </FacebookShareButton>
+                    </GridListTile>
+                    <GridListTile cols={1}>
+                      <TwitterShareButton
+                        url={String(document.location)}
+                        title={eventData.name}
+                        className="share-button">
+                        <TwitterIcon round size={48} />
+                      </TwitterShareButton>
+                    </GridListTile>
+                    <GridListTile cols={1}>
+                      <GooglePlusShareButton
+                        url={String(document.location)}
+                        className="share-button">
+                        <GooglePlusIcon round size={48} />
+                      </GooglePlusShareButton>
+                    </GridListTile>
+                    <GridListTile cols={1}>
+                      <RedditShareButton
+                        url={String(document.location)}
+                        title={eventData.name}
+                        windowWidth={660}
+                        windowHeight={460}
+                        className="share-button">
+                        <RedditIcon round size={48} />
+                      </RedditShareButton>
+                    </GridListTile>
+                    <GridListTile cols={1}>
+                      <EmailShareButton
+                        url={String(document.location)}
+                        subject={eventData.name}
+                        body={eventData.description}
+                        className="share-button">
+                        <EmailIcon round size={48} />
+                      </EmailShareButton>
+                    </GridListTile>
+                    <GridListTile cols={1}>
+                      <div className="report-tour"></div>
+                      <IconButton
+                        tooltip="Generate Event Report"
+                        onClick={() => this.printDocument(eventData)}
+                        disableRipple={true}
+                        styles={{height: '100%', width: '100%'}}
+                      >
+                        <PrintIcon />
+                      </IconButton>
+                    </GridListTile>
+                  </GridList>
+                  {this.state.percent > 0 && this.state.percent < 100 ?
+                    <Line strokeWidth="1" trailColor="#e3e3e3" percent={this.state.percent} />
+                    : null
+                  }
+                </Grid>
+              </Grid>
+              <div className="overview-tour"></div>
+              <Grid item xs={12}>
+                <Grid container spacing={16}>
+                  <div className="company-card-tour"></div>
+                  {_.map(_.keys(eventData.related_companies), (company, i) => (
+                    <Grid item xs={4} key={company}>
                       <Company
                         infoJSON={infoJSON[company]}
                         name={company}
@@ -565,26 +588,28 @@ class Event extends React.Component {
                         end={eventData.end_date * 1000}
                         key={i}
                       />
-                  </Grid>
-              ))}
+                    </Grid>
+                  ))}
+                </Grid>
+              </Grid>
+              <Grid item xs={6}>
+                <div className="stock-chart-tour"></div>
+                <Stock stockJSON={stockJSON} startDate={this.state.startDate} endDate={this.state.endDate} loading={loadingStock} />
+              </Grid>
+              <Grid item xs={6}>
+                <div className="heat-map-tour"></div>
+                <Map />
+              </Grid>
+              <Grid item xs={12}>
+                <div className="news-articles-tour"></div>
+                <NewsCard newsJSON={newsJSON} loading={loadingNews} />
               </Grid>
             </Grid>
-            <Grid item xs={6}>
-              <div className="stock-chart-tour"></div>
-              <Stock stockJSON={stockJSON} startDate={this.state.startDate} endDate={this.state.endDate} loading={loadingStock} />
-            </Grid>
-            <Grid item xs={6}>
-              <div className="heat-map-tour"></div>
-              <Map />
-            </Grid>
-            <Grid item xs={12}>
-              <div className="news-articles-tour"></div>
-              <NewsCard newsJSON={newsJSON} loading={loadingNews} />
-            </Grid>
-          </Grid>
-        </div>
-      </div>
-    )
+          </div>
+        }
+        {currentTab === 1 && null} // TODO ADD REPORT SECTION HERE
+      </Paper>
+    );
   }
 }
 
