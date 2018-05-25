@@ -104,7 +104,8 @@ class Timeline extends React.Component {
     filterEndDate: moment().format('YYYY-MM-DD'),
     filterCategories: {}, // filled in with categories from Firebase
     categoryIcons: {}, // filled in with data from Firebase
-    drawerOpen: false
+    drawerOpen: false,
+    searchString: null
   }
 
   componentDidMount() {
@@ -162,7 +163,7 @@ class Timeline extends React.Component {
 
   render () {
     const { classes } = this.props
-    const { currentUser, eventData, filterStartDate, filterEndDate, filterCategories, categoryIcons } = this.state
+    const { currentUser, eventData, filterStartDate, filterEndDate, filterCategories, categoryIcons, searchString } = this.state
 
     const drawer = (
       <Drawer
@@ -203,6 +204,18 @@ class Timeline extends React.Component {
               InputLabelProps={{
                 shrink: true,
               }}
+            />
+          </ListItem>
+          <ListItem>
+            <TextField
+              fullWidth
+              id="search-textfield"
+              label="Search"
+              placeholder="Search"
+              value={searchString}
+              onChange={this.handleChange('searchString')}
+              className={classes.textField}
+              margin="normal"
             />
           </ListItem>
         </List>
@@ -272,6 +285,19 @@ class Timeline extends React.Component {
 
       return categoryToggled || (categoryNotOnFirebase && uncategorisedSelected)
     })
+
+    // Filter by search string
+    if (searchString) {
+      let search = searchString.toString().toLowerCase();
+      sortedEvents = _.filter(sortedEvents, x => {
+        //
+        const titleMatch = _.includes(_.lowerCase(x.name), search);
+        const categoryMatch = _.includes(_.lowerCase(x.category), search);
+        const descriptionMatch = _.includes(_.lowerCase(x.description), search);
+        const companyMatch = _.includes(_.map(_.keys(x.related_companies), _.lowerCase), search);
+        return descriptionMatch || titleMatch || categoryMatch || companyMatch;
+      })
+    }
 
     // Sort by start date
     sortedEvents = _.sortBy(sortedEvents, x => x.start_date).reverse()
