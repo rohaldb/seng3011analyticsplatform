@@ -390,9 +390,13 @@ class Timeline extends React.Component {
                                 <Typography variant='subheading' className='vertical-timeline-element-subtitle' gutterBottom>
                                   {sortedEvents[k].category}
                                 </Typography>
+                              </Grid>
+                              <Grid container direction="row">
                                 <Typography gutterBottom>
                                   {sortedEvents[k].description}
                                 </Typography>
+                              </Grid>
+                              <Grid container direction="row">
                                 <div>
                                   {_.map(sortedEvents[k].related_companies, (c, i) =>
                                     <Chip label={i} className={classes.chip} key={i} />
