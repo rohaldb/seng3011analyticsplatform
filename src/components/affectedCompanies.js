@@ -8,10 +8,12 @@ import { CircularProgress } from 'material-ui/Progress'
 import Typography from 'material-ui/Typography'
 import NumericLabel from 'react-pretty-numbers'
 import Social from './social'
+import Avatar from '@material-ui/core/Avatar';
 import Dialog, {
   DialogContent,
   DialogTitle
 } from 'material-ui/Dialog'
+import _ from "lodash";
 
 const styles = theme => ({
   cardHeader: {
@@ -63,7 +65,9 @@ class Company extends React.Component {
       <div>
         <Fade in timeout={500}>
           <Card className={infoJSON ? classes.card : null} onClick={() => infoJSON ? this.handleOpen() : null}>
-            <CardHeader title={name} className={classes.cardHeader} />
+            <CardHeader title={name} className={classes.cardHeader}
+              avatar={<Avatar src={`https://logo.clearbit.com/${_.split(_.replace(_.toLower(name), /\s*the\s*/, ''), /\s+/)[0]}.com?size=50`} alt='' />
+            }/>
               {loading ?
                 <div style={{textAlign: 'center'}}>
                   <CircularProgress />
