@@ -196,6 +196,7 @@ class Timeline extends React.Component {
           <ListItem>
             <TextField
               fullWidth
+              required
               label="Start Date"
               type="date"
               value={filterStartDate}
