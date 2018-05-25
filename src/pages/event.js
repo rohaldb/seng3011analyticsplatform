@@ -147,10 +147,11 @@ class Event extends React.Component {
     pdf.line(10, y + 2, pdf.internal.pageSize.width - 10, y + 2) /* horizontal line */
     pdf.setFontType('normal')
     y += 8
-    var num = 0
-    var min = 9999
-    var max = 0
     for (let name in companies) {
+      var num = 0
+      var min = 9999
+      var max = 0
+
       var begin = moment(eventData.start_date * 1000).format('YYYY-MM-DD')
       var end = moment(eventData.end_date * 1000).format('YYYY-MM-DD')
       var stockStart = 0
