@@ -71,7 +71,6 @@ class Company extends React.Component {
               avatar={<Avatar src={`https://logo.clearbit.com/${_.split(_.replace(_.toLower(name), /\s*the\s*/, ''), /\s+/)[0]}.com?size=50`} alt=''
                               onError={()=>{
                                 backupAvatarStrings[name] = _.capitalize(name)[0];
-                                console.log(backupAvatarStrings);
                                 this.setState({backupAvatarStrings});
                               }}>{backupAvatarStrings.hasOwnProperty(name) ? backupAvatarStrings[name] : null}</Avatar>
             }/>
