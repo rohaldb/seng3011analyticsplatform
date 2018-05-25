@@ -28,8 +28,8 @@ import { Navigation } from '../components'
 
 import { Event } from 'material-ui-icons'
 
-import AviationBG from '../assets/backgrounds/aviation.jpg'
-import TechBG from '../assets/backgrounds/tech.jpg'
+//import AviationBG from '../assets/backgrounds/aviation.jpg'
+//import TechBG from '../assets/backgrounds/tech.jpg'
 
 const styles = theme => ({
   root: {
@@ -135,13 +135,13 @@ class Timeline extends React.Component {
   }
 
   handleCategoryChange = name => event => {
-    let filterCategories = this.state.filterCategories;
-    filterCategories[name] = event.target.checked;
+    let filterCategories = this.state.filterCategories
+    filterCategories[name] = event.target.checked
     this.setState({ filterCategories })
   }
 
   filterAllCategories (option) {
-    let filterCategories = this.state.filterCategories;
+    let filterCategories = this.state.filterCategories
     for (let category in filterCategories) {
       if (filterCategories.hasOwnProperty(category)) {
         filterCategories[category] = option
@@ -151,13 +151,13 @@ class Timeline extends React.Component {
   }
 
   handleFilterFavourite (option) {
-    let filterCategories = this.state.filterCategories;
+    let filterCategories = this.state.filterCategories
     for (let category in filterCategories) {
       if (filterCategories.hasOwnProperty(category)) {
-        filterCategories[category] = (category === option);
+        filterCategories[category] = (category === option)
       }
     }
-    this.setState({ filterCategories });
+    this.setState({ filterCategories })
   }
 
   render () {

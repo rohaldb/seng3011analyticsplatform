@@ -53,7 +53,7 @@ class Article extends React.Component {
   }
 
   showArticle = (url) => {
-    window.open(url, "_blank")
+    window.open(url, '_blank')
   }
 
   render () {

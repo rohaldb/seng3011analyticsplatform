@@ -37,7 +37,7 @@ class EventSummary extends React.Component {
               {description}
             </Typography>
             <Typography variant="body2">
-              Date: {start_date} - {end_date}
+              <div id="event-date">Date: {start_date} - {end_date}</div>
             </Typography>
           </CardContent>
         </Card>

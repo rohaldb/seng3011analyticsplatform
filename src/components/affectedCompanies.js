@@ -72,6 +72,7 @@ class Company extends React.Component {
                 infoJSON ?
                 (
                 <CardContent>
+                  <div id={name}>
                   <Typography noWrap>
                     <b>{infoJSON.name} - {infoJSON.code}</b>
                   </Typography>
@@ -89,6 +90,7 @@ class Company extends React.Component {
                       <span>{infoJSON.website}</span>
                     }
                   </Typography>
+                  </div>
                 </CardContent>
                 ):
                 <CardContent>
