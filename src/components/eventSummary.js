@@ -10,7 +10,6 @@ import IconButton from 'material-ui/IconButton'
 import GridList from '@material-ui/core/GridList'
 import GridListTile from '@material-ui/core/GridListTile'
 import PrintIcon from 'react-material-icon-svg/dist/PrinterIcon'
-import { Line } from 'rc-progress'
 
 import {
   FacebookShareButton,
@@ -38,7 +37,6 @@ class EventSummary extends React.Component {
     description: PropTypes.string.isRequired,
     start_date: PropTypes.string.isRequired,
     end_date: PropTypes.string.isRequired,
-    percent: PropTypes.number.isRequired,
   }
 
   render () {
@@ -116,10 +114,6 @@ class EventSummary extends React.Component {
                   </IconButton>
                 </GridListTile>
               </GridList>
-              {this.props.percent > 0 && this.props.percent < 100 ?
-                <Line strokeWidth="1" trailColor="#e3e3e3" percent={this.props.percent} />
-                : null
-              }
             </Grid>
           </CardContent>
         </Card>

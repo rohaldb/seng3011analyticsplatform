@@ -71,13 +71,11 @@ class Event extends React.Component {
     endDate: null,
     currentUser: this.props.currentUser,
     currentTab: 0,
-    percent: 0
   }
 
   constructor (props) {
     super(props)
     this.printDocument = this.printDocument.bind(this)
-    this.startProgressBar = this.startProgressBar.bind(this)
     this.newPDFPage = this.newPDFPage.bind(this)
     this.alignText = this.alignText.bind(this)
     this.getCompanySummaryStats = this.getCompanySummaryStats.bind(this)
@@ -160,7 +158,6 @@ class Event extends React.Component {
       alert('Some information has not loaded yet. Please try again once the page has loaded.')
       return
     }
-    this.startProgressBar()
     const pdf = new jsPDF()
     const companies = eventData.related_companies
     var eventName = eventData.name
@@ -179,10 +176,6 @@ class Event extends React.Component {
     this.newPDFPage(pdf, false, pg)
     var width = pdf.internal.pageSize.width / 1.4
     var height = pdf.internal.pageSize.height / 3
-
-    const exportComplete = () => {
-      this.setState({ percent: 0 })
-    }
 
     const makePage = (pdf, pg) => {
       this.newPDFPage(pdf, true, pg)
@@ -344,7 +337,6 @@ class Event extends React.Component {
       return true
     })
 
-    exportComplete()
     pdf.save('event-report.pdf')
   }
 
@@ -390,16 +382,6 @@ class Event extends React.Component {
       textOffset -= 10
     }
     pdf.text(textOffset, y, text)
-  }
-
-  startProgressBar() {
-    const percent = this.state.percent + 20
-    if (percent >= 100) {
-      clearTimeout(this.tm)
-    } else {
-      this.setState({ percent })
-      this.tm = setTimeout(this.startProgressBar, 1)
-    }
   }
 
   getInfo () {
@@ -632,7 +614,6 @@ class Event extends React.Component {
                 <div id="summary">
                   <EventSummary
                     printDocument={this.printDocument}
-                    percent={this.state.percent}
                     name={eventData.name}
                     description={eventData.description}
                     eventData={eventData}
