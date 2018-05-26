@@ -140,7 +140,8 @@ class Event extends React.Component {
         const date = moment(time).format('ddd D MMM YY')
         const title = item.webTitle
         const body = item.fields.bodyText.substring(0, 150).replace(/\s[^\s]*$/, '').replace(/\s*[^a-z]+$/i, '') + ' ... '
-        formatted.push({ 'date': date, 'title': title, 'body': body })
+        const url = item.webUrl;
+        formatted.push({ 'date': date, 'title': title, 'body': body, 'url': url })
         return true
       })
     }
