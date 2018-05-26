@@ -3,7 +3,7 @@ import { withRouter } from 'react-router'
 import PropTypes from 'prop-types'
 import { withStyles } from 'material-ui/styles'
 import withRoot from '../withRoot'
-import Grid from 'material-ui/Grid'
+import { Typography, Grid } from 'material-ui'
 import moment from 'moment'
 import { EventSummary, Company, Stock, Map, NewsCard, Navigation, StatsTable } from '../components'
 import { getDate } from '../time'
@@ -17,6 +17,11 @@ import { EventTour } from '../tour'
 import '../assets/company.css'
 //import html2canvas from 'html2canvas'
 import domtoimage from 'dom-to-image'
+
+// News timeline components
+import { Link } from 'react-router-dom'
+import { VerticalTimeline, VerticalTimelineElement } from 'react-vertical-timeline-component'
+import { Event as EventIcon} from 'material-ui-icons'
 
 const styles = theme => ({
   root: {
@@ -40,6 +45,13 @@ const styles = theme => ({
     transform: 'translateZ(0)',
   },
 })
+
+const bgCols = [
+  '#AB47B8',
+  '#26c6da',
+  '#ef5350',
+  '#66bb6a'
+]
 
 class Event extends React.Component {
 
@@ -71,6 +83,11 @@ class Event extends React.Component {
     this.getCompanySummaryStats = this.getCompanySummaryStats.bind(this)
     this.getTopArticles = this.getTopArticles.bind(this)
     this.companySocialStats = this.companySocialStats.bind(this)
+    this.showArticle = this.showArticle.bind(this)
+  }
+
+  showArticle = (url) => {
+    window.open(url, '_blank')
   }
 
   getCompanySummaryStats(name) {
@@ -117,21 +134,24 @@ class Event extends React.Component {
   }
 
   getTopArticles() {
-    var articles = _.shuffle(this.state.newsJSON.response.results.slice(0, 20)).slice(0, 5)
-    articles = articles.sort(function(a, b) {
-      const t1 = new Date(a.blocks.main.publishedDate).valueOf()
-      const t2 = new Date(b.blocks.main.publishedDate).valueOf()
-      return t1 < t2
-    })
     var formatted = []
-    articles.map(function(item, i) {
-     const time = new Date(item.blocks.main.publishedDate)
-     const date = moment(time).format('ddd D MMM YY')
-     const title = item.webTitle
-     const body = item.fields.bodyText.substring(0, 150).replace(/\s[^\s]*$/, '').replace(/\s*[^a-z]+$/i, '') + ' ... '
-     formatted.push({ 'date': date, 'title': title, 'body': body })
-     return true
-    })
+    if (this.state.newsJSON && this.state.newsJSON.response) {
+      var articles = _.shuffle(this.state.newsJSON.response.results.slice(0, 20)).slice(0, 5)
+      articles = articles.sort(function(a, b) {
+        const t1 = new Date(a.blocks.main.publishedDate).valueOf()
+        const t2 = new Date(b.blocks.main.publishedDate).valueOf()
+        return t1 < t2
+      })
+      articles.map(function(item, i) {
+        const time = new Date(item.blocks.main.publishedDate)
+        const date = moment(time).format('ddd D MMM YY')
+        const title = item.webTitle
+        const body = item.fields.bodyText.substring(0, 150).replace(/\s[^\s]*$/, '').replace(/\s*[^a-z]+$/i, '') + ' ... '
+        const url = item.webUrl;
+        formatted.push({ 'date': date, 'title': title, 'body': body, 'url': url })
+        return true
+      })
+    }
     return formatted
   }
 
@@ -592,7 +612,6 @@ class Event extends React.Component {
   render () {
     const { infoJSON, stockJSON, newsJSON, loadingInfo, loadingStock, loadingNews, currentUser, currentTab } = this.state
     const { classes, eventData } = this.props
-
     document.title = 'EventStock - ' + eventData.name
     return (
       <Paper className={classes.root}>
@@ -663,9 +682,44 @@ class Event extends React.Component {
               <StatsTable getCompanySummaryStats={this.getCompanySummaryStats} eventData={eventData}/>
             </Grid>
 
-            <Grid item xs={6}>
+            <Grid item xs={4}>
               <div className="heat-map-tour"></div>
               <Map />
+            </Grid>
+            <Grid item xs={8}>
+              <Grid container direction="column" alignItems="center">
+                <Grid item xs={12}>
+                  <Typography variant='display3' gutterBottom className={classes.title}>
+                    Top News Headlines
+                  </Typography>
+                </Grid>
+              </Grid>
+              <VerticalTimeline>
+                { _.map(this.getTopArticles(), (n, i) =>
+                  <VerticalTimelineElement
+                    key={i}
+                    className='vertical-timeline-element--work'
+                    date={n.date}
+                    iconStyle={{background: bgCols[i % bgCols.length], color: '#fff'}}
+                    icon={<EventIcon />}
+                  >
+                    <Grid container direction="row">
+                      <Grid item xs={12}>
+                        <Link className={classes.link} to="#" target="_blank" onClick={(event) => {event.preventDefault(); this.showArticle(n.url)}} >
+                          <Typography variant='title' className='vertical-timeline-element-title' gutterBottom>
+                            {n.title}
+                          </Typography>
+                        </Link>
+                      </Grid>
+                    </Grid>
+                    <Grid container direction="row">
+                      <Typography gutterBottom>
+                        {n.body}
+                      </Typography>
+                    </Grid>
+                  </VerticalTimelineElement>
+                )}
+              </VerticalTimeline>
             </Grid>
           </Grid>
         </div>}

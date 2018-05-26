@@ -54,7 +54,7 @@ const EventTour = [
   {
     step: 4,
     selector: ".stock-chart-tour",
-    title: <div style={styles.title}>4. Stock information duing the event</div>,
+    title: <div style={styles.title}>4. Stock information during the event</div>,
     body: <div style={styles.body}>You can also view the stock price for all affected companies over the event period.</div>
   },
   {
