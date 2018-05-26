@@ -10,9 +10,6 @@ import { getDate } from '../time'
 import { extractCompanySummary } from '../info'
 import _ from 'lodash'
 import jsPDF from 'jspdf'
-import IconButton from 'material-ui/IconButton'
-import GridList from '@material-ui/core/GridList';
-import GridListTile from '@material-ui/core/GridListTile';
 import Paper from '@material-ui/core/Paper';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
@@ -21,26 +18,11 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import PrintIcon from 'react-material-icon-svg/dist/PrinterIcon'
-import { Line } from 'rc-progress'
 import { EventTour } from '../tour'
 import '../assets/company.css'
 //import html2canvas from 'html2canvas'
 import domtoimage from 'dom-to-image'
 import { prettyDate } from '../time'
-
-import {
-  FacebookShareButton,
-  GooglePlusShareButton,
-  TwitterShareButton,
-  RedditShareButton,
-  EmailShareButton,
-  FacebookIcon,
-  GooglePlusIcon,
-  TwitterIcon,
-  RedditIcon,
-  EmailIcon
-} from 'react-share'
 
 const styles = theme => ({
   root: {
@@ -84,9 +66,9 @@ class Event extends React.Component {
       loadingNews: true,
       startDate: null,
       endDate: null,
-      percent: 0,
       currentUser: this.props.currentUser,
       currentTab: 0,
+      percent: 0,
     }
     this.printDocument = this.printDocument.bind(this)
     this.startProgressBar = this.startProgressBar.bind(this)
@@ -576,75 +558,15 @@ class Event extends React.Component {
               <Grid item xs={12}>
                 <div id="summary">
                   <EventSummary
+                    printDocument={this.printDocument}
+                    percent={this.state.percent}
                     name={eventData.name}
                     description={eventData.description}
+                    eventData={eventData}
                     start_date={`${moment(eventData.start_date * 1000).format('DD MMM YY')}`}
                     end_date={getDate(eventData.end_date)}
                   />
                 </div>
-              </Grid>
-              <Grid item xs={12}>
-                <Grid container direction="row" alignItems="center">
-                  <GridList className={classes.gridListHorizontal} cellHeight="auto" cols={6} spacing={16} >
-                    <GridListTile cols={1}>
-                      <FacebookShareButton
-                        url={String(document.location)}
-                        quote={eventData.name}
-                        className="share-button">
-                        <FacebookIcon round size={48} />
-                      </FacebookShareButton>
-                    </GridListTile>
-                    <GridListTile cols={1}>
-                      <TwitterShareButton
-                        url={String(document.location)}
-                        title={eventData.name}
-                        className="share-button">
-                        <TwitterIcon round size={48} />
-                      </TwitterShareButton>
-                    </GridListTile>
-                    <GridListTile cols={1}>
-                      <GooglePlusShareButton
-                        url={String(document.location)}
-                        className="share-button">
-                        <GooglePlusIcon round size={48} />
-                      </GooglePlusShareButton>
-                    </GridListTile>
-                    <GridListTile cols={1}>
-                      <RedditShareButton
-                        url={String(document.location)}
-                        title={eventData.name}
-                        windowWidth={660}
-                        windowHeight={460}
-                        className="share-button">
-                        <RedditIcon round size={48} />
-                      </RedditShareButton>
-                    </GridListTile>
-                    <GridListTile cols={1}>
-                      <EmailShareButton
-                        url={String(document.location)}
-                        subject={eventData.name}
-                        body={eventData.description}
-                        className="share-button">
-                        <EmailIcon round size={48} />
-                      </EmailShareButton>
-                    </GridListTile>
-                    <GridListTile cols={1}>
-                      <div className="report-tour"></div>
-                      <IconButton
-                        tooltip="Generate Event Report"
-                        onClick={() => this.printDocument(eventData)}
-                        disableRipple={true}
-                        styles={{height: '100%', width: '100%'}}
-                      >
-                        <PrintIcon />
-                      </IconButton>
-                    </GridListTile>
-                  </GridList>
-                  {this.state.percent > 0 && this.state.percent < 100 ?
-                    <Line strokeWidth="1" trailColor="#e3e3e3" percent={this.state.percent} />
-                    : null
-                  }
-                </Grid>
               </Grid>
               <div className="overview-tour"></div>
               <Grid item xs={12}>
