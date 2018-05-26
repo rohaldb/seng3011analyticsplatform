@@ -5,7 +5,7 @@ import { withStyles } from 'material-ui/styles'
 import withRoot from '../withRoot'
 import Grid from 'material-ui/Grid'
 import moment from 'moment'
-import { EventSummary, Company, Stock, Map, NewsCard, Navigation } from '../components'
+import { EventSummary, Company, Stock, Map, NewsCard, Navigation, StatsTable } from '../components'
 import { getDate } from '../time'
 import { extractCompanySummary } from '../info'
 import _ from 'lodash'
@@ -13,11 +13,6 @@ import jsPDF from 'jspdf'
 import Paper from '@material-ui/core/Paper';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
 import { EventTour } from '../tour'
 import '../assets/company.css'
 //import html2canvas from 'html2canvas'
@@ -77,33 +72,37 @@ class Event extends React.Component {
   }
 
   getCompanySummaryStats(name) {
-    let eventData = this.props.eventData;
 
     var numMentions = 0
     var min = 9999
     var max = 0
 
-    var begin = moment(eventData.start_date * 1000).format('YYYY-MM-DD')
-    var end = moment(eventData.end_date * 1000).format('YYYY-MM-DD')
     var stockStart = 0
     var stockEnd = 0
-    // eslint-disable-next-line
-    if (this.state.stockJSON.hasOwnProperty(name)) {
-      this.state.stockJSON[name].map(function(item, i) {
-        var t = moment(item.date, 'YYYY-MM-DD').valueOf()
-        if (t >= eventData.start_date * 1000 && t <= eventData.end_date * 1000) {
-          min = (item.low < min) ? item.low : min
-          max = (item.high > max) ? item.high : max
-        }
-        if (item.date === begin) stockStart = item.value
-        if (item.date === end) stockEnd = item.value
-        return true
-      })
+
+    if (this.props) {
+      let eventData = this.props.eventData;
+      var begin = moment(eventData.start_date * 1000).format('YYYY-MM-DD')
+      var end = moment(eventData.end_date * 1000).format('YYYY-MM-DD')
+
       // eslint-disable-next-line
-      this.state.newsJSON.response.results.map(function(item, i) {
-        if (item.fields.bodyText.match(name.replace(/ .*/, ''))) numMentions++
-        return true
-      })
+      if (this.state.stockJSON.hasOwnProperty(name)) {
+        this.state.stockJSON[name].map(function(item, i) {
+          var t = moment(item.date, 'YYYY-MM-DD').valueOf()
+          if (t >= eventData.start_date * 1000 && t <= eventData.end_date * 1000) {
+            min = (item.low < min) ? item.low : min
+            max = (item.high > max) ? item.high : max
+          }
+          if (item.date === begin) stockStart = item.value
+          if (item.date === end) stockEnd = item.value
+          return true
+        })
+        // eslint-disable-next-line
+        this.state.newsJSON.response.results.map(function(item, i) {
+          if (item.fields.bodyText.match(name.replace(/ .*/, ''))) numMentions++
+          return true
+        })
+      }
     }
 
     return {
@@ -588,55 +587,30 @@ class Event extends React.Component {
                   ))}
                 </Grid>
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12}>
                 <div className="stock-chart-tour"></div>
                 <Stock stockJSON={stockJSON} startDate={this.state.startDate} endDate={this.state.endDate} loading={loadingStock} />
-              </Grid>
-              <Grid item xs={6}>
-                <div className="heat-map-tour"></div>
-                <Map />
               </Grid>
               <Grid item xs={12}>
                 <div className="news-articles-tour"></div>
                 <NewsCard newsJSON={newsJSON} loading={loadingNews} />
               </Grid>
+              <Grid item xs={6} style={(this.state.percent > 0 && this.state.percent < 100) ? {} : {display: 'none'}}>
+                <Map />
+              </Grid>
             </Grid>
           </div>
         }
         {currentTab === 1 &&
-        <div>
+        <div className={classes.content}>
           <Grid container spacing={24}>
             <Grid item xs={12}>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Company</TableCell>
-                    <TableCell numeric>News article mentions</TableCell>
-                    <TableCell numeric>Min stock price</TableCell>
-                    <TableCell numeric>Max stock price</TableCell>
-                    <TableCell numeric>Initial stock price</TableCell>
-                    <TableCell numeric>Final stock price</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {_.map(_.keys(eventData.related_companies), (c, i) => {
-                    const {numMentions, min, max, stockStart, stockEnd} = this.getCompanySummaryStats(c);
+              <StatsTable getCompanySummaryStats={this.getCompanySummaryStats} eventData={eventData}/>
+            </Grid>
 
-                    return (
-                      <TableRow key={i}>
-                        <TableCell component="th" scope="row">
-                          {c}
-                        </TableCell>
-                        <TableCell numeric>{numMentions}</TableCell>
-                        <TableCell numeric>{min}</TableCell>
-                        <TableCell numeric>{max}</TableCell>
-                        <TableCell numeric>{stockStart}</TableCell>
-                        <TableCell numeric>{stockEnd}</TableCell>
-                      </TableRow>
-                    );
-                  })}
-                </TableBody>
-              </Table>
+            <Grid item xs={6}>
+              <div className="heat-map-tour"></div>
+              <Map />
             </Grid>
           </Grid>
         </div>}
