@@ -123,7 +123,7 @@ class Timeline extends React.Component {
     }).then(() => {
       this.ref = base.syncState(`timeline`, {
         context: this,
-        state: 'eventData',
+        state: 'eventData'
       })
     })
     window.scrollTo(0, 0)
@@ -331,7 +331,7 @@ class Timeline extends React.Component {
                       </Grid>
                       <Grid item>
                         <Typography variant='subheading' gutterBottom className={classes.subTitle}>
-                          Discover how major world events are impacting you. 
+                          Discover how major world events are impacting companies.
                         </Typography>
                       </Grid>
                     </Grid>
@@ -369,7 +369,7 @@ class Timeline extends React.Component {
                                 <Grid item xs={10}>
                                   <Link className={classes.link} to={{
                                     pathname: `event/${k}`,
-                                    state: {currentUser: currentUser, eventData: sortedEvents[k]}
+                                    state: { currentUser: currentUser, eventData: sortedEvents[k], categoryIcons: categoryIcons }
                                   }}>
                                     <Typography variant='title' className='vertical-timeline-element-title' gutterBottom>
                                       {sortedEvents[k].name}

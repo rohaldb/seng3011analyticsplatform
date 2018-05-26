@@ -14,8 +14,6 @@ import NewEventForm from './newEventForm'
 //import hopscotch from 'hopscotch'
 import Tooltip from '@material-ui/core/Tooltip'
 import Tour from 'react-user-tour'
-
-import _ from 'lodash'
 //import AviationBG from '../assets/backgrounds/aviation.jpg'
 //import TechBG from '../assets/backgrounds/tech.jpg'
 
@@ -55,11 +53,11 @@ class Navigation extends React.Component {
 
   static propTypes = {
     isAdmin: PropTypes.bool.isRequired,
-    favIndustry: PropTypes.string,
+    favIndustry: PropTypes.string.isRequired,
     filterFavourites: PropTypes.func,
     //filterCategories: PropTypes.object,
-    //categoryIcons: PropTypes.array,
-    user: PropTypes.string,
+    categoryIcons: PropTypes.object.isRequired,
+    user: PropTypes.string.isRequired,
     //tour: PropTypes.object
   }
 

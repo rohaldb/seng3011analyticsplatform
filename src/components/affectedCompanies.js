@@ -14,7 +14,7 @@ import Dialog, {
   DialogContent,
   DialogTitle
 } from 'material-ui/Dialog'
-import { UnfoldMore } from 'material-ui-icons'
+import OpenInNewIcon from 'react-material-icon-svg/dist/OpenInNewIcon'
 import _ from "lodash"
 
 const styles = theme => ({
@@ -30,6 +30,11 @@ const styles = theme => ({
   },
   card: {
     cursor: 'pointer'
+  },
+  small: {
+    width: 50,
+    height: 50,
+    padding: 30,
   }
 })
 
@@ -77,8 +82,11 @@ class Company extends React.Component {
                               }}>{backupAvatarStrings.hasOwnProperty(name) ? backupAvatarStrings[name] : null}</Avatar>
             }
             action={
-              <IconButton>
-                <UnfoldMore />
+              <IconButton
+                tooltip="Show more information"
+                style={styles.small}
+              >
+                <OpenInNewIcon />
               </IconButton>
             }
             />

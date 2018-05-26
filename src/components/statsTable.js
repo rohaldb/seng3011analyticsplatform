@@ -47,7 +47,7 @@ class StatsTable extends React.Component {
                 <TableBody>
                   {_.map(_.keys(eventData.related_companies), (c, i) => {
                     const {numMentions, min, max, stockStart, stockEnd} = this.props.getCompanySummaryStats(c)
-                    const {posts, likes, comments} = this.props.companySocialStats(c);
+                    const {posts, likes, comments} = this.props.companySocialStats(c)
 
                     return (
                       <TableRow key={i}>

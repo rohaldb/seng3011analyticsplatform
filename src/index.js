@@ -20,6 +20,7 @@ const EventParams = ({ location, match }) => {
   return (<Event
     currentUser={location.state.currentUser}
     eventData={location.state.eventData}
+    categoryIcons={location.state.categoryIcons}
     eventID={match.params.eventID}
   />)
 }

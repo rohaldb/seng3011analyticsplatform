@@ -20,7 +20,6 @@ class Map extends React.Component {
     loading: PropTypes.bool.isRequired
   }
 
-
   render () {
     const { classes } = this.props
 
@@ -356,7 +355,28 @@ class Map extends React.Component {
       },
       'export': {
         'enabled': true
-      }
+      },
+      "listeners": [{
+        "event": "rendered",
+        "method": function(e) {
+          var interval = setInterval(function() {
+            if (window.fabric) {
+              clearTimeout(interval)
+              e.chart["export"].capture({}, function() {
+                this.toJPG({}, function(base64) {
+                  if (!document.getElementById('map-img')) {
+                    var div = document.createElement("div")
+                    div.innerHTML = base64
+                    div.setAttribute("id", 'map-img')
+                    div.setAttribute('style', 'display:none')
+                    document.getElementById('stock').appendChild(div)
+                  }
+                })
+              })
+            }
+          }, 100)
+        }
+      }]
     }
 
     return (

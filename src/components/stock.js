@@ -133,6 +133,26 @@ class Stock extends React.Component {
 
           e.chart.zoom(startDate, endDate)
         }
+      }, {
+        "event": "rendered",
+        "method": function(e) {
+          var interval = setInterval(function() {
+            if (window.fabric) {
+              clearTimeout(interval)
+              e.chart["export"].capture({}, function() {
+                this.toJPG({}, function(base64) {
+                  if (!document.getElementById('stock-img')) {
+                    var div = document.createElement("div")
+                    div.innerHTML = base64
+                    div.setAttribute("id", 'stock-img')
+                    div.setAttribute('style', 'display:none')
+                    document.getElementById('stock').appendChild(div)
+                  }
+                })
+              })
+            }
+          }, 100)
+        }
       }]
     }
   }

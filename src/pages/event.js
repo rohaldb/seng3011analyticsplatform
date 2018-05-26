@@ -15,8 +15,6 @@ import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
 import { EventTour } from '../tour'
 import '../assets/company.css'
-//import html2canvas from 'html2canvas'
-import domtoimage from 'dom-to-image'
 
 // News timeline components
 import { Link } from 'react-router-dom'
@@ -57,7 +55,8 @@ class Event extends React.Component {
 
   static propTypes = {
     currentUser: PropTypes.object.isRequired,
-    eventData: PropTypes.object.isRequired
+    eventData: PropTypes.object.isRequired,
+    categoryIcons: PropTypes.object.isRequired
   }
 
   state = {
@@ -72,7 +71,7 @@ class Event extends React.Component {
     endDate: null,
     currentUser: this.props.currentUser,
     currentTab: 0,
-    percent: 0,
+    percent: 0
   }
 
   constructor (props) {
@@ -148,7 +147,7 @@ class Event extends React.Component {
         const date = moment(time).format('ddd D MMM YY')
         const title = item.webTitle
         const body = item.fields.bodyText.substring(0, 150).replace(/\s[^\s]*$/, '').replace(/\s*[^a-z]+$/i, '') + ' ... '
-        const url = item.webUrl;
+        const url = item.webUrl
         formatted.push({ 'date': date, 'title': title, 'body': body, 'url': url })
         return true
       })
@@ -157,7 +156,7 @@ class Event extends React.Component {
   }
 
   printDocument(eventData) {
-    if (this.state.loadingInfo || this.state.loadingStock || this.state.loadingNews) {
+    if (this.state.loadingInfo || this.state.loadingStock || this.state.loadingNews || !document.getElementById('stock-img') || !document.getElementById('map-img')) {
       alert('Some information has not loaded yet. Please try again once the page has loaded.')
       return
     }
@@ -167,9 +166,8 @@ class Event extends React.Component {
     var eventName = eventData.name
     const eventDesc = eventData.description
     const eventDate = document.getElementById('event-date').textContent
-    const stock = document.getElementById('stock')
-    const map = document.getElementById('map')
-
+    const map = document.getElementById('map-img').innerHTML
+    const stock = document.getElementById('stock-img').innerHTML
     var pg = 1
     pdf.setProperties({
       title: eventData.name + ' report',
@@ -226,7 +224,7 @@ class Event extends React.Component {
     for (let name in companies) {
       let { numMentions, min, max, stockStart, stockEnd } = this.getCompanySummaryStats(name)
       var dat = this.state.infoJSON[name]
-      const social = this.companySocialStats(name);
+      const social = this.companySocialStats(name)
 
       /* company info on the left */
       pdf.setFontType('bold')
@@ -285,80 +283,74 @@ class Event extends React.Component {
     y += 7
 
     /* insert stock graph and global heat map */
-    domtoimage.toPng(map)
-    .then((imgData) => {
-      if (y + 15 + height > pdf.internal.pageSize.height - 10) {
-        y = 20
-        makePage(pdf, ++pg)
-      }
-      pdf.setFontSize(15)
+    if (y + 15 + height > pdf.internal.pageSize.height - 10) {
+      y = 20
+      makePage(pdf, ++pg)
+    }
+    pdf.setFontSize(15)
+    pdf.setFontType('bold')
+    pdf.text(10, y, 'Global Impact Heat Map')
+    pdf.setFontSize(10)
+    pdf.setFontType('normal')
+    pdf.addImage(map, 'PNG', 10, y + 8, width, height)
+    y += 20 + height
+    if (y + 15 + height > pdf.internal.pageSize.height - 10) {
+      y = 20
+      makePage(pdf, ++pg)
+    }
+    pdf.setFontSize(15)
+    pdf.setFontType('bold')
+    var title = (Object.keys(companies).length === 1) ? 'Company Stock Graph' : 'Comparison of Company Stock'
+    pdf.text(10, y, title)
+    pdf.addImage(stock, 'PNG', 10, y + 8, width, height)
+    pdf.setFontSize(10)
+    pdf.setFontType('normal')
+    y += 20 + height
+
+    /* insert a news timeline for top 5 articles */
+    if (y + 90 > pdf.internal.pageSize.height - 10) {
+      y = 20
+      makePage(pdf, ++pg)
+    }
+    pdf.setFontSize(15)
+    pdf.setFontType('bold')
+    pdf.text(10, y, 'Top News Headlines')
+    y += 10
+    var topOfArticles = y
+    pdf.setFontSize(10)
+    pdf.setFontType('normal')
+    const articles = this.getTopArticles()
+    articles.map(function(item, i) {
+      pdf.setFontSize(8)
+      pdf.text(25, y + 5, item.date)
+      pdf.setFontSize(10)
+      const datePos = y + 4
+      pdf.setFontSize(12)
       pdf.setFontType('bold')
-      pdf.text(10, y, 'Global Impact Heat Map')
+      lines = pdf.splitTextToSize(item.title, pdf.internal.pageSize.width - 85)
+      pdf.text(65, y, lines)
+      y += lines.length * 5
       pdf.setFontSize(10)
       pdf.setFontType('normal')
-      pdf.addImage(imgData, 'PNG', 10, y + 8, width, height)
-      y += 20 + height
-      domtoimage.toPng(stock)
-      .then((imgData) => {
-        if (y + 15 + height > pdf.internal.pageSize.height - 10) {
-          y = 20
-          makePage(pdf, ++pg)
-        }
-        pdf.setFontSize(15)
-        pdf.setFontType('bold')
-        var title = (Object.keys(companies).length === 1) ? 'Company Stock Graph' : 'Comparison of Company Stock'
-        pdf.text(10, y, title)
-        pdf.addImage(imgData, 'PNG', 10, y + 8, width, height)
-        pdf.setFontSize(10)
-        pdf.setFontType('normal')
-        y += 20 + height
-
-        /* insert a news timeline for top 5 articles */
-        if (y + 90 > pdf.internal.pageSize.height - 10) {
-          y = 20
-          makePage(pdf, ++pg)
-        }
-        pdf.setFontSize(15)
-        pdf.setFontType('bold')
-        pdf.text(10, y, 'Top News Headlines')
-        y += 10
-        var topOfArticles = y
-        pdf.setFontSize(10)
-        pdf.setFontType('normal')
-        const articles = this.getTopArticles()
-        articles.map(function(item, i) {
-          pdf.setFontSize(8)
-          pdf.text(25, y + 5, item.date)
-          pdf.setFontSize(10)
-          const datePos = y + 4
-          pdf.setFontSize(12)
-          pdf.setFontType('bold')
-          lines = pdf.splitTextToSize(item.title, pdf.internal.pageSize.width - 85)
-          pdf.text(65, y, lines)
-          y += lines.length * 5
-          pdf.setFontSize(10)
-          pdf.setFontType('normal')
-          lines = pdf.splitTextToSize(item.body, pdf.internal.pageSize.width - 85)
-          pdf.text(65, y, lines)
-          y += 5 + lines.length * 5
-          pdf.setDrawColor(0, 0, 153) /* blue */
-          pdf.line(54.25, topOfArticles - 5, 54.25, y - 5) /* vertical line */
-          pdf.setFillColor(255, 255, 255) /* white */
-          pdf.setFillColor(0, 0, 153) /* blue */
-          pdf.triangle(54.25, datePos - 3.5, 54.25, datePos + 3.5, 54.25 + 4, datePos, 'FD')
-          pdf.triangle(54.25, datePos - 3.5, 54.25, datePos + 3.5, 54.25 - 4, datePos, 'FD')
-          return true
-        })
-        exportComplete()
-        pdf.save('event-report.pdf')
-      })
+      lines = pdf.splitTextToSize(item.body, pdf.internal.pageSize.width - 85)
+      pdf.text(65, y, lines)
+      y += 5 + lines.length * 5
+      pdf.setDrawColor(0, 0, 153) /* blue */
+      pdf.line(54.25, topOfArticles - 5, 54.25, y - 5) /* vertical line */
+      pdf.setFillColor(255, 255, 255) /* white */
+      pdf.setFillColor(0, 0, 153) /* blue */
+      pdf.triangle(54.25, datePos - 3.5, 54.25, datePos + 3.5, 54.25 + 4, datePos, 'FD')
+      pdf.triangle(54.25, datePos - 3.5, 54.25, datePos + 3.5, 54.25 - 4, datePos, 'FD')
+      return true
     })
 
+    exportComplete()
+    pdf.save('event-report.pdf')
   }
 
   companySocialStats(name) {
-    const posts = this.state.infoJSON[name].posts;
-    let {startDate, endDate} = this.state;
+    const posts = this.state.infoJSON[name].posts
+    let {startDate, endDate} = this.state
 
     let start = moment(startDate).valueOf()
     let end = moment(endDate).valueOf()
@@ -423,7 +415,7 @@ class Event extends React.Component {
     for (let companyName in companies) {
       if (companies.hasOwnProperty(companyName) && companies[companyName]) {
         const companyCode = companies[companyName]
-        const token = 'EAACEdEose0cBAKkTOKbk8MNwuVkx3fY7pZC6pZCpl7jLvNsMgK2b8HcqPtGA0QPqW2pjGCDwBPbFkJZAtLp9M6CRLA5crMgCpzQpAev4b8DZBeYMypZCAtH79pDqMI7uFACg3E0zssWjUxihWCxFavOcxmOZCIaVUOlAsQd0LgwsOiQHaHBZAzCkHI0fu82g19pZB3XUEcXqGwZDZD'
+        const token = 'EAACEdEose0cBAKzq1KTOoSxIZBjlBF4c2ZA59ZBsM96WaFk5tGZAa390rgVfZAiw2Mowatr5tAzjoTfvEYkmlXvt2ks0dOgQ2R2CZCB6INPuWHDTVTZBdsIZAjIp7RbV347KS5JXU2ruY181O7IVZAmPxlYCcZBvVfhQZAx5gkPOzbeC9RKZCzo7HSlPb8MV06PNU7jT5HZAHaZAip4QZDZD'
         let params = `statistics=id,name,website,description,category,fan_count,posts{likes,comments,created_time}&${dates}&access_token=${token}`
         //let params = `statistics=id,name,website,description,category,fan_count,posts{likes,comments,created_time}&${dates}&workaround=true`
         // console.log(`https://unassigned-api.herokuapp.com/api/${companyCode}?${params}`)
@@ -617,11 +609,11 @@ class Event extends React.Component {
 
   render () {
     const { infoJSON, stockJSON, newsJSON, loadingInfo, loadingStock, loadingNews, currentUser, currentTab } = this.state
-    const { classes, eventData } = this.props
+    const { classes, eventData, categoryIcons } = this.props
     document.title = 'EventStock - ' + eventData.name
     return (
       <Paper className={classes.root}>
-        <Navigation isAdmin={currentUser.admin} tour={EventTour} filterFavourites={null}/>
+        <Navigation isAdmin={currentUser.admin} tour={EventTour} favIndustry={currentUser.fav} user={currentUser.username} filterFavourites={null} categoryIcons={categoryIcons}/>
         <Tabs
           value={currentTab}
           onChange={this.handleTabChange}
@@ -667,16 +659,17 @@ class Event extends React.Component {
                   ))}
                 </Grid>
               </Grid>
-              <Grid item xs={12}>
+              <Grid item xs={6}>
                 <div className="stock-chart-tour"></div>
                 <Stock stockJSON={stockJSON} startDate={this.state.startDate} endDate={this.state.endDate} loading={loadingStock} />
+              </Grid>
+              <Grid item xs={6}>
+                <div className="heat-map-tour"></div>
+                <Map loading={this.state.loadingStock}/>
               </Grid>
               <Grid item xs={12}>
                 <div className="news-articles-tour"></div>
                 <NewsCard newsJSON={newsJSON} loading={loadingNews} />
-              </Grid>
-              <Grid item xs={6} style={(this.state.percent > 0 && this.state.percent < 100) ? {} : {display: 'none'}}>
-                <Map loading={this.state.loadingStock}/>
               </Grid>
             </Grid>
           </div>
@@ -686,11 +679,6 @@ class Event extends React.Component {
           <Grid container spacing={24}>
             <Grid item xs={12}>
               <StatsTable getCompanySummaryStats={this.getCompanySummaryStats} companySocialStats={this.companySocialStats} eventData={eventData}/>
-            </Grid>
-
-            <Grid item xs={4}>
-              <div className="heat-map-tour"></div>
-              <Map loading={this.state.loadingStock}/>
             </Grid>
             <Grid item xs={8}>
               <Grid container direction="column" alignItems="center">
