@@ -16,6 +16,11 @@ import GridListTile from '@material-ui/core/GridListTile';
 import Paper from '@material-ui/core/Paper';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
 import PrintIcon from 'react-material-icon-svg/dist/PrinterIcon'
 import { Line } from 'rc-progress'
 import { EventTour } from '../tour'
@@ -659,7 +664,41 @@ class Event extends React.Component {
             </Grid>
           </div>
         }
-        {currentTab === 1 && null} // TODO ADD REPORT SECTION HERE
+        {currentTab === 1 &&
+        <div>
+          <Grid container spacing={24}>
+            <Grid item xs={12}>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Company</TableCell>
+                    <TableCell numeric>News article mentions</TableCell>
+                    <TableCell numeric>Max stock price</TableCell>
+                    <TableCell numeric>Min stock price</TableCell>
+                    <TableCell numeric>Initial stock price</TableCell>
+                    <TableCell numeric>Final stock price</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {_.map(_.keys(eventData.related_companies), (c, i) => {
+                    return (
+                      <TableRow key={i}>
+                        <TableCell component="th" scope="row">
+                          {c}
+                        </TableCell>
+                        <TableCell numeric>{100}</TableCell>
+                        <TableCell numeric>{200}</TableCell>
+                        <TableCell numeric>{300}</TableCell>
+                        <TableCell numeric>{400}</TableCell>
+                        <TableCell numeric>{500}</TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </Grid>
+          </Grid>
+        </div>}
       </Paper>
     );
   }
