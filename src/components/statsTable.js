@@ -51,10 +51,10 @@ class StatsTable extends React.Component {
                           {c}
                         </TableCell>
                         <TableCell numeric>{numMentions}</TableCell>
-                        <TableCell numeric>{min}</TableCell>
-                        <TableCell numeric>{max}</TableCell>
-                        <TableCell numeric>{stockStart}</TableCell>
-                        <TableCell numeric>{stockEnd}</TableCell>
+                        <TableCell numeric>{'$' + min}</TableCell>
+                        <TableCell numeric>{'$' + max}</TableCell>
+                        <TableCell numeric>{'$' + stockStart}</TableCell>
+                        <TableCell numeric>{'$' + stockEnd}</TableCell>
                       </TableRow>
                     )
                   })}
