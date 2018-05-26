@@ -69,16 +69,23 @@ class Event extends React.Component {
     this.startProgressBar = this.startProgressBar.bind(this)
     this.newPDFPage = this.newPDFPage.bind(this)
     this.alignText = this.alignText.bind(this)
+    this.getCompanySummaryStats =  this.getCompanySummaryStats.bind(this);
   }
 
   getCompanySummaryStats(name) {
-
     var numMentions = 0
     var min = 9999
     var max = 0
 
     var stockStart = 0
     var stockEnd = 0
+
+
+    // eslint-disable-next-line
+    this.state.newsJSON.response.results.map(function(item, i) {
+      if (item.fields.bodyText.match(name.replace(/ .*/, ''))) numMentions++
+      return true
+    });
 
     if (this.props) {
       let eventData = this.props.eventData;
@@ -95,11 +102,6 @@ class Event extends React.Component {
           }
           if (item.date === begin) stockStart = item.value
           if (item.date === end) stockEnd = item.value
-          return true
-        })
-        // eslint-disable-next-line
-        this.state.newsJSON.response.results.map(function(item, i) {
-          if (item.fields.bodyText.match(name.replace(/ .*/, ''))) numMentions++
           return true
         })
       }
