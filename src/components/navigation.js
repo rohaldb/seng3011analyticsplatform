@@ -138,7 +138,6 @@ class Navigation extends React.Component {
                 </Button>
             </Tooltip>
 
-
            </div>
            <div>
              { this.props.isAdmin ?
