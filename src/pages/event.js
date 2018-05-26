@@ -88,21 +88,23 @@ class Event extends React.Component {
     var stockStart = 0
     var stockEnd = 0
     // eslint-disable-next-line
-    this.state.stockJSON[name].map(function(item, i) {
-      var t = moment(item.date, 'YYYY-MM-DD').valueOf()
-      if (t >= eventData.start_date * 1000 && t <= eventData.end_date * 1000) {
-        min = (item.low < min) ? item.low : min
-        max = (item.high > max) ? item.high : max
-      }
-      if (item.date === begin) stockStart = item.value
-      if (item.date === end) stockEnd = item.value
-      return true
-    })
-    // eslint-disable-next-line
-    this.state.newsJSON.response.results.map(function(item, i) {
-      if (item.fields.bodyText.match(name.replace(/ .*/, ''))) numMentions++
-      return true
-    })
+    if (this.state.stockJSON.hasOwnProperty(name)) {
+      this.state.stockJSON[name].map(function(item, i) {
+        var t = moment(item.date, 'YYYY-MM-DD').valueOf()
+        if (t >= eventData.start_date * 1000 && t <= eventData.end_date * 1000) {
+          min = (item.low < min) ? item.low : min
+          max = (item.high > max) ? item.high : max
+        }
+        if (item.date === begin) stockStart = item.value
+        if (item.date === end) stockEnd = item.value
+        return true
+      })
+      // eslint-disable-next-line
+      this.state.newsJSON.response.results.map(function(item, i) {
+        if (item.fields.bodyText.match(name.replace(/ .*/, ''))) numMentions++
+        return true
+      })
+    }
 
     return {
       numMentions,
