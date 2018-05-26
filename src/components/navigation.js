@@ -15,6 +15,7 @@ import NewEventForm from './newEventForm'
 import Tooltip from '@material-ui/core/Tooltip'
 import Tour from 'react-user-tour'
 
+import _ from 'lodash'
 //import AviationBG from '../assets/backgrounds/aviation.jpg'
 //import TechBG from '../assets/backgrounds/tech.jpg'
 
@@ -53,8 +54,10 @@ class Navigation extends React.Component {
 
   static propTypes = {
     isAdmin: PropTypes.bool.isRequired,
-    backgroundImg: PropTypes.string,
+    favIndustry: PropTypes.string,
     filterFavourites: PropTypes.func,
+    //filterCategories: PropTypes.object,
+    //categoryIcons: PropTypes.array,
     user: PropTypes.string,
     //tour: PropTypes.object
   }
@@ -122,21 +125,17 @@ class Navigation extends React.Component {
                 <Person />
               </IconButton>
             </Tooltip>
+
             <Tooltip id="tooltip-tour" title="Site Tour">
               <IconButton className={classes.menuicon} color='inherit' aria-label='menu' onClick={this.startTour}>
                 <Help />
               </IconButton>
             </Tooltip>
 
-            {this.props.backgroundImg === 'av' ?
-                <Tooltip id="tooltip-fab" title="Click Here to Filter by Your Favourite Industry, Aviation.">
-                    <a className={classes.fav} onClick={() => {this.filterFavourites('aviation')}}>Aviation</a>
-                </Tooltip>
-                :
-                <Tooltip id="tooltip-fab" title="Click Here to Filter by Your Favourite Industry, Technology.">
-                      <a className={classes.fav} onClick={() => {this.filterFavourites('technology')}}>Technology</a>
-                </Tooltip>
-            }
+            <Tooltip id="tooltip-fab" title={`Click Here to Filter by Your Favourite Industry,  ${this.props.favIndustry}.`}>
+                <a className={classes.fav} onClick={() => {this.filterFavourites(this.props.favIndustry)}}>{this.props.favIndustry}</a>
+            </Tooltip>
+
 
            </div>
            <div>
