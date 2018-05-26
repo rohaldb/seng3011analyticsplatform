@@ -132,8 +132,10 @@ class Navigation extends React.Component {
               </IconButton>
             </Tooltip>
 
-            <Tooltip id="tooltip-fab" title={`Click Here to Filter by Your Favourite Industry,  ${this.props.favIndustry}.`}>
-                <a className={classes.fav} onClick={() => {this.filterFavourites(this.props.favIndustry)}}>{this.props.favIndustry}</a>
+            <Tooltip id="tooltip-fav" title={`Click Here to Filter by Your Favourite Industry,  ${this.props.favIndustry}.`}>
+                <Button className={classes.menuicon} color='inherit' aria-label='menu' onClick={() => {this.filterFavourites(this.props.favIndustry)}}>
+                  {this.props.favIndustry}
+                </Button>
             </Tooltip>
 
 
