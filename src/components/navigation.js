@@ -121,7 +121,7 @@ class Navigation extends React.Component {
               </Tooltip>
               : null
             }
-            <Tooltip id="tooltip-user" title={`Currently signed in as ${this.props.user}`}>
+            <Tooltip id="tooltip-user" title={`Currently Signed in as ${this.props.user}`}>
               <IconButton className={classes.menuicon} color='inherit' aria-label='menu'>
                 <Person />
               </IconButton>
@@ -133,7 +133,7 @@ class Navigation extends React.Component {
               </IconButton>
             </Tooltip>
 
-            <Tooltip id="tooltip-fav" title={`Click Here to Filter by Your Favourite Industry, ${this.props.favIndustry}.`}>
+            <Tooltip id="tooltip-fav" title={`Click Here to Filter by Your Favourite Industry, ${this.props.favIndustry}`}>
                 <Button className={classes.favIcon} color='inherit' aria-label='menu' onClick={() => {this.filterFavourites(this.props.favIndustry)}}>
                   {this.props.favIndustry}
                   <i className="material-icons">
