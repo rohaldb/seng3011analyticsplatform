@@ -141,7 +141,7 @@ class Event extends React.Component {
     var height = pdf.internal.pageSize.height / 3
 
     const exportComplete = () => {
-      this.setState({ percent: 100 })
+      this.setState({ percent: 0 })
     }
 
     const makePage = (pdf, pg) => {
