@@ -652,7 +652,7 @@ class Event extends React.Component {
                   <VerticalTimelineElement
                     key={i}
                     className='vertical-timeline-element--work'
-                    date={`${moment(n.date).format('DD MMM YY')}`}
+                    date={n.date}
                     iconStyle={{background: bgCols[i % bgCols.length], color: '#fff'}}
                     icon={<EventIcon />}
                   >
