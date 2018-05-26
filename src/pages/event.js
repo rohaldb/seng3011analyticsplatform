@@ -94,6 +94,43 @@ class Event extends React.Component {
     this.alignText = this.alignText.bind(this)
   }
 
+  getCompanySummaryStats(name) {
+    let eventData = this.props.eventData;
+
+    var num = 0
+    var min = 9999
+    var max = 0
+
+    var begin = moment(eventData.start_date * 1000).format('YYYY-MM-DD')
+    var end = moment(eventData.end_date * 1000).format('YYYY-MM-DD')
+    var stockStart = 0
+    var stockEnd = 0
+    // eslint-disable-next-line
+    this.state.stockJSON[name].map(function(item, i) {
+      var t = moment(item.date, 'YYYY-MM-DD').valueOf()
+      if (t >= eventData.start_date * 1000 && t <= eventData.end_date * 1000) {
+        min = (item.low < min) ? item.low : min
+        max = (item.high > max) ? item.high : max
+      }
+      if (item.date === begin) stockStart = item.value
+      if (item.date === end) stockEnd = item.value
+      return true
+    })
+    // eslint-disable-next-line
+    this.state.newsJSON.response.results.map(function(item, i) {
+      if (item.fields.bodyText.match(name.replace(/ .*/, ''))) num++
+      return true
+    })
+
+    return {
+      num,
+      min,
+      max,
+      stockStart,
+      stockEnd
+    };
+  }
+
   printDocument(eventData) {
     if (this.state.loadingInfo || this.state.loadingStock || this.state.loadingNews) {
       alert('Some information has not loaded yet. Please try again once the page has loaded.')
@@ -161,30 +198,8 @@ class Event extends React.Component {
     pdf.setFontType('normal')
     y += 8
     for (let name in companies) {
-      var num = 0
-      var min = 9999
-      var max = 0
+      let {num, min, max, stockStart, stockEnd} = this.getCompanySummaryStats(name);
 
-      var begin = moment(eventData.start_date * 1000).format('YYYY-MM-DD')
-      var end = moment(eventData.end_date * 1000).format('YYYY-MM-DD')
-      var stockStart = 0
-      var stockEnd = 0
-      // eslint-disable-next-line
-      this.state.stockJSON[name].map(function(item, i) {
-        var t = moment(item.date, 'YYYY-MM-DD').valueOf()
-        if (t >= eventData.start_date * 1000 && t <= eventData.end_date * 1000) {
-          min = (item.low < min) ? item.low : min
-          max = (item.high > max) ? item.high : max
-        }
-        if (item.date === begin) stockStart = item.value
-        if (item.date === end) stockEnd = item.value
-        return true
-      })
-      // eslint-disable-next-line
-      this.state.newsJSON.response.results.map(function(item, i) {
-        if (item.fields.bodyText.match(name.replace(/ .*/, ''))) num++
-        return true
-      })
       var dat = this.state.infoJSON[name]
       pdf.setFontType('bold')
       pdf.text(10, y, `${dat.name} - ${dat.code}`)
