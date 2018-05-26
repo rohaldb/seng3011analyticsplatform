@@ -10,14 +10,13 @@ import { getDate } from '../time'
 import { extractCompanySummary } from '../info'
 import _ from 'lodash'
 import jsPDF from 'jspdf'
-import Paper from '@material-ui/core/Paper';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
+import Paper from '@material-ui/core/Paper'
+import Tabs from '@material-ui/core/Tabs'
+import Tab from '@material-ui/core/Tab'
 import { EventTour } from '../tour'
 import '../assets/company.css'
 //import html2canvas from 'html2canvas'
 import domtoimage from 'dom-to-image'
-import { prettyDate } from '../time'
 
 const styles = theme => ({
   root: {
@@ -69,7 +68,8 @@ class Event extends React.Component {
     this.startProgressBar = this.startProgressBar.bind(this)
     this.newPDFPage = this.newPDFPage.bind(this)
     this.alignText = this.alignText.bind(this)
-    this.getCompanySummaryStats =  this.getCompanySummaryStats.bind(this);
+    this.getCompanySummaryStats = this.getCompanySummaryStats.bind(this)
+    this.getTopArticles = this.getTopArticles.bind(this)
   }
 
   getCompanySummaryStats(name) {
@@ -80,15 +80,14 @@ class Event extends React.Component {
     var stockStart = 0
     var stockEnd = 0
 
-
     // eslint-disable-next-line
     this.state.newsJSON.response.results.map(function(item, i) {
       if (item.fields.bodyText.match(name.replace(/ .*/, ''))) numMentions++
       return true
-    });
+    })
 
     if (this.props) {
-      let eventData = this.props.eventData;
+      let eventData = this.props.eventData
       var begin = moment(eventData.start_date * 1000).format('YYYY-MM-DD')
       var end = moment(eventData.end_date * 1000).format('YYYY-MM-DD')
 
@@ -113,7 +112,26 @@ class Event extends React.Component {
       max,
       stockStart,
       stockEnd
-    };
+    }
+  }
+
+  getTopArticles() {
+    var articles = _.shuffle(this.state.newsJSON.response.results.slice(0, 20)).slice(0, 5)
+    articles = articles.sort(function(a, b) {
+      const t1 = new Date(a.blocks.main.publishedDate).valueOf()
+      const t2 = new Date(b.blocks.main.publishedDate).valueOf()
+      return t1 < t2
+    })
+    var formatted = []
+    articles.map(function(item, i) {
+     const time = new Date(item.webPublicationDate)
+     const date = moment(time).format('ddd D MMM YY')
+     const title = item.webTitle
+     const body = item.fields.bodyText.substring(0, 150).replace(/\s[^\s]*$/, '').replace(/\s*[^a-z]+$/i, '') + ' ... '
+     formatted.push({ 'date': date, 'title': title, 'body': body })
+     return true
+    })
+    return formatted
   }
 
   printDocument(eventData) {
@@ -183,8 +201,7 @@ class Event extends React.Component {
     pdf.setFontType('normal')
     y += 8
     for (let name in companies) {
-      let {numMentions, min, max, stockStart, stockEnd} = this.getCompanySummaryStats(name);
-
+      let { numMentions, min, max, stockStart, stockEnd } = this.getCompanySummaryStats(name)
       var dat = this.state.infoJSON[name]
       pdf.setFontType('bold')
       pdf.text(10, y, `${dat.name} - ${dat.code}`)
@@ -260,29 +277,20 @@ class Event extends React.Component {
         var topOfArticles = y
         pdf.setFontSize(10)
         pdf.setFontType('normal')
-        var numArticles = 1
-        var articles = this.state.newsJSON.response.results.slice(0, 5)
-        articles = articles.sort(function(a, b) {
-          const t1 = new Date(a.blocks.main.publishedDate).valueOf()
-          const t2 = new Date(b.blocks.main.publishedDate).valueOf()
-          return t1 < t2
-        })
+        const articles = this.getTopArticles()
         articles.map(function(item, i) {
-          const date = new Date(item.webPublicationDate)
-          const timestamp = moment(date).format('ddd D MMM YY')
           pdf.setFontSize(8)
-          pdf.text(25, y + 5, timestamp)
+          pdf.text(25, y + 5, item.date)
           pdf.setFontSize(10)
           const datePos = y + 4
           pdf.setFontSize(12)
           pdf.setFontType('bold')
-          lines = pdf.splitTextToSize(item.webTitle, pdf.internal.pageSize.width - 85)
+          lines = pdf.splitTextToSize(item.title, pdf.internal.pageSize.width - 85)
           pdf.text(65, y, lines)
           y += lines.length * 5
           pdf.setFontSize(10)
           pdf.setFontType('normal')
-          const articleText = item.fields.bodyText.substring(0, 150).replace(/\s[^\s]*$/, '').replace(/\s*[^a-z]+$/i, '') + ' ... '
-          lines = pdf.splitTextToSize(articleText, pdf.internal.pageSize.width - 85)
+          lines = pdf.splitTextToSize(item.body, pdf.internal.pageSize.width - 85)
           pdf.text(65, y, lines)
           y += 5 + lines.length * 5
           pdf.setDrawColor(0, 0, 153) /* blue */
@@ -291,8 +299,8 @@ class Event extends React.Component {
           pdf.setFillColor(0, 0, 153) /* blue */
           pdf.triangle(54.25, datePos - 3.5, 54.25, datePos + 3.5, 54.25 + 4, datePos, 'FD')
           pdf.triangle(54.25, datePos - 3.5, 54.25, datePos + 3.5, 54.25 - 4, datePos, 'FD')
-       })
-
+          return true
+        })
         exportComplete()
         pdf.save('event-report.pdf')
       })
@@ -524,8 +532,8 @@ class Event extends React.Component {
   }
 
   handleTabChange = (event, currentTab) => {
-    this.setState({ currentTab });
-  };
+    this.setState({ currentTab })
+  }
 
   componentDidMount () {
     this.getInfo()
@@ -615,7 +623,7 @@ class Event extends React.Component {
           </Grid>
         </div>}
       </Paper>
-    );
+    )
   }
 }
 

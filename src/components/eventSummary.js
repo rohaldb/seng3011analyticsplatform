@@ -5,12 +5,10 @@ import PropTypes from 'prop-types'
 import Card, { CardContent, CardHeader } from 'material-ui/Card'
 import Typography from 'material-ui/Typography'
 import Fade from 'material-ui/transitions/Fade'
-
 import Grid from 'material-ui/Grid'
-
 import IconButton from 'material-ui/IconButton'
-import GridList from '@material-ui/core/GridList';
-import GridListTile from '@material-ui/core/GridListTile';
+import GridList from '@material-ui/core/GridList'
+import GridListTile from '@material-ui/core/GridListTile'
 import PrintIcon from 'react-material-icon-svg/dist/PrinterIcon'
 import { Line } from 'rc-progress'
 
@@ -26,7 +24,6 @@ import {
   RedditIcon,
   EmailIcon
 } from 'react-share'
-
 
 const styles = theme => ({
   cardHeader: {

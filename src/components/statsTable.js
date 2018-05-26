@@ -5,11 +5,11 @@ import withRoot from '../withRoot'
 import Card, { CardContent, CardHeader } from 'material-ui/Card'
 import Fade from 'material-ui/transitions/Fade'
 
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
+import Table from '@material-ui/core/Table'
+import TableBody from '@material-ui/core/TableBody'
+import TableCell from '@material-ui/core/TableCell'
+import TableHead from '@material-ui/core/TableHead'
+import TableRow from '@material-ui/core/TableRow'
 
 const styles = theme => ({
   cardHeader: {
@@ -43,7 +43,7 @@ class StatsTable extends React.Component {
                 </TableHead>
                 <TableBody>
                   {_.map(_.keys(eventData.related_companies), (c, i) => {
-                    const {numMentions, min, max, stockStart, stockEnd} = this.props.getCompanySummaryStats(c);
+                    const {numMentions, min, max, stockStart, stockEnd} = this.props.getCompanySummaryStats(c)
 
                     return (
                       <TableRow key={i}>
@@ -56,7 +56,7 @@ class StatsTable extends React.Component {
                         <TableCell numeric>{stockStart}</TableCell>
                         <TableCell numeric>{stockEnd}</TableCell>
                       </TableRow>
-                    );
+                    )
                   })}
                 </TableBody>
               </Table>
@@ -64,7 +64,7 @@ class StatsTable extends React.Component {
           </CardContent>
         </Card>
       </Fade>
-    );
+    )
   }
 }
 
