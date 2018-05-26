@@ -19,6 +19,7 @@ import '../assets/company.css'
 import domtoimage from 'dom-to-image'
 
 // News timeline components
+import { Link } from 'react-router-dom'
 import { VerticalTimeline, VerticalTimelineElement } from 'react-vertical-timeline-component'
 import { Event as EventIcon} from 'material-ui-icons'
 
@@ -81,6 +82,11 @@ class Event extends React.Component {
     this.alignText = this.alignText.bind(this)
     this.getCompanySummaryStats = this.getCompanySummaryStats.bind(this)
     this.getTopArticles = this.getTopArticles.bind(this)
+    this.showArticle = this.showArticle.bind(this);
+  }
+
+  showArticle = (url) => {
+    window.open(url, '_blank')
   }
 
   getCompanySummaryStats(name) {
@@ -652,9 +658,11 @@ class Event extends React.Component {
                   >
                     <Grid container direction="row">
                       <Grid item xs={12}>
-                        <Typography variant='title' className='vertical-timeline-element-title' gutterBottom>
-                          {n.title}
-                        </Typography>
+                        <Link className={classes.link} to="#" target="_blank" onClick={(event) => {event.preventDefault(); this.showArticle(n.url)}} >
+                          <Typography variant='title' className='vertical-timeline-element-title' gutterBottom>
+                            {n.title}
+                          </Typography>
+                        </Link>
                       </Grid>
                     </Grid>
                     <Grid container direction="row">
