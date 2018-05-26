@@ -225,7 +225,7 @@ class Event extends React.Component {
     for (let name in companies) {
       let { numMentions, min, max, stockStart, stockEnd } = this.getCompanySummaryStats(name)
       var dat = this.state.infoJSON[name]
-      const social = this.companySocialStats(dat.posts, this.state.startDate, this.state.endDate)
+      const social = this.companySocialStats(name);
 
       /* company info on the left */
       pdf.setFontType('bold')
@@ -355,16 +355,19 @@ class Event extends React.Component {
 
   }
 
-  companySocialStats(posts, start, end) {
-    var startDate = moment(start).valueOf()
-    var endDate = moment(end).valueOf()
-    var days = moment(end).diff(moment(start), 'days')
+  companySocialStats(name) {
+    const posts = this.state.infoJSON[name].posts;
+    let {startDate, endDate} = this.state;
+
+    let start = moment(startDate).valueOf()
+    let end = moment(endDate).valueOf()
+    var days = moment(endDate).diff(moment(start), 'days')
     var numPosts = 0
     var numLikes = 0
     var numComments = 0
     for (let post in posts) {
       var date = moment(posts[post]['created_time']).valueOf()
-      if (date >= startDate && date <= endDate) {
+      if (date >= start && date <= end) {
         numPosts += 1
         numLikes += posts[post]['likes']
         numComments += posts[post]['comments']
@@ -681,7 +684,7 @@ class Event extends React.Component {
         <div className={classes.content}>
           <Grid container spacing={24}>
             <Grid item xs={12}>
-              <StatsTable getCompanySummaryStats={this.getCompanySummaryStats} eventData={eventData}/>
+              <StatsTable getCompanySummaryStats={this.getCompanySummaryStats} companySocialStats={this.companySocialStats} eventData={eventData}/>
             </Grid>
 
             <Grid item xs={4}>
