@@ -39,11 +39,16 @@ class StatsTable extends React.Component {
                     <TableCell numeric>Max stock price</TableCell>
                     <TableCell numeric>Initial stock price</TableCell>
                     <TableCell numeric>Final stock price</TableCell>
+                    <TableCell numeric>Avg posts</TableCell>
+                    <TableCell numeric>Avg likes</TableCell>
+                    <TableCell numeric>Avg comments</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {_.map(_.keys(eventData.related_companies), (c, i) => {
                     const {numMentions, min, max, stockStart, stockEnd} = this.props.getCompanySummaryStats(c)
+                    const {posts, likes, comments} = this.props.companySocialStats(c);
+                    console.log(this.props.companySocialStats(c));
 
                     return (
                       <TableRow key={i}>
@@ -55,6 +60,9 @@ class StatsTable extends React.Component {
                         <TableCell numeric>{'$' + max}</TableCell>
                         <TableCell numeric>{'$' + stockStart}</TableCell>
                         <TableCell numeric>{'$' + stockEnd}</TableCell>
+                        <TableCell numeric>{posts}</TableCell>
+                        <TableCell numeric>{likes}</TableCell>
+                        <TableCell numeric>{comments}</TableCell>
                       </TableRow>
                     )
                   })}
