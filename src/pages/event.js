@@ -271,6 +271,8 @@ class Event extends React.Component {
       plural = (social['comments'] === 1) ? '' : 's'
       pluralWord = (social['comments'] === 1) ? 'was' : 'were'
       pdf.text(halfWay, y + 40, `   \u2022 there ${pluralWord} ${social['comments']} comment${plural} per post`)
+      pdf.setDrawColor(0, 0, 153) /* blue */
+      pdf.setLineWidth(0.1)
       pdf.line(halfWay - 3, y - 11, halfWay - 3, y + 44) /* vertical line */
       pdf.line(10, y + 44, pdf.internal.pageSize.width - 10, y + 44) /* horizontal line */
       y += 51
@@ -417,7 +419,7 @@ class Event extends React.Component {
     for (let companyName in companies) {
       if (companies.hasOwnProperty(companyName) && companies[companyName]) {
         const companyCode = companies[companyName]
-        const token = 'EAACEdEose0cBAGIcHi3t2nM2EZCSeU22DcfI5jWTMZANcyiRSINIbeHVrDoS8TAuvKrSOKSZANOtZCJmP7hmrFNmsdy38KCpUPKxMXrnWfwf325NTBgxvh51aE4PBlPw1hCG717r8ZA7QqAfVFxZABLNKZB3fyuXvOOdBttutMOWVOGaKCo7iXwmug6L0ZBpZCGufKG5dLcPO7gZDZD'
+        const token = 'EAACEdEose0cBAKkTOKbk8MNwuVkx3fY7pZC6pZCpl7jLvNsMgK2b8HcqPtGA0QPqW2pjGCDwBPbFkJZAtLp9M6CRLA5crMgCpzQpAev4b8DZBeYMypZCAtH79pDqMI7uFACg3E0zssWjUxihWCxFavOcxmOZCIaVUOlAsQd0LgwsOiQHaHBZAzCkHI0fu82g19pZB3XUEcXqGwZDZD'
         let params = `statistics=id,name,website,description,category,fan_count,posts{likes,comments,created_time}&${dates}&access_token=${token}`
         //let params = `statistics=id,name,website,description,category,fan_count,posts{likes,comments,created_time}&${dates}&workaround=true`
         // console.log(`https://unassigned-api.herokuapp.com/api/${companyCode}?${params}`)
