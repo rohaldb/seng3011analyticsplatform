@@ -32,7 +32,8 @@ const styles = {
       magin: 20
   },
   fav: {
-    fontSize: 12
+    fontSize: 12,
+    marginLeft: 20
   }
 }
 
@@ -132,9 +133,12 @@ class Navigation extends React.Component {
               </IconButton>
             </Tooltip>
 
-            <Tooltip id="tooltip-fav" title={`Click Here to Filter by Your Favourite Industry,  ${this.props.favIndustry}.`}>
-                <Button className={classes.menuicon} color='inherit' aria-label='menu' onClick={() => {this.filterFavourites(this.props.favIndustry)}}>
+            <Tooltip id="tooltip-fav" title={`Click Here to Filter by Your Favourite Industry, ${this.props.favIndustry}.`}>
+                <Button className={classes.favIcon} color='inherit' aria-label='menu' onClick={() => {this.filterFavourites(this.props.favIndustry)}}>
                   {this.props.favIndustry}
+                  <i className="material-icons">
+                    {this.props.categoryIcons[this.props.favIndustry]}
+                  </i>
                 </Button>
             </Tooltip>
 
