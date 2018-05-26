@@ -127,21 +127,23 @@ class Event extends React.Component {
   }
 
   getTopArticles() {
-    var articles = _.shuffle(this.state.newsJSON.response.results.slice(0, 20)).slice(0, 5)
-    articles = articles.sort(function(a, b) {
-      const t1 = new Date(a.blocks.main.publishedDate).valueOf()
-      const t2 = new Date(b.blocks.main.publishedDate).valueOf()
-      return t1 < t2
-    })
     var formatted = []
-    articles.map(function(item, i) {
-     const time = new Date(item.blocks.main.publishedDate)
-     const date = moment(time).format('ddd D MMM YY')
-     const title = item.webTitle
-     const body = item.fields.bodyText.substring(0, 150).replace(/\s[^\s]*$/, '').replace(/\s*[^a-z]+$/i, '') + ' ... '
-     formatted.push({ 'date': date, 'title': title, 'body': body })
-     return true
-    })
+    if (this.state.newsJSON && this.state.newsJSON.response) {
+      var articles = _.shuffle(this.state.newsJSON.response.results.slice(0, 20)).slice(0, 5)
+      articles = articles.sort(function(a, b) {
+        const t1 = new Date(a.blocks.main.publishedDate).valueOf()
+        const t2 = new Date(b.blocks.main.publishedDate).valueOf()
+        return t1 < t2
+      })
+      articles.map(function(item, i) {
+        const time = new Date(item.blocks.main.publishedDate)
+        const date = moment(time).format('ddd D MMM YY')
+        const title = item.webTitle
+        const body = item.fields.bodyText.substring(0, 150).replace(/\s[^\s]*$/, '').replace(/\s*[^a-z]+$/i, '') + ' ... '
+        formatted.push({ 'date': date, 'title': title, 'body': body })
+        return true
+      })
+    }
     return formatted
   }
 
@@ -556,8 +558,6 @@ class Event extends React.Component {
   render () {
     const { infoJSON, stockJSON, newsJSON, loadingInfo, loadingStock, loadingNews, currentUser, currentTab } = this.state
     const { classes, eventData } = this.props
-    const topNews = {"NEWS ARTICLE 1": [], "NEWS ARTICLE 2": [], "3": [], "4": [], "5": []};
-
     document.title = 'EventStock - ' + eventData.name
     return (
       <Paper className={classes.root}>
@@ -641,24 +641,24 @@ class Event extends React.Component {
                 </Grid>
               </Grid>
               <VerticalTimeline>
-                { _.map(_.keys(topNews), (k, i) =>
+                { _.map(this.getTopArticles(), (n, i) =>
                   <VerticalTimelineElement
                     key={i}
                     className='vertical-timeline-element--work'
-                    date={`${moment().format('DD MMM YY')} - ${moment().format('DD MMM YY')}`}
+                    date={`${moment(n.date).format('DD MMM YY')}`}
                     iconStyle={{background: bgCols[i % bgCols.length], color: '#fff'}}
                     icon={<EventIcon />}
                   >
                     <Grid container direction="row">
                       <Grid item xs={12}>
                         <Typography variant='title' className='vertical-timeline-element-title' gutterBottom>
-                          {"Article name"}
+                          {n.title}
                         </Typography>
                       </Grid>
                     </Grid>
                     <Grid container direction="row">
                       <Typography gutterBottom>
-                        {"Article description"}
+                        {n.body}
                       </Typography>
                     </Grid>
                   </VerticalTimelineElement>
