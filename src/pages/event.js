@@ -97,7 +97,7 @@ class Event extends React.Component {
   getCompanySummaryStats(name) {
     let eventData = this.props.eventData;
 
-    var num = 0
+    var numMentions = 0
     var min = 9999
     var max = 0
 
@@ -118,12 +118,12 @@ class Event extends React.Component {
     })
     // eslint-disable-next-line
     this.state.newsJSON.response.results.map(function(item, i) {
-      if (item.fields.bodyText.match(name.replace(/ .*/, ''))) num++
+      if (item.fields.bodyText.match(name.replace(/ .*/, ''))) numMentions++
       return true
     })
 
     return {
-      num,
+      numMentions,
       min,
       max,
       stockStart,
@@ -198,7 +198,7 @@ class Event extends React.Component {
     pdf.setFontType('normal')
     y += 8
     for (let name in companies) {
-      let {num, min, max, stockStart, stockEnd} = this.getCompanySummaryStats(name);
+      let {numMentions, min, max, stockStart, stockEnd} = this.getCompanySummaryStats(name);
 
       var dat = this.state.infoJSON[name]
       pdf.setFontType('bold')
@@ -220,10 +220,10 @@ class Event extends React.Component {
       if (dat.website.match(/^http/)) pdf.line(35, y + 16, 35 + websiteWidth, y + 16)
       pdf.setTextColor(0, 0, 0)
       var numArticles = this.state.newsJSON.response.results.length
-      num = (num === 0) ? num = Math.floor(Math.random() * (numArticles - 5)) + 5 : num /* normalize */
+      numMentions = (numMentions === 0) ? numMentions = Math.floor(Math.random() * (numArticles - 5)) + 5 : numMentions /* normalize */
       var toDisplay = (name.length > 20) ? dat.code : dat.name
       toDisplay = (toDisplay.length > 20) ? dat.code : toDisplay
-      pdf.text(halfWay, y, `- ${num} articles mentioning ${toDisplay} were published`)
+      pdf.text(halfWay, y, `- ${numMentions} articles mentioning ${toDisplay} were published`)
       pdf.text(halfWay, y + 5, `- Maximum stock price was $${max.toFixed(2)}`)
       pdf.text(halfWay, y + 10, `- Minimum stock price was $${min.toFixed(2)}`)
       pdf.text(halfWay, y + 15, `- Initial stock price was $${stockStart.toFixed(2)}`)
@@ -688,24 +688,26 @@ class Event extends React.Component {
                   <TableRow>
                     <TableCell>Company</TableCell>
                     <TableCell numeric>News article mentions</TableCell>
-                    <TableCell numeric>Max stock price</TableCell>
                     <TableCell numeric>Min stock price</TableCell>
+                    <TableCell numeric>Max stock price</TableCell>
                     <TableCell numeric>Initial stock price</TableCell>
                     <TableCell numeric>Final stock price</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {_.map(_.keys(eventData.related_companies), (c, i) => {
+                    const {numMentions, min, max, stockStart, stockEnd} = this.getCompanySummaryStats(c);
+
                     return (
                       <TableRow key={i}>
                         <TableCell component="th" scope="row">
                           {c}
                         </TableCell>
-                        <TableCell numeric>{100}</TableCell>
-                        <TableCell numeric>{200}</TableCell>
-                        <TableCell numeric>{300}</TableCell>
-                        <TableCell numeric>{400}</TableCell>
-                        <TableCell numeric>{500}</TableCell>
+                        <TableCell numeric>{numMentions}</TableCell>
+                        <TableCell numeric>{min}</TableCell>
+                        <TableCell numeric>{max}</TableCell>
+                        <TableCell numeric>{stockStart}</TableCell>
+                        <TableCell numeric>{stockEnd}</TableCell>
                       </TableRow>
                     );
                   })}
