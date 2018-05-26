@@ -4,7 +4,8 @@ import PropTypes from 'prop-types'
 import { CircularProgress } from 'material-ui/Progress'
 import { Article } from '../components'
 import { prettyDate } from '../time'
-import Card, { CardContent, CardHeader } from 'material-ui/Card'
+import Card, { CardContent, CardHeader, CardActions } from 'material-ui/Card'
+import Button from 'material-ui/Button'
 import Fade from 'material-ui/transitions/Fade'
 
 // Styles should go here CSS should go here
@@ -14,27 +15,61 @@ const styles = theme => ({
   },
   card: {
     margin: theme.spacing.unit
+  },
+  button: {
+    backgroundColor: '#66bb6a',
+    margin: theme.spacing.unit * 2
   }
 })
 
 class NewsCard extends Component {
 
-  static propTypes = {
-    responseJSON: PropTypes.object,
-    items: PropTypes.number.isRequired,
-    loading: PropTypes.bool.isRequired,
+  state = {
+    numItems: 7
   }
 
-  displayItems(data, num) {
+  static propTypes = {
+    newsJSON: PropTypes.object.isRequired,
+    loading: PropTypes.bool.isRequired
+  }
+
+  addItems = () => {
+    this.setState({numItems: this.state.numItems + 5 })
+  }
+
+  displayItems = (data) => {
+    let num = this.state.numItems
     var items = []
     data.map(function(item, i) {
       const timestamp = prettyDate(new Date(item.webPublicationDate))
       if (num-- >= 0) {
-        items.push(<Article key={num}
+        var bodyText = item.blocks.body.length > 0 ? item.blocks.body[0].bodyHtml : ''
+
+        /* remove hyperlinks from body */
+        bodyText = bodyText.replace(/<\s*\/?\s*a\s[^>]*>/gi, '')
+
+        /* make headings smaller */
+        bodyText = bodyText.replace(/<\s*(\/?)\s*h[0-9]\s*>/gi, '<$1h5>')
+
+        /* make images half-scale */
+        bodyText = bodyText.replace(/<\s*img\s([^>]+)>/g, function(match, capture) {
+          var ret = capture.replace(/\sheight\s*=\s*"\s*([0-9]+)\s*"\s/gi, function(m, cap) {
+            return ' height="' + cap / 2 + '" '
+          })
+          ret = ret.replace(/\swidth\s*=\s*"\s*([0-9]+)\s*"\s/gi, function(m, cap) {
+            return ' width="' + cap / 2 + '" '
+          })
+          return '<img ' + ret + '>'
+        })
+
+        items.push(
+          <Article key={num}
           title={item.webTitle}
           date={timestamp}
-          body={item.fields.bodyText.substring(0, 350).replace(/\s[^\s]*$/, '').replace(/\s*[^a-z]+$/i, '') + ' ... '}
+          body={item.fields.bodyText.substring(0, 1000).replace(/\s[^\s]*$/, '').replace(/\s*[^a-z]+$/i, '') + ' ... '}
           url={item.webUrl}
+          img={item.fields.thumbnail}
+          bodyText={bodyText}
           />
         )
       }
@@ -44,22 +79,26 @@ class NewsCard extends Component {
   }
 
   render () {
-    const { responseJSON, items, classes, loading } = this.props
-    const data = responseJSON ? responseJSON.response.results : null
+    const { newsJSON, loading, classes } = this.props
 
     return (
       <Fade in timeout={500}>
         <Card>
-          <CardHeader title="Related News" className={classes.cardHeader}/>
+          <CardHeader title="Related News" className={classes.cardHeader} />
           <CardContent>
-            {!data ?
+            {loading ?
               <div style={{textAlign: 'center'}}>
-                <CircularProgress/>
+                <CircularProgress />
               </div>
-              :
-              this.displayItems(data, items)
+            :
+              this.displayItems(newsJSON.response.results)
             }
           </CardContent>
+          <CardActions>
+            <div style={{margin: 'auto'}}>
+              <Button variant="raised" className={classes.button} size="large" onClick={() => this.addItems()}>Show More</Button>
+            </div>
+          </CardActions>
         </Card>
       </Fade>
     )

@@ -4,16 +4,16 @@ import withRoot from '../withRoot'
 import PropTypes from 'prop-types'
 import Card, { CardContent, CardHeader } from 'material-ui/Card'
 import Fade from 'material-ui/transitions/Fade'
+import { CircularProgress } from 'material-ui/Progress'
 import Typography from 'material-ui/Typography'
-import _ from 'lodash'
+import NumericLabel from 'react-pretty-numbers'
+import Social from './social'
+import Avatar from '@material-ui/core/Avatar'
 import Dialog, {
-  DialogActions,
   DialogContent,
-  DialogContentText,
-  DialogTitle,
+  DialogTitle
 } from 'material-ui/Dialog'
-import Button from 'material-ui/Button'
-
+import _ from "lodash"
 
 const styles = theme => ({
   cardHeader: {
@@ -37,71 +37,120 @@ class Company extends React.Component {
     name: PropTypes.string.isRequired,
     loading: PropTypes.bool.isRequired,
     infoJSON: PropTypes.object,
+    start: PropTypes.number,
+    end: PropTypes.number
   }
 
   state = {
     open: false,
-  };
+    backupAvatarStrings: {}
+  }
 
   handleOpen = () => {
-    this.setState({open: true});
-  };
+    this.setState({open: true})
+  }
 
   handleClose = () => {
-    this.setState({open: false});
-  };
+    this.setState({open: false})
+  }
 
+  rawMarkup = (html) => {
+    return { __html: html }
+  }
 
   render () {
-    const { name, loading, infoJSON } = this.props
+    const { name, loading, infoJSON, start, end } = this.props
     const { classes } = this.props
+    const { backupAvatarStrings } = this.state
 
     return (
       <div>
         <Fade in timeout={500}>
           <Card className={infoJSON ? classes.card : null} onClick={() => infoJSON ? this.handleOpen() : null}>
-            <CardHeader title={name} className={classes.cardHeader}/>
-              {infoJSON ?
-              (
-              <CardContent>
-                <Typography>
-                  <b>{infoJSON.name}</b>
-                  <br></br>
-                  <b>Operations:</b> {infoJSON.category}
-                  <br></br>
-                  <b>Followers:</b> {infoJSON.fan_count}
-                  <br></br>
-                  <b>Website:</b> {infoJSON.website}
-                </Typography>
+            <CardHeader title={name} className={classes.cardHeader}
+              avatar={<Avatar src={`https://logo.clearbit.com/${_.split(_.replace(_.toLower(name), /\s*the\s*/, ''), /\s+/)[0]}.com?size=50`} alt=''
+                              onError={()=>{
+                                backupAvatarStrings[name] = _.capitalize(name)[0]
+                                this.setState({backupAvatarStrings})
+                              }}>{backupAvatarStrings.hasOwnProperty(name) ? backupAvatarStrings[name] : null}</Avatar>
+            }/>
+              {loading ?
+                <div style={{textAlign: 'center'}}>
+                  <CircularProgress />
+                </div>
+              :
+                infoJSON ?
+                (
+                <CardContent>
+                  <div id={name}>
+                  <Typography noWrap>
+                    <b>{infoJSON.name} - {infoJSON.code}</b>
+                  </Typography>
+                  <Typography noWrap>
+                    <b>Operations:</b> {infoJSON.category}
+                  </Typography>
+                  <Typography noWrap>
+                    <b>Followers:</b> <NumericLabel>{infoJSON.fan_count}</NumericLabel>
+                  </Typography>
+                  <Typography noWrap>
+                    <b>Website: </b>
+                    {infoJSON.website.match(/^http/) ?
+                      <a target="_blank" href={infoJSON.website}>{infoJSON.website}</a>
+                    :
+                      <span>{infoJSON.website}</span>
+                    }
+                  </Typography>
+                  </div>
                 </CardContent>
-              ):
-              <CardContent>
-                <Typography>
-                  <i> No information for {name} can be retrieved at this point in time. We apologise for any inconvenience. </i>
-                </Typography>
-              </CardContent>
+                ):
+                <CardContent>
+                  <Typography>
+                    <i> No information for {name} can be retrieved at this point in time. We apologise for any inconvenience. </i>
+                  </Typography>
+                </CardContent>
               }
           </Card>
         </Fade>
 
-      <Dialog
-          open={() => this.state.open()}
-          onClose={() => this.handleClose()}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-          open={this.state.open}
+      {infoJSON ?
+        <Dialog
+            open={this.state.open}
+            onClose={() => this.handleClose()}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+            maxWidth={false}
         >
-          <DialogTitle id="alert-dialog-title">{"Company Information"}</DialogTitle>
+          <DialogTitle
+            id="alert-dialog-title"
+            style={{background: 'linear-gradient(60deg, #26c6da, #00acc1)'}}
+            >
+              {infoJSON.name} - {infoJSON.code}
+          </DialogTitle>
           <DialogContent>
-            {_.map(_.keys(infoJSON), (key, i) =>
-                key !== 'id'?
-                (<Typography color="inherit" key={i}>
-                <b>{key}: </b> {infoJSON[key]}
-                </Typography>)
-              : null
-            )}
+            <CardContent>
+              <Typography noWrap>
+                <b>Operations:</b> {infoJSON.category}
+              </Typography>
+              <Typography noWrap>
+                <b>Followers:</b> <NumericLabel>{infoJSON.fan_count}</NumericLabel>
+              </Typography>
+              <Typography noWrap>
+                <b>Website: </b>
+                {infoJSON.website.match(/^http/) ?
+                  <a target="_blank" href={infoJSON.website}>{infoJSON.website}</a>
+                :
+                  <span>{infoJSON.website}</span>
+                }
+              </Typography>
+              <Typography noWrap>
+                <b>Description:</b> <span dangerouslySetInnerHTML={this.rawMarkup(infoJSON.description)} />
+              </Typography>
+              <br></br>
+              <Social posts={infoJSON.posts} start={start} end={end} />
+            </CardContent>
           </DialogContent>
         </Dialog>
+        : null }
       </div>
     )
   }
