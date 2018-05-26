@@ -60,22 +60,23 @@ class Event extends React.Component {
     eventData: PropTypes.object.isRequired
   }
 
+  state = {
+    pagination: false,
+    infoJSON: {},
+    stockJSON: {},
+    newsJSON: {},
+    loadingInfo: true,
+    loadingStock: true,
+    loadingNews: true,
+    startDate: null,
+    endDate: null,
+    currentUser: this.props.currentUser,
+    currentTab: 0,
+    percent: 0,
+  }
+
   constructor (props) {
     super(props)
-    this.state = {
-      pagination: false,
-      infoJSON: {},
-      stockJSON: {},
-      newsJSON: {},
-      loadingInfo: true,
-      loadingStock: true,
-      loadingNews: true,
-      startDate: null,
-      endDate: null,
-      currentUser: this.props.currentUser,
-      currentTab: 0,
-      percent: 0,
-    }
     this.printDocument = this.printDocument.bind(this)
     this.startProgressBar = this.startProgressBar.bind(this)
     this.newPDFPage = this.newPDFPage.bind(this)
@@ -675,7 +676,7 @@ class Event extends React.Component {
                 <NewsCard newsJSON={newsJSON} loading={loadingNews} />
               </Grid>
               <Grid item xs={6} style={(this.state.percent > 0 && this.state.percent < 100) ? {} : {display: 'none'}}>
-                <Map />
+                <Map loading={this.state.loadingStock}/>
               </Grid>
             </Grid>
           </div>
@@ -689,7 +690,7 @@ class Event extends React.Component {
 
             <Grid item xs={4}>
               <div className="heat-map-tour"></div>
-              <Map />
+              <Map loading={this.state.loadingStock}/>
             </Grid>
             <Grid item xs={8}>
               <Grid container direction="column" alignItems="center">
