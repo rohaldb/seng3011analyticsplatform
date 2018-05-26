@@ -28,6 +28,9 @@ class Stock extends React.Component {
   // Generate config object for AMCharts
   config_compare (props, datasets) {
     return {
+      "export": {
+        "enabled": true,
+      },
       "type": "stock",
       "theme": "light",
       "dataSets": datasets,

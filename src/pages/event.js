@@ -60,22 +60,23 @@ class Event extends React.Component {
     eventData: PropTypes.object.isRequired
   }
 
+  state = {
+    pagination: false,
+    infoJSON: {},
+    stockJSON: {},
+    newsJSON: {},
+    loadingInfo: true,
+    loadingStock: true,
+    loadingNews: true,
+    startDate: null,
+    endDate: null,
+    currentUser: this.props.currentUser,
+    currentTab: 0,
+    percent: 0,
+  }
+
   constructor (props) {
     super(props)
-    this.state = {
-      pagination: false,
-      infoJSON: {},
-      stockJSON: {},
-      newsJSON: {},
-      loadingInfo: true,
-      loadingStock: true,
-      loadingNews: true,
-      startDate: null,
-      endDate: null,
-      currentUser: this.props.currentUser,
-      currentTab: 0,
-      percent: 0,
-    }
     this.printDocument = this.printDocument.bind(this)
     this.startProgressBar = this.startProgressBar.bind(this)
     this.newPDFPage = this.newPDFPage.bind(this)
@@ -370,7 +371,7 @@ class Event extends React.Component {
     for (let companyName in companies) {
       if (companies.hasOwnProperty(companyName) && companies[companyName]) {
         const companyCode = companies[companyName]
-        const token = 'EAACEdEose0cBAOiWqBMwPCZB2ifsTdvRAnxn6U6dBfHqoZBoCN1pZAecFhOTfFNFh83VHRFxnQtCFm55hlSaIgQZAjfmp7EO4A0NWLaWKkNvIPIsZALgUlBOpkBnpwkZBokYZCDYdAZCcK3fwHrEtta6qfHecfW1RWo2OPcJdZALoY0I3oeaZCoj8SWAJ1pH9Rof5dzQTESPROEgZDZD'
+        const token = 'EAACEdEose0cBAAh92dD0CtOVhdy28KckFdOkXpzOEhnqUxayME02bVj60i4YhSKZAlFu9uDgZCZA2ZBhmickqbsAcElOLXcDml9s6ZB6Inl6Hpqzm42f4u8eAOvhKVRMhBPzpWbr9ZC57V18X9WP8MhIuZA9ZAGj38gHrFtSgmOwu7iZA5S5rHe6V1qsWFq9ZApvkZD'
         let params = `statistics=id,name,website,description,category,fan_count,posts{likes,comments,created_time}&${dates}&access_token=${token}`
         //let params = `statistics=id,name,website,description,category,fan_count,posts{likes,comments,created_time}&${dates}&workaround=true`
         // console.log(`https://unassigned-api.herokuapp.com/api/${companyCode}?${params}`)
@@ -623,7 +624,7 @@ class Event extends React.Component {
                 <NewsCard newsJSON={newsJSON} loading={loadingNews} />
               </Grid>
               <Grid item xs={6} style={(this.state.percent > 0 && this.state.percent < 100) ? {} : {display: 'none'}}>
-                <Map />
+                <Map loading={this.state.loadingStock}/>
               </Grid>
             </Grid>
           </div>
@@ -637,7 +638,7 @@ class Event extends React.Component {
 
             <Grid item xs={4}>
               <div className="heat-map-tour"></div>
-              <Map />
+              <Map loading={this.state.loadingStock}/>
             </Grid>
             <Grid item xs={8}>
               <Grid container direction="column" alignItems="center">

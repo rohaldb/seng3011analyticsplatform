@@ -5,6 +5,8 @@ import Card, { CardContent, CardHeader } from 'material-ui/Card'
 import Fade from 'material-ui/transitions/Fade'
 import AmCharts from '@amcharts/amcharts3-react'
 import 'ammap3/ammap/ammap.js'
+import { CircularProgress } from 'material-ui/Progress'
+import PropTypes from 'prop-types'
 
 const styles = theme => ({
   cardHeader: {
@@ -13,6 +15,11 @@ const styles = theme => ({
 })
 
 class Map extends React.Component {
+
+  static propTypes = {
+    loading: PropTypes.bool.isRequired
+  }
+
 
   render () {
     const { classes } = this.props
@@ -355,16 +362,22 @@ class Map extends React.Component {
     return (
       <Fade in timeout={500}>
         <Card>
-          <CardHeader
-            title='Global Impact'
-            className={classes.cardHeader}
-          />
-          <CardContent className={classes.map}>
-            <div id="map">
-              <AmCharts.React style={{width: '100%', height: '500px'}} options={config} />
-            </div>
-          </CardContent>
-        </Card>
+            <CardHeader
+              title='Global Impact'
+              className={classes.cardHeader}
+            />
+            <CardContent className={classes.map}>
+              {this.props.loading ?
+                <div style={{textAlign: 'center'}}>
+                  <CircularProgress />
+                </div>
+              :
+                <div id="map">
+                  <AmCharts.React style={{width: '100%', height: '500px'}} options={config} />
+                </div>
+              }
+            </CardContent>
+          </Card>
       </Fade>
     )
   }
