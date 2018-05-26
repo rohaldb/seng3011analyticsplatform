@@ -4,7 +4,7 @@ import withRoot from '../withRoot'
 import { base } from '../config'
 import AppBar from 'material-ui/AppBar'
 import Toolbar from 'material-ui/Toolbar'
-import { Help, Timeline } from 'material-ui-icons'
+import { Help, Timeline, Person } from 'material-ui-icons'
 import Button from 'material-ui/Button'
 import IconButton from 'material-ui/IconButton'
 import { Link } from 'react-router-dom'
@@ -15,6 +15,7 @@ import NewEventForm from './newEventForm'
 import Tooltip from '@material-ui/core/Tooltip'
 import Tour from 'react-user-tour'
 
+import _ from 'lodash'
 //import AviationBG from '../assets/backgrounds/aviation.jpg'
 //import TechBG from '../assets/backgrounds/tech.jpg'
 
@@ -31,7 +32,8 @@ const styles = {
       magin: 20
   },
   fav: {
-    fontSize: 12
+    fontSize: 12,
+    marginLeft: 20
   }
 }
 
@@ -53,8 +55,11 @@ class Navigation extends React.Component {
 
   static propTypes = {
     isAdmin: PropTypes.bool.isRequired,
-    backgroundImg: PropTypes.string,
+    favIndustry: PropTypes.string,
     filterFavourites: PropTypes.func,
+    //filterCategories: PropTypes.object,
+    //categoryIcons: PropTypes.array,
+    user: PropTypes.string,
     //tour: PropTypes.object
   }
 
@@ -116,21 +121,26 @@ class Navigation extends React.Component {
               </Tooltip>
               : null
             }
+            <Tooltip id="tooltip-user" title={`Currently Signed in as ${this.props.user}`}>
+              <IconButton className={classes.menuicon} color='inherit' aria-label='menu'>
+                <Person />
+              </IconButton>
+            </Tooltip>
+
             <Tooltip id="tooltip-tour" title="Site Tour">
               <IconButton className={classes.menuicon} color='inherit' aria-label='menu' onClick={this.startTour}>
                 <Help />
               </IconButton>
             </Tooltip>
 
-            {this.props.backgroundImg === 'av' ?
-                <Tooltip id="tooltip-fab" title="Your Favorite Industry is Aviation">
-                    <a className={classes.fav} onClick={() => {this.filterFavourites('aviation')}}>Aviation</a>
-                </Tooltip>
-                :
-                <Tooltip id="tooltip-fab" title="Your Favorite Industry is Technology">
-                      <a className={classes.fav} onClick={() => {this.filterFavourites('technology')}}>Technology</a>
-                </Tooltip>
-            }
+            <Tooltip id="tooltip-fav" title={`Click Here to Filter by Your Favourite Industry, ${this.props.favIndustry}`}>
+                <Button className={classes.favIcon} color='inherit' aria-label='menu' onClick={() => {this.filterFavourites(this.props.favIndustry)}}>
+                  {this.props.favIndustry}
+                  <i className="material-icons">
+                    {this.props.categoryIcons[this.props.favIndustry]}
+                  </i>
+                </Button>
+            </Tooltip>
 
            </div>
            <div>

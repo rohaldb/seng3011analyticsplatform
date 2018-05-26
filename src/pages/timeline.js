@@ -313,7 +313,7 @@ class Timeline extends React.Component {
 
     return (
       <div>
-        <Navigation isAdmin={currentUser.admin} backgroundImg={currentUser.fav} tour={TimelineTour} filterFavourites={(category) => {this.handleFilterFavourite(category)}}/>
+        <Navigation isAdmin={currentUser.admin} favIndustry={currentUser.fav} filterCategories={filterCategories} categoryIcons={categoryIcons} user={currentUser.username}tour={TimelineTour} filterFavourites={(category) => {this.handleFilterFavourite(category)}}/>
         <Grid container direction='row'>
           <Grid container direction='column' className={classes.root}>
             <div className={classes.appFrame}>
