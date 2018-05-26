@@ -3,7 +3,7 @@ import { withRouter } from 'react-router'
 import PropTypes from 'prop-types'
 import { withStyles } from 'material-ui/styles'
 import withRoot from '../withRoot'
-import Grid from 'material-ui/Grid'
+import { Typography, Grid } from 'material-ui'
 import moment from 'moment'
 import { EventSummary, Company, Stock, Map, NewsCard, Navigation, StatsTable } from '../components'
 import { getDate } from '../time'
@@ -17,6 +17,10 @@ import { EventTour } from '../tour'
 import '../assets/company.css'
 //import html2canvas from 'html2canvas'
 import domtoimage from 'dom-to-image'
+
+// News timeline components
+import { VerticalTimeline, VerticalTimelineElement } from 'react-vertical-timeline-component'
+import { Event as EventIcon} from 'material-ui-icons'
 
 const styles = theme => ({
   root: {
@@ -40,6 +44,13 @@ const styles = theme => ({
     transform: 'translateZ(0)',
   },
 })
+
+const bgCols = [
+  '#AB47B8',
+  '#26c6da',
+  '#ef5350',
+  '#66bb6a'
+]
 
 class Event extends React.Component {
 
@@ -545,6 +556,7 @@ class Event extends React.Component {
   render () {
     const { infoJSON, stockJSON, newsJSON, loadingInfo, loadingStock, loadingNews, currentUser, currentTab } = this.state
     const { classes, eventData } = this.props
+    const topNews = {"NEWS ARTICLE 1": [], "NEWS ARTICLE 2": [], "3": [], "4": [], "5": []};
 
     document.title = 'EventStock - ' + eventData.name
     return (
@@ -616,9 +628,42 @@ class Event extends React.Component {
               <StatsTable getCompanySummaryStats={this.getCompanySummaryStats} eventData={eventData}/>
             </Grid>
 
-            <Grid item xs={6}>
+            <Grid item xs={4}>
               <div className="heat-map-tour"></div>
               <Map />
+            </Grid>
+            <Grid item xs={8}>
+              <Grid container direction="column" alignItems="center">
+                <Grid item xs={12}>
+                  <Typography variant='display3' gutterBottom className={classes.title}>
+                    Top News Headlines
+                  </Typography>
+                </Grid>
+              </Grid>
+              <VerticalTimeline>
+                { _.map(_.keys(topNews), (k, i) =>
+                  <VerticalTimelineElement
+                    key={i}
+                    className='vertical-timeline-element--work'
+                    date={`${moment().format('DD MMM YY')} - ${moment().format('DD MMM YY')}`}
+                    iconStyle={{background: bgCols[i % bgCols.length], color: '#fff'}}
+                    icon={<EventIcon />}
+                  >
+                    <Grid container direction="row">
+                      <Grid item xs={12}>
+                        <Typography variant='title' className='vertical-timeline-element-title' gutterBottom>
+                          {"Article name"}
+                        </Typography>
+                      </Grid>
+                    </Grid>
+                    <Grid container direction="row">
+                      <Typography gutterBottom>
+                        {"Article description"}
+                      </Typography>
+                    </Grid>
+                  </VerticalTimelineElement>
+                )}
+              </VerticalTimeline>
             </Grid>
           </Grid>
         </div>}
