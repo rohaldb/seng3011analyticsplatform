@@ -4,7 +4,7 @@ import withRoot from '../withRoot'
 import { base } from '../config'
 import AppBar from 'material-ui/AppBar'
 import Toolbar from 'material-ui/Toolbar'
-import { Help, Timeline } from 'material-ui-icons'
+import { Help, Timeline, Person } from 'material-ui-icons'
 import Button from 'material-ui/Button'
 import IconButton from 'material-ui/IconButton'
 import { Link } from 'react-router-dom'
@@ -55,6 +55,7 @@ class Navigation extends React.Component {
     isAdmin: PropTypes.bool.isRequired,
     backgroundImg: PropTypes.string,
     filterFavourites: PropTypes.func,
+    user: PropTypes.string,
     //tour: PropTypes.object
   }
 
@@ -116,6 +117,11 @@ class Navigation extends React.Component {
               </Tooltip>
               : null
             }
+            <Tooltip id="tooltip-user" title={`Currently signed in as ${this.props.user}`}>
+              <IconButton className={classes.menuicon} color='inherit' aria-label='menu'>
+                <Person />
+              </IconButton>
+            </Tooltip>
             <Tooltip id="tooltip-tour" title="Site Tour">
               <IconButton className={classes.menuicon} color='inherit' aria-label='menu' onClick={this.startTour}>
                 <Help />
@@ -123,11 +129,11 @@ class Navigation extends React.Component {
             </Tooltip>
 
             {this.props.backgroundImg === 'av' ?
-                <Tooltip id="tooltip-fab" title="Your Favorite Industry is Aviation">
+                <Tooltip id="tooltip-fab" title="Click Here to Filter by Your Favourite Industry, Aviation.">
                     <a className={classes.fav} onClick={() => {this.filterFavourites('aviation')}}>Aviation</a>
                 </Tooltip>
                 :
-                <Tooltip id="tooltip-fab" title="Your Favorite Industry is Technology">
+                <Tooltip id="tooltip-fab" title="Click Here to Filter by Your Favourite Industry, Technology.">
                       <a className={classes.fav} onClick={() => {this.filterFavourites('technology')}}>Technology</a>
                 </Tooltip>
             }
