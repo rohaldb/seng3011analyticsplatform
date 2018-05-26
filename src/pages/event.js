@@ -124,7 +124,7 @@ class Event extends React.Component {
     })
     var formatted = []
     articles.map(function(item, i) {
-     const time = new Date(item.webPublicationDate)
+     const time = new Date(item.blocks.main.publishedDate)
      const date = moment(time).format('ddd D MMM YY')
      const title = item.webTitle
      const body = item.fields.bodyText.substring(0, 150).replace(/\s[^\s]*$/, '').replace(/\s*[^a-z]+$/i, '') + ' ... '
