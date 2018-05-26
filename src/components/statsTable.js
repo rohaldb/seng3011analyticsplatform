@@ -13,7 +13,7 @@ import TableRow from '@material-ui/core/TableRow';
 
 const styles = theme => ({
   cardHeader: {
-    background: 'linear-gradient(60deg, #ef5350, #e53935)'
+    background: 'linear-gradient(60deg, #ab47bc , #790e8b)'
   }
 })
 
