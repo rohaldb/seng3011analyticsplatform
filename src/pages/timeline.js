@@ -331,7 +331,7 @@ class Timeline extends React.Component {
                       </Grid>
                       <Grid item>
                         <Typography variant='subheading' gutterBottom className={classes.subTitle}>
-                          Discover the impact of events on industries you're interested in
+                          Discover how major world events are impacting you. 
                         </Typography>
                       </Grid>
                     </Grid>

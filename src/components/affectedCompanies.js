@@ -6,6 +6,7 @@ import Card, { CardContent, CardHeader } from 'material-ui/Card'
 import Fade from 'material-ui/transitions/Fade'
 import { CircularProgress } from 'material-ui/Progress'
 import Typography from 'material-ui/Typography'
+import IconButton from '@material-ui/core/IconButton'
 import NumericLabel from 'react-pretty-numbers'
 import Social from './social'
 import Avatar from '@material-ui/core/Avatar'
@@ -13,6 +14,7 @@ import Dialog, {
   DialogContent,
   DialogTitle
 } from 'material-ui/Dialog'
+import { UnfoldMore } from 'material-ui-icons'
 import _ from "lodash"
 
 const styles = theme => ({
@@ -73,7 +75,13 @@ class Company extends React.Component {
                                 backupAvatarStrings[name] = _.capitalize(name)[0]
                                 this.setState({backupAvatarStrings})
                               }}>{backupAvatarStrings.hasOwnProperty(name) ? backupAvatarStrings[name] : null}</Avatar>
-            }/>
+            }
+            action={
+              <IconButton>
+                <UnfoldMore />
+              </IconButton>
+            }
+            />
               {loading ?
                 <div style={{textAlign: 'center'}}>
                   <CircularProgress />
