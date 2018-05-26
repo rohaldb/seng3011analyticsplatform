@@ -70,6 +70,7 @@ class Event extends React.Component {
     this.alignText = this.alignText.bind(this)
     this.getCompanySummaryStats = this.getCompanySummaryStats.bind(this)
     this.getTopArticles = this.getTopArticles.bind(this)
+    this.companySocialStats = this.companySocialStats.bind(this)
   }
 
   getCompanySummaryStats(name) {
@@ -200,9 +201,13 @@ class Event extends React.Component {
     pdf.line(10, y + 2, pdf.internal.pageSize.width - 10, y + 2) /* horizontal line */
     pdf.setFontType('normal')
     y += 8
+    var companyNum = 0
     for (let name in companies) {
       let { numMentions, min, max, stockStart, stockEnd } = this.getCompanySummaryStats(name)
       var dat = this.state.infoJSON[name]
+      const social = this.companySocialStats(dat.posts, this.state.startDate, this.state.endDate)
+
+      /* company info on the left */
       pdf.setFontType('bold')
       pdf.text(10, y, `${dat.name} - ${dat.code}`)
       pdf.setFontType('bold')
@@ -221,6 +226,13 @@ class Event extends React.Component {
       var websiteWidth = pdf.getStringUnitWidth(dat.website) * 3.57
       if (dat.website.match(/^http/)) pdf.line(35, y + 16, 35 + websiteWidth, y + 16)
       pdf.setTextColor(0, 0, 0)
+      pdf.setFontType('bold')
+      pdf.text(10, y + 20, 'Description:')
+      pdf.setFontType('normal')
+      lines = pdf.splitTextToSize(dat.description.substring(0, 220).replace(/\s[^\s]*$/, '').replace(/\s*[^a-z]+$/i, '').replace(/\n/g, '') + ' ... ', halfWay - 20)
+      pdf.text(10, y + 25, lines)
+
+      /* news, stock and social stas on the right */
       var numArticles = this.state.newsJSON.response.results.length
       numMentions = (numMentions === 0) ? numMentions = Math.floor(Math.random() * (numArticles - 5)) + 5 : numMentions /* normalize */
       var toDisplay = (name.length > 20) ? dat.code : dat.name
@@ -230,9 +242,22 @@ class Event extends React.Component {
       pdf.text(halfWay, y + 10, `\u2022 Minimum stock price was $${min.toFixed(2)}`)
       pdf.text(halfWay, y + 15, `\u2022 Initial stock price was $${stockStart.toFixed(2)}`)
       pdf.text(halfWay, y + 20, `\u2022 Final stock price was $${stockEnd.toFixed(2)}`)
-      pdf.line(halfWay - 3, y - 11, halfWay - 3, y + 24) /* vertical line */
-      pdf.line(10, y + 24, pdf.internal.pageSize.width - 10, y + 24) /* horizontal line */
-      y += 31
+      pdf.text(halfWay, y + 25, `\u2022 On average:`)
+      var plural = (social['posts'] === 1) ? ' was' : 's were'
+      pdf.text(halfWay, y + 30, `   \u2022 ${social['posts']} post${plural} made per day`)
+      plural = (social['likes'] === 1) ? '' : 's'
+      var pluralWord = (social['likes'] === 1) ? 'was' : 'were'
+      pdf.text(halfWay, y + 35, `   \u2022 there ${pluralWord} ${social['likes']} like${plural} per post`)
+      plural = (social['comments'] === 1) ? '' : 's'
+      pluralWord = (social['comments'] === 1) ? 'was' : 'were'
+      pdf.text(halfWay, y + 40, `   \u2022 there ${pluralWord} ${social['comments']} comment${plural} per post`)
+      pdf.line(halfWay - 3, y - 11, halfWay - 3, y + 44) /* vertical line */
+      pdf.line(10, y + 44, pdf.internal.pageSize.width - 10, y + 44) /* horizontal line */
+      y += 51
+      if (++companyNum === 4) {
+        y = 20
+        makePage(pdf, ++pg)
+      }
     }
     y += 7
 
@@ -308,6 +333,28 @@ class Event extends React.Component {
 
   }
 
+  companySocialStats(posts, start, end) {
+    var startDate = moment(start).valueOf()
+    var endDate = moment(end).valueOf()
+    var days = moment(end).diff(moment(start), 'days')
+    var numPosts = 0
+    var numLikes = 0
+    var numComments = 0
+    for (let post in posts) {
+      var date = moment(posts[post]['created_time']).valueOf()
+      if (date >= startDate && date <= endDate) {
+        numPosts += 1
+        numLikes += posts[post]['likes']
+        numComments += posts[post]['comments']
+      }
+    }
+    return {
+      'posts': Math.ceil(numPosts / days),
+      'likes': Math.ceil(numLikes / numPosts),
+      'comments': Math.ceil(numComments / numPosts)
+    }
+  }
+
   newPDFPage(pdf, add, pg) {
     if (add) pdf.addPage()
     pdf.setFontSize(10)
@@ -350,7 +397,7 @@ class Event extends React.Component {
     for (let companyName in companies) {
       if (companies.hasOwnProperty(companyName) && companies[companyName]) {
         const companyCode = companies[companyName]
-        const token = 'EAACEdEose0cBAOiWqBMwPCZB2ifsTdvRAnxn6U6dBfHqoZBoCN1pZAecFhOTfFNFh83VHRFxnQtCFm55hlSaIgQZAjfmp7EO4A0NWLaWKkNvIPIsZALgUlBOpkBnpwkZBokYZCDYdAZCcK3fwHrEtta6qfHecfW1RWo2OPcJdZALoY0I3oeaZCoj8SWAJ1pH9Rof5dzQTESPROEgZDZD'
+        const token = 'EAACEdEose0cBAGIcHi3t2nM2EZCSeU22DcfI5jWTMZANcyiRSINIbeHVrDoS8TAuvKrSOKSZANOtZCJmP7hmrFNmsdy38KCpUPKxMXrnWfwf325NTBgxvh51aE4PBlPw1hCG717r8ZA7QqAfVFxZABLNKZB3fyuXvOOdBttutMOWVOGaKCo7iXwmug6L0ZBpZCGufKG5dLcPO7gZDZD'
         let params = `statistics=id,name,website,description,category,fan_count,posts{likes,comments,created_time}&${dates}&access_token=${token}`
         //let params = `statistics=id,name,website,description,category,fan_count,posts{likes,comments,created_time}&${dates}&workaround=true`
         // console.log(`https://unassigned-api.herokuapp.com/api/${companyCode}?${params}`)
