@@ -208,11 +208,11 @@ class Event extends React.Component {
       numMentions = (numMentions === 0) ? numMentions = Math.floor(Math.random() * (numArticles - 5)) + 5 : numMentions /* normalize */
       var toDisplay = (name.length > 20) ? dat.code : dat.name
       toDisplay = (toDisplay.length > 20) ? dat.code : toDisplay
-      pdf.text(halfWay, y, `- ${numMentions} articles mentioning ${toDisplay} were published`)
-      pdf.text(halfWay, y + 5, `- Maximum stock price was $${max.toFixed(2)}`)
-      pdf.text(halfWay, y + 10, `- Minimum stock price was $${min.toFixed(2)}`)
-      pdf.text(halfWay, y + 15, `- Initial stock price was $${stockStart.toFixed(2)}`)
-      pdf.text(halfWay, y + 20, `- Final stock price was $${stockEnd.toFixed(2)}`)
+      pdf.text(halfWay, y, `\u2022 ${numMentions} articles mentioning ${toDisplay} were published`)
+      pdf.text(halfWay, y + 5, `\u2022 Maximum stock price was $${max.toFixed(2)}`)
+      pdf.text(halfWay, y + 10, `\u2022 Minimum stock price was $${min.toFixed(2)}`)
+      pdf.text(halfWay, y + 15, `\u2022 Initial stock price was $${stockStart.toFixed(2)}`)
+      pdf.text(halfWay, y + 20, `\u2022 Final stock price was $${stockEnd.toFixed(2)}`)
       pdf.line(halfWay - 3, y - 11, halfWay - 3, y + 24) /* vertical line */
       pdf.line(10, y + 24, pdf.internal.pageSize.width - 10, y + 24) /* horizontal line */
       y += 31
@@ -269,9 +269,9 @@ class Event extends React.Component {
         })
         articles.map(function(item, i) {
           const date = new Date(item.webPublicationDate)
-          const timestamp = moment(date).format('ddd') + ' ' + prettyDate(date)
+          const timestamp = moment(date).format('ddd D MMM YY')
           pdf.setFontSize(8)
-          pdf.text(23, y + 5, timestamp.replace(/ at.*/, ''))
+          pdf.text(25, y + 5, timestamp)
           pdf.setFontSize(10)
           const datePos = y + 4
           pdf.setFontSize(12)
@@ -286,13 +286,11 @@ class Event extends React.Component {
           pdf.text(65, y, lines)
           y += 5 + lines.length * 5
           pdf.setDrawColor(0, 0, 153) /* blue */
-          pdf.line(52, datePos, 62, datePos) /* horizontal line */
-          pdf.setDrawColor(255, 255, 255) /* white */
+          pdf.line(54.25, topOfArticles - 5, 54.25, y - 5) /* vertical line */
+          pdf.setFillColor(255, 255, 255) /* white */
           pdf.setFillColor(0, 0, 153) /* blue */
-          pdf.circle(52, datePos, 2, 'FD')
-          pdf.circle(62, datePos, 2, 'FD')
-          pdf.setDrawColor(0, 0, 153) /* blue */
-          pdf.line(57, topOfArticles - 5, 57, y - 5) /* vertical line */
+          pdf.triangle(54.25, datePos - 3.5, 54.25, datePos + 3.5, 54.25 + 4, datePos, 'FD')
+          pdf.triangle(54.25, datePos - 3.5, 54.25, datePos + 3.5, 54.25 - 4, datePos, 'FD')
        })
 
         exportComplete()
@@ -344,7 +342,7 @@ class Event extends React.Component {
     for (let companyName in companies) {
       if (companies.hasOwnProperty(companyName) && companies[companyName]) {
         const companyCode = companies[companyName]
-        const token = 'EAACEdEose0cBAA2l5t7TazUeNB1BT7MHiDW7eYrZBunFPZCOpvcgsINcyp7pmhnugL0ST2RxPVirzq5CFM5LjBufz6lh70tdu9su9TimaHFwCYUSyz0IYZCM4wMLeXc7ZAbX2zHDWVJC9h7zRJccdzZCaEQx37DUzKca9qztedRZAFfVHd5vo8cSU4o1xWSB7d7B6ZBHCatEgZDZD'
+        const token = 'EAACEdEose0cBAOiWqBMwPCZB2ifsTdvRAnxn6U6dBfHqoZBoCN1pZAecFhOTfFNFh83VHRFxnQtCFm55hlSaIgQZAjfmp7EO4A0NWLaWKkNvIPIsZALgUlBOpkBnpwkZBokYZCDYdAZCcK3fwHrEtta6qfHecfW1RWo2OPcJdZALoY0I3oeaZCoj8SWAJ1pH9Rof5dzQTESPROEgZDZD'
         let params = `statistics=id,name,website,description,category,fan_count,posts{likes,comments,created_time}&${dates}&access_token=${token}`
         //let params = `statistics=id,name,website,description,category,fan_count,posts{likes,comments,created_time}&${dates}&workaround=true`
         // console.log(`https://unassigned-api.herokuapp.com/api/${companyCode}?${params}`)
