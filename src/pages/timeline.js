@@ -269,45 +269,45 @@ class Timeline extends React.Component {
     )
 
     //need to clean data up a bit
-    let sortedEvents = {};
-    _.map(_.pickBy(eventData, _.identity), (x,i) => sortedEvents[i] = x);
+    let sortedEvents = {}
+    _.map(_.pickBy(eventData, _.identity), (x,i) => sortedEvents[i] = x)
 
     // Filter events by date, category and search string
     sortedEvents = _.filter(sortedEvents, x => {
       // Filter by date
-      const startDate   = moment.unix(x.start_date);
-      const filterStart = moment(filterStartDate, 'YYYY-MM-DD');
-      const filterEnd   = moment(filterEndDate, 'YYYY-MM-DD');
+      const startDate   = moment.unix(x.start_date)
+      const filterStart = moment(filterStartDate, 'YYYY-MM-DD')
+      const filterEnd   = moment(filterEndDate, 'YYYY-MM-DD')
 
-      const dateMatch = startDate.isBetween(filterStart, filterEnd, null, '[]'); // Inclusive date range match;
-      if (!dateMatch) return false; // Early exit
+      const dateMatch = startDate.isBetween(filterStart, filterEnd, null, '[]') // Inclusive date range match
+      if (!dateMatch) return false // Early exit
 
       // Filter by category
       // Handle events with no category/category is not on Firebase list
-      const categoryNotOnFirebase = !_.includes(_.keys(filterCategories), _.toLower(x.category));
-      const uncategorisedSelected = filterCategories['uncategorised'] === true;
-      const categoryToggled       = filterCategories[_.toLower(x.category)] === true;
+      const categoryNotOnFirebase = !_.includes(_.keys(filterCategories), _.toLower(x.category))
+      const uncategorisedSelected = filterCategories['uncategorised'] === true
+      const categoryToggled       = filterCategories[_.toLower(x.category)] === true
 
-      const categoryMatch = categoryToggled || (categoryNotOnFirebase && uncategorisedSelected);
-      if (!categoryMatch) return false; // Early exit
+      const categoryMatch = categoryToggled || (categoryNotOnFirebase && uncategorisedSelected)
+      if (!categoryMatch) return false // Early exit
 
       // Filter by search string
       if (!searchString) {
-        return true;
+        return true
       } else {
-        let search = _.toLower(searchString);
-        const titleSearchMatch        = _.includes(_.toLower(x.name), search);
-        const categorySearchMatch     = _.includes(_.toLower(x.category), search);
-        const descriptionSearchMatch  = _.includes(_.toLower(x.description), search);
-        const companySearchMatch      = _.includes(_.map(_.keys(x.related_companies), _.toLower), search);
-        const searchStringMatch = descriptionSearchMatch || titleSearchMatch || categorySearchMatch || companySearchMatch;
+        let search = _.toLower(searchString)
+        const titleSearchMatch        = _.includes(_.toLower(x.name), search)
+        const categorySearchMatch     = _.includes(_.toLower(x.category), search)
+        const descriptionSearchMatch  = _.includes(_.toLower(x.description), search)
+        const companySearchMatch      = _.includes(_.map(_.keys(x.related_companies), _.toLower), search)
+        const searchStringMatch = descriptionSearchMatch || titleSearchMatch || categorySearchMatch || companySearchMatch
 
-        return searchStringMatch;
+        return searchStringMatch
       }
-    });
+    })
 
     // Sort by start date
-    sortedEvents = _.reverse(_.sortBy(sortedEvents, x => x.start_date));
+    sortedEvents = _.reverse(_.sortBy(sortedEvents, x => x.start_date))
 
     document.title = 'EventStock'
 
@@ -379,9 +379,9 @@ class Timeline extends React.Component {
                                 <Grid item xs={2}>
                                   <Grid container direction="column" alignItems="flex-end">
                                     { _.map(_.take(_.keys(sortedEvents[k].related_companies), 1), (c, i) => { // Take first company's logo - adjust 2nd arg of _.take for more logos
-                                      const companyName = _.split(_.replace(_.toLower(c), /\s*the\s*/, ''), /\s+/)[0]; // Remove 'the', take first word in companyName and hope that NAME.com gives a logo
-                                      const logoUrl = `https://logo.clearbit.com/${companyName}.com?size=50`;
-                                      return (<img key={i} src={logoUrl} alt='' />);
+                                      const companyName = _.split(_.replace(_.toLower(c), /\s*the\s*/, ''), /\s+/)[0] // Remove 'the', take first word in companyName and hope that NAME.com gives a logo
+                                      const logoUrl = `https://logo.clearbit.com/${companyName}.com?size=50`
+                                      return (<img key={i} src={logoUrl} alt='' />)
                                     })}
                                   </Grid>
                                 </Grid>

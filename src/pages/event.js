@@ -3,39 +3,25 @@ import { withRouter } from 'react-router'
 import PropTypes from 'prop-types'
 import { withStyles } from 'material-ui/styles'
 import withRoot from '../withRoot'
-import Grid from 'material-ui/Grid'
+import { Typography, Grid } from 'material-ui'
 import moment from 'moment'
-import { EventSummary, Company, Stock, Map, NewsCard, Navigation } from '../components'
+import { EventSummary, Company, Stock, Map, NewsCard, Navigation, StatsTable } from '../components'
 import { getDate } from '../time'
 import { extractCompanySummary } from '../info'
 import _ from 'lodash'
 import jsPDF from 'jspdf'
-import IconButton from 'material-ui/IconButton'
-import GridList from '@material-ui/core/GridList';
-import GridListTile from '@material-ui/core/GridListTile';
-import Paper from '@material-ui/core/Paper';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import PrintIcon from 'react-material-icon-svg/dist/PrinterIcon'
-import { Line } from 'rc-progress'
+import Paper from '@material-ui/core/Paper'
+import Tabs from '@material-ui/core/Tabs'
+import Tab from '@material-ui/core/Tab'
 import { EventTour } from '../tour'
 import '../assets/company.css'
 //import html2canvas from 'html2canvas'
 import domtoimage from 'dom-to-image'
-import { prettyDate } from '../time'
 
-import {
-  FacebookShareButton,
-  GooglePlusShareButton,
-  TwitterShareButton,
-  RedditShareButton,
-  EmailShareButton,
-  FacebookIcon,
-  GooglePlusIcon,
-  TwitterIcon,
-  RedditIcon,
-  EmailIcon
-} from 'react-share'
+// News timeline components
+import { Link } from 'react-router-dom'
+import { VerticalTimeline, VerticalTimelineElement } from 'react-vertical-timeline-component'
+import { Event as EventIcon} from 'material-ui-icons'
 
 const styles = theme => ({
   root: {
@@ -60,6 +46,13 @@ const styles = theme => ({
   },
 })
 
+const bgCols = [
+  '#AB47B8',
+  '#26c6da',
+  '#ef5350',
+  '#66bb6a'
+]
+
 class Event extends React.Component {
 
   static propTypes = {
@@ -79,14 +72,86 @@ class Event extends React.Component {
       loadingNews: true,
       startDate: null,
       endDate: null,
-      percent: 0,
       currentUser: this.props.currentUser,
       currentTab: 0,
+      percent: 0,
     }
     this.printDocument = this.printDocument.bind(this)
     this.startProgressBar = this.startProgressBar.bind(this)
     this.newPDFPage = this.newPDFPage.bind(this)
     this.alignText = this.alignText.bind(this)
+    this.getCompanySummaryStats = this.getCompanySummaryStats.bind(this)
+    this.getTopArticles = this.getTopArticles.bind(this)
+    this.showArticle = this.showArticle.bind(this);
+  }
+
+  showArticle = (url) => {
+    window.open(url, '_blank')
+  }
+
+  getCompanySummaryStats(name) {
+    var numMentions = 0
+    var min = 9999
+    var max = 0
+
+    var stockStart = 0
+    var stockEnd = 0
+
+    // eslint-disable-next-line
+    this.state.newsJSON.response.results.map(function(item, i) {
+      if (item.fields.bodyText.match(name.replace(/ .*/, ''))) numMentions++
+      return true
+    })
+
+    if (this.props) {
+      let eventData = this.props.eventData
+      var begin = moment(eventData.start_date * 1000).format('YYYY-MM-DD')
+      var end = moment(eventData.end_date * 1000).format('YYYY-MM-DD')
+
+      // eslint-disable-next-line
+      if (this.state.stockJSON.hasOwnProperty(name)) {
+        this.state.stockJSON[name].map(function(item, i) {
+          var t = moment(item.date, 'YYYY-MM-DD').valueOf()
+          if (t >= eventData.start_date * 1000 && t <= eventData.end_date * 1000) {
+            min = (item.low < min) ? item.low : min
+            max = (item.high > max) ? item.high : max
+          }
+          if (item.date === begin) stockStart = item.value
+          if (item.date === end) stockEnd = item.value
+          return true
+        })
+      }
+    }
+
+    return {
+      numMentions,
+      min,
+      max,
+      stockStart,
+      stockEnd
+    }
+  }
+
+  getTopArticles() {
+    var formatted = []
+    if (this.state.newsJSON && this.state.newsJSON.response) {
+      var articles = _.shuffle(this.state.newsJSON.response.results.slice(0, 20)).slice(0, 5)
+      articles = articles.sort(function(a, b) {
+        const t1 = new Date(a.blocks.main.publishedDate).valueOf()
+        const t2 = new Date(b.blocks.main.publishedDate).valueOf()
+        return t1 < t2
+      })
+      articles.map(function(item, i) {
+        const time = new Date(item.blocks.main.publishedDate)
+        const date = moment(time).format('ddd D MMM YY')
+        const title = item.webTitle
+        const body = item.fields.bodyText.substring(0, 150).replace(/\s[^\s]*$/, '').replace(/\s*[^a-z]+$/i, '') + ' ... '
+        const url = item.webUrl;
+        formatted.push({ 'date': date, 'title': title, 'body': body, 'url': url })
+        return true
+      })
+    }
+    return formatted
   }
 
   printDocument(eventData) {
@@ -116,7 +181,7 @@ class Event extends React.Component {
     var height = pdf.internal.pageSize.height / 3
 
     const exportComplete = () => {
-      this.setState({ percent: 100 })
+      this.setState({ percent: 0 })
     }
 
     const makePage = (pdf, pg) => {
@@ -156,30 +221,7 @@ class Event extends React.Component {
     pdf.setFontType('normal')
     y += 8
     for (let name in companies) {
-      var num = 0
-      var min = 9999
-      var max = 0
-
-      var begin = moment(eventData.start_date * 1000).format('YYYY-MM-DD')
-      var end = moment(eventData.end_date * 1000).format('YYYY-MM-DD')
-      var stockStart = 0
-      var stockEnd = 0
-      // eslint-disable-next-line
-      this.state.stockJSON[name].map(function(item, i) {
-        var t = moment(item.date, 'YYYY-MM-DD').valueOf()
-        if (t >= eventData.start_date * 1000 && t <= eventData.end_date * 1000) {
-          min = (item.low < min) ? item.low : min
-          max = (item.high > max) ? item.high : max
-        }
-        if (item.date === begin) stockStart = item.value
-        if (item.date === end) stockEnd = item.value
-        return true
-      })
-      // eslint-disable-next-line
-      this.state.newsJSON.response.results.map(function(item, i) {
-        if (item.fields.bodyText.match(name.replace(/ .*/, ''))) num++
-        return true
-      })
+      let { numMentions, min, max, stockStart, stockEnd } = this.getCompanySummaryStats(name)
       var dat = this.state.infoJSON[name]
       pdf.setFontType('bold')
       pdf.text(10, y, `${dat.name} - ${dat.code}`)
@@ -200,10 +242,10 @@ class Event extends React.Component {
       if (dat.website.match(/^http/)) pdf.line(35, y + 16, 35 + websiteWidth, y + 16)
       pdf.setTextColor(0, 0, 0)
       var numArticles = this.state.newsJSON.response.results.length
-      num = (num === 0) ? num = Math.floor(Math.random() * (numArticles - 5)) + 5 : num /* normalize */
+      numMentions = (numMentions === 0) ? numMentions = Math.floor(Math.random() * (numArticles - 5)) + 5 : numMentions /* normalize */
       var toDisplay = (name.length > 20) ? dat.code : dat.name
       toDisplay = (toDisplay.length > 20) ? dat.code : toDisplay
-      pdf.text(halfWay, y, `\u2022 ${num} articles mentioning ${toDisplay} were published`)
+      pdf.text(halfWay, y, `\u2022 ${numMentions} articles mentioning ${toDisplay} were published`)
       pdf.text(halfWay, y + 5, `\u2022 Maximum stock price was $${max.toFixed(2)}`)
       pdf.text(halfWay, y + 10, `\u2022 Minimum stock price was $${min.toFixed(2)}`)
       pdf.text(halfWay, y + 15, `\u2022 Initial stock price was $${stockStart.toFixed(2)}`)
@@ -255,29 +297,20 @@ class Event extends React.Component {
         var topOfArticles = y
         pdf.setFontSize(10)
         pdf.setFontType('normal')
-        var numArticles = 1
-        var articles = this.state.newsJSON.response.results.slice(0, 5)
-        articles = articles.sort(function(a, b) {
-          const t1 = new Date(a.blocks.main.publishedDate).valueOf()
-          const t2 = new Date(b.blocks.main.publishedDate).valueOf()
-          return t1 < t2
-        })
+        const articles = this.getTopArticles()
         articles.map(function(item, i) {
-          const date = new Date(item.webPublicationDate)
-          const timestamp = moment(date).format('ddd D MMM YY')
           pdf.setFontSize(8)
-          pdf.text(25, y + 5, timestamp)
+          pdf.text(25, y + 5, item.date)
           pdf.setFontSize(10)
           const datePos = y + 4
           pdf.setFontSize(12)
           pdf.setFontType('bold')
-          lines = pdf.splitTextToSize(item.webTitle, pdf.internal.pageSize.width - 85)
+          lines = pdf.splitTextToSize(item.title, pdf.internal.pageSize.width - 85)
           pdf.text(65, y, lines)
           y += lines.length * 5
           pdf.setFontSize(10)
           pdf.setFontType('normal')
-          const articleText = item.fields.bodyText.substring(0, 150).replace(/\s[^\s]*$/, '').replace(/\s*[^a-z]+$/i, '') + ' ... '
-          lines = pdf.splitTextToSize(articleText, pdf.internal.pageSize.width - 85)
+          lines = pdf.splitTextToSize(item.body, pdf.internal.pageSize.width - 85)
           pdf.text(65, y, lines)
           y += 5 + lines.length * 5
           pdf.setDrawColor(0, 0, 153) /* blue */
@@ -286,8 +319,8 @@ class Event extends React.Component {
           pdf.setFillColor(0, 0, 153) /* blue */
           pdf.triangle(54.25, datePos - 3.5, 54.25, datePos + 3.5, 54.25 + 4, datePos, 'FD')
           pdf.triangle(54.25, datePos - 3.5, 54.25, datePos + 3.5, 54.25 - 4, datePos, 'FD')
-       })
-
+          return true
+        })
         exportComplete()
         pdf.save('event-report.pdf')
       })
@@ -519,8 +552,8 @@ class Event extends React.Component {
   }
 
   handleTabChange = (event, currentTab) => {
-    this.setState({ currentTab });
-  };
+    this.setState({ currentTab })
+  }
 
   componentDidMount () {
     this.getInfo()
@@ -532,7 +565,6 @@ class Event extends React.Component {
   render () {
     const { infoJSON, stockJSON, newsJSON, loadingInfo, loadingStock, loadingNews, currentUser, currentTab } = this.state
     const { classes, eventData } = this.props
-
     document.title = 'EventStock - ' + eventData.name
     return (
       <Paper className={classes.root}>
@@ -554,75 +586,15 @@ class Event extends React.Component {
               <Grid item xs={12}>
                 <div id="summary">
                   <EventSummary
+                    printDocument={this.printDocument}
+                    percent={this.state.percent}
                     name={eventData.name}
                     description={eventData.description}
+                    eventData={eventData}
                     start_date={`${moment(eventData.start_date * 1000).format('DD MMM YY')}`}
                     end_date={getDate(eventData.end_date)}
                   />
                 </div>
-              </Grid>
-              <Grid item xs={12}>
-                <Grid container direction="row" alignItems="center">
-                  <GridList className={classes.gridListHorizontal} cellHeight="auto" cols={6} spacing={16} >
-                    <GridListTile cols={1}>
-                      <FacebookShareButton
-                        url={String(document.location)}
-                        quote={eventData.name}
-                        className="share-button">
-                        <FacebookIcon round size={48} />
-                      </FacebookShareButton>
-                    </GridListTile>
-                    <GridListTile cols={1}>
-                      <TwitterShareButton
-                        url={String(document.location)}
-                        title={eventData.name}
-                        className="share-button">
-                        <TwitterIcon round size={48} />
-                      </TwitterShareButton>
-                    </GridListTile>
-                    <GridListTile cols={1}>
-                      <GooglePlusShareButton
-                        url={String(document.location)}
-                        className="share-button">
-                        <GooglePlusIcon round size={48} />
-                      </GooglePlusShareButton>
-                    </GridListTile>
-                    <GridListTile cols={1}>
-                      <RedditShareButton
-                        url={String(document.location)}
-                        title={eventData.name}
-                        windowWidth={660}
-                        windowHeight={460}
-                        className="share-button">
-                        <RedditIcon round size={48} />
-                      </RedditShareButton>
-                    </GridListTile>
-                    <GridListTile cols={1}>
-                      <EmailShareButton
-                        url={String(document.location)}
-                        subject={eventData.name}
-                        body={eventData.description}
-                        className="share-button">
-                        <EmailIcon round size={48} />
-                      </EmailShareButton>
-                    </GridListTile>
-                    <GridListTile cols={1}>
-                      <div className="report-tour"></div>
-                      <IconButton
-                        tooltip="Generate Event Report"
-                        onClick={() => this.printDocument(eventData)}
-                        disableRipple={true}
-                        styles={{height: '100%', width: '100%'}}
-                      >
-                        <PrintIcon />
-                      </IconButton>
-                    </GridListTile>
-                  </GridList>
-                  {this.state.percent > 0 && this.state.percent < 100 ?
-                    <Line strokeWidth="1" trailColor="#e3e3e3" percent={this.state.percent} />
-                    : null
-                  }
-                </Grid>
               </Grid>
               <div className="overview-tour"></div>
               <Grid item xs={12}>
@@ -642,24 +614,70 @@ class Event extends React.Component {
                   ))}
                 </Grid>
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12}>
                 <div className="stock-chart-tour"></div>
                 <Stock stockJSON={stockJSON} startDate={this.state.startDate} endDate={this.state.endDate} loading={loadingStock} />
-              </Grid>
-              <Grid item xs={6}>
-                <div className="heat-map-tour"></div>
-                <Map />
               </Grid>
               <Grid item xs={12}>
                 <div className="news-articles-tour"></div>
                 <NewsCard newsJSON={newsJSON} loading={loadingNews} />
               </Grid>
+              <Grid item xs={6} style={(this.state.percent > 0 && this.state.percent < 100) ? {} : {display: 'none'}}>
+                <Map />
+              </Grid>
             </Grid>
           </div>
         }
-        {currentTab === 1 && null} // TODO ADD REPORT SECTION HERE
+        {currentTab === 1 &&
+        <div className={classes.content}>
+          <Grid container spacing={24}>
+            <Grid item xs={12}>
+              <StatsTable getCompanySummaryStats={this.getCompanySummaryStats} eventData={eventData}/>
+            </Grid>
+
+            <Grid item xs={4}>
+              <div className="heat-map-tour"></div>
+              <Map />
+            </Grid>
+            <Grid item xs={8}>
+              <Grid container direction="column" alignItems="center">
+                <Grid item xs={12}>
+                  <Typography variant='display3' gutterBottom className={classes.title}>
+                    Top News Headlines
+                  </Typography>
+                </Grid>
+              </Grid>
+              <VerticalTimeline>
+                { _.map(this.getTopArticles(), (n, i) =>
+                  <VerticalTimelineElement
+                    key={i}
+                    className='vertical-timeline-element--work'
+                    date={n.date}
+                    iconStyle={{background: bgCols[i % bgCols.length], color: '#fff'}}
+                    icon={<EventIcon />}
+                  >
+                    <Grid container direction="row">
+                      <Grid item xs={12}>
+                        <Link className={classes.link} to="#" target="_blank" onClick={(event) => {event.preventDefault(); this.showArticle(n.url)}} >
+                          <Typography variant='title' className='vertical-timeline-element-title' gutterBottom>
+                            {n.title}
+                          </Typography>
+                        </Link>
+                      </Grid>
+                    </Grid>
+                    <Grid container direction="row">
+                      <Typography gutterBottom>
+                        {n.body}
+                      </Typography>
+                    </Grid>
+                  </VerticalTimelineElement>
+                )}
+              </VerticalTimeline>
+            </Grid>
+          </Grid>
+        </div>}
       </Paper>
-    );
+    )
   }
 }
 
