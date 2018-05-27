@@ -10,22 +10,13 @@ import Dialog, {
   DialogTitle
 } from 'material-ui/Dialog'
 import Button from '@material-ui/core/Button'
-import RadioGroup from '@material-ui/core/RadioGroup'
-import Radio from '@material-ui/core/Radio'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
 import DialogContentText from '@material-ui/core/DialogContentText'
 import TextField from '@material-ui/core/TextField'
 import Typography from 'material-ui/Typography'
+import _ from 'lodash'
+import Select from '@material-ui/core/Select'
 
 const styles = theme => ({})
-
-const options = [
-  'Aviation',
-  'Financial',
-  'Gaming',
-  'Technology',
-  'Commodities',
-]
 
 class Login extends React.Component {
 
@@ -50,11 +41,22 @@ class Login extends React.Component {
       industry: 'Aviation',
       invalid: '',
       users: [],
+      categories: [],
 
       /* reset password form*/
       emailReset: '',
       invalidReset: ''
     }
+  }
+
+  componentDidMount() {
+    /* fetch categories from firebase */
+    base.fetch('categories_and_icons', {
+      context: this,
+    }).then((categories) => {
+      var cat = Object.keys(categories).map(c => c.charAt(0).toUpperCase() + c.substr(1))
+      this.setState({ categories: cat })
+    })
   }
 
   handleClickListItem = () => {
@@ -173,7 +175,7 @@ class Login extends React.Component {
           email,
           password,
           admin: false,
-          fav: industry
+          fav: industry.toLowerCase()
         })
         this.handleClose()
       }
@@ -266,20 +268,20 @@ class Login extends React.Component {
             <DialogContentText style={{color: 'black', fontStyle: 'bold', marginTop: '20px'}}>
                 Favourite Industry
             </DialogContentText>
-            <RadioGroup
-              ref={node => {
-                this.radioGroup = node
-              }}
-              aria-label="ringtone"
-              name="ringtone"
+            <Select
+              native
+              fullWidth
               value={this.state.industry}
               onChange={this.handleChange('industry')}
+              inputProps={{
+                id: 'industry',
+              }}
             >
-              {options.map(option => (
-                <FormControlLabel value={option} key={option} control={<Radio />} label={option} />
-              ))}
-            </RadioGroup>
-
+              {_.map(this.state.categories, (k) =>
+                k === 'Uncategorised' || k === 'Other' ? null :
+                  <option value={k} key={k}>{_.startCase(_.toLower(k))}</option>
+              )}
+            </Select>
             {this.state.invalid !== '' ?
               <Typography gutterBottom variant="subheading">
                 <i>{this.state.invalid}</i>
@@ -320,11 +322,9 @@ class Login extends React.Component {
                 <i>{this.state.invalidReset}</i>
               </Typography>
             : null}
-
             <Button className='form_button' onClick={this.resetPass} color="primary" autoFocus>
               Reset Password
             </Button>
-
           </DialogContent>
         </Dialog>
       </div>

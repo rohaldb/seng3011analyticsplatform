@@ -397,7 +397,7 @@ class Event extends React.Component {
     for (let companyName in companies) {
       if (companies.hasOwnProperty(companyName) && companies[companyName]) {
         const companyCode = companies[companyName]
-        const token = 'EAACEdEose0cBAKzq1KTOoSxIZBjlBF4c2ZA59ZBsM96WaFk5tGZAa390rgVfZAiw2Mowatr5tAzjoTfvEYkmlXvt2ks0dOgQ2R2CZCB6INPuWHDTVTZBdsIZAjIp7RbV347KS5JXU2ruY181O7IVZAmPxlYCcZBvVfhQZAx5gkPOzbeC9RKZCzo7HSlPb8MV06PNU7jT5HZAHaZAip4QZDZD'
+        const token = 'EAACEdEose0cBAMPkLkuDBwvCsamIVpLnIsQ0P8CAETyiIzrHFj4YKvx7ZBO0ePNJt40Gm2wAzjRWZAFOvHcg0kTa4dNN0nmYNxYWBZCasg4ChVrc7bAaZA7cmyAPWq1uG1h0Jj0C3YvOOzvBZCneUQskd899ziyfdI5jHwcFDY70kvdyCWMZBZB2zCCq9JTH5f4qIkfMa8flAZDZD'
         let params = `statistics=id,name,website,description,category,fan_count,posts{likes,comments,created_time}&${dates}&access_token=${token}`
         //let params = `statistics=id,name,website,description,category,fan_count,posts{likes,comments,created_time}&${dates}&workaround=true`
         // console.log(`https://unassigned-api.herokuapp.com/api/${companyCode}?${params}`)
