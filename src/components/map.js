@@ -17,7 +17,8 @@ const styles = theme => ({
 class Map extends React.Component {
 
   static propTypes = {
-    loading: PropTypes.bool.isRequired
+    loading: PropTypes.bool.isRequired,
+    country: PropTypes.string.isRequired
   }
 
   render () {
@@ -295,7 +296,28 @@ class Map extends React.Component {
     {'code': 'GB', 'name': 'United Kingdom', 'value': 62417431 * Math.floor((Math.random() * 5) + 5) / 10, 'color': '#d8854f'},
     {'code': 'US', 'name': 'United States', 'value': 313085380 * Math.floor((Math.random() * 5) + 5) / 10, 'color': '#a7a737'}
     ]
-// get min and max values
+
+    if (this.props.country === 'australia') {
+      mapData = [
+      {'code': 'AU', 'name': 'Australia', 'value': 313085380 * Math.floor((Math.random() * 5) + 5) / 10, 'color': '#8aabb0'},
+      {'code': 'CA', 'name': 'Canada', 'value': Math.round(Math.random()) * 31349561 * Math.floor((Math.random() * 5) + 5) / 10, 'color': '#a7a737'},
+      {'code': 'CN', 'name': 'China', 'value': 67757577 * Math.floor((Math.random() * 5) + 5) / 10, 'color': '#eea638'},
+      {'code': 'FR', 'name': 'France', 'value': Math.round(Math.random()) * 10125894 * Math.floor((Math.random() * 5) + 5) / 10, 'color': '#d8854f'},
+      {'code': 'DE', 'name': 'Germany', 'value': 12162512 * Math.floor((Math.random() * 5) + 5) / 10, 'color': '#d8854f'},
+      {'code': 'HK', 'name': 'Hong Kong, China', 'value': 7122187 * Math.floor((Math.random() * 5) + 5) / 10, 'color': '#eea638'},
+      {'code': 'IN', 'name': 'India', 'value': Math.round(Math.random()) * 74798599 * Math.floor((Math.random() * 5) + 5) / 10, 'color': '#eea638'},
+      {'code': 'IL', 'name': 'Israel', 'value': Math.round(Math.random()) * 4562194 * Math.floor((Math.random() * 5) + 5) / 10, 'color': '#eea638'},
+      {'code': 'JP', 'name': 'Japan', 'value': Math.round(Math.random()) * 126497241 * Math.floor((Math.random() * 5) + 5) / 10, 'color': '#eea638'},
+      {'code': 'NZ', 'name': 'New Zealand', 'value': 8414509 * Math.floor((Math.random() * 5) + 5) / 10, 'color': '#8aabb0'},
+      {'code': 'RU', 'name': 'Russia', 'value': 82835555 * Math.floor((Math.random() * 5) + 5) / 10, 'color': '#d8854f'},
+      {'code': 'SG', 'name': 'Singapore', 'value': Math.round(Math.random()) * 5187933 * Math.floor((Math.random() * 5) + 5) / 10, 'color': '#eea638'},
+      {'code': 'ZA', 'name': 'South Africa', 'value': Math.round(Math.random()) * 30459978 * Math.floor((Math.random() * 5) + 5) / 10, 'color': '#de4c4f'},
+      {'code': 'GB', 'name': 'United Kingdom', 'value': 42417431 * Math.floor((Math.random() * 5) + 5) / 10, 'color': '#d8854f'},
+      {'code': 'US', 'name': 'United States', 'value': 173085380 * Math.floor((Math.random() * 5) + 5) / 10, 'color': '#a7a737'}
+      ]
+    }
+
+    // get min and max values
     var minBulletSize = 3
     var maxBulletSize = 50
     var min = Infinity
@@ -310,16 +332,17 @@ class Map extends React.Component {
       }
     }
 
-// it's better to use circle square to show difference between values, not a radius
+    // it's better to use circle square to show difference between values, not a radius
     var maxSquare = maxBulletSize * maxBulletSize * 2 * Math.PI
     var minSquare = minBulletSize * minBulletSize * 2 * Math.PI
 
-// create circle for each country
+    // create circle for each country
     var images = []
     for (i = 0; i < mapData.length; i++) {
       var dataItem = mapData[ i ]
       value = dataItem.value
-  // calculate size of a bubble
+
+      // calculate size of a bubble
       var square = (value - min) / (max - min) * (maxSquare - minSquare) + minSquare
       if (square < minSquare) {
         square = minSquare
@@ -341,13 +364,11 @@ class Map extends React.Component {
       })
     }
 
-        // config as same as yours but inside const
+    // config as same as yours but inside const
     const config = {
       'type': 'map',
       'projection': 'eckert6',
       'areasSettings': {
-    // "unlistedAreasColor": "#000000",
-    // "unlistedAreasAlpha": 0.1
       },
       'dataProvider': {
         'map': 'worldLow',

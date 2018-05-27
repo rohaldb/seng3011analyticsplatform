@@ -594,6 +594,7 @@ class Event extends React.Component {
   render () {
     const { infoJSON, stockJSON, newsJSON, loadingInfo, loadingStock, loadingNews, currentUser, currentTab } = this.state
     const { classes, eventData, categoryIcons } = this.props
+    const country = (eventData.country) ? eventData.country : ''
     document.title = 'EventStock - ' + eventData.name
     return (
       <Paper className={classes.root}>
@@ -648,7 +649,7 @@ class Event extends React.Component {
               </Grid>
               <Grid item xs={6}>
                 <div className="heat-map-tour"></div>
-                <Map loading={this.state.loadingStock}/>
+                <Map loading={this.state.loadingStock} country={country}/>
               </Grid>
               <Grid item xs={12}>
                 <div className="news-articles-tour"></div>

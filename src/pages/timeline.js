@@ -126,7 +126,6 @@ class Timeline extends React.Component {
         state: 'eventData'
       })
     })
-    window.scrollTo(0, 0)
   }
 
   handleChange = name => event => {
