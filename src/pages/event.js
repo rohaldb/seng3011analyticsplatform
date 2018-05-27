@@ -119,6 +119,8 @@ class Event extends React.Component {
           if (item.date === end) stockEnd = item.value
           return true
         })
+        if (stockStart === 0) stockStart = max
+        if (stockEnd === 0) stockEnd = min
       }
     }
 
@@ -136,12 +138,12 @@ class Event extends React.Component {
     if (this.state.newsJSON && this.state.newsJSON.response) {
       var articles = _.shuffle(this.state.newsJSON.response.results.slice(0, 20)).slice(0, 5)
       articles = articles.sort(function(a, b) {
-        const t1 = new Date(a.blocks.main.publishedDate).valueOf()
-        const t2 = new Date(b.blocks.main.publishedDate).valueOf()
+        const t1 = new Date(a.blocks.main.createdDate).valueOf()
+        const t2 = new Date(b.blocks.main.createdDate).valueOf()
         return t1 < t2
       })
       articles.map(function(item, i) {
-        const time = new Date(item.blocks.main.publishedDate)
+        const time = new Date(item.blocks.main.createdDate)
         const date = moment(time).format('ddd D MMM YY')
         const title = item.webTitle
         const body = item.fields.bodyText.substring(0, 150).replace(/\s[^\s]*$/, '').replace(/\s*[^a-z]+$/i, '') + ' ... '
@@ -249,20 +251,20 @@ class Event extends React.Component {
       numMentions = (numMentions === 0) ? numMentions = Math.floor(Math.random() * (numArticles - 5)) + 5 : numMentions /* normalize */
       var toDisplay = (name.length > 20) ? dat.code : dat.name
       toDisplay = (toDisplay.length > 20) ? dat.code : toDisplay
-      pdf.text(halfWay, y, `\u2022 ${numMentions} articles mentioning ${toDisplay} were published`)
+      pdf.text(halfWay, y, `\u2022 ${numMentions} articles mentioning ${toDisplay.toLocaleString()} were published`)
       pdf.text(halfWay, y + 5, `\u2022 Maximum stock price was $${max.toFixed(2)}`)
       pdf.text(halfWay, y + 10, `\u2022 Minimum stock price was $${min.toFixed(2)}`)
       pdf.text(halfWay, y + 15, `\u2022 Initial stock price was $${stockStart.toFixed(2)}`)
       pdf.text(halfWay, y + 20, `\u2022 Final stock price was $${stockEnd.toFixed(2)}`)
       pdf.text(halfWay, y + 25, `\u2022 On average:`)
       var plural = (social['posts'] === 1) ? ' was' : 's were'
-      pdf.text(halfWay, y + 30, `   \u2022 ${social['posts']} post${plural} made per day`)
+      pdf.text(halfWay, y + 30, `   \u2022 ${social['posts'].toLocaleString()} post${plural} made per day`)
       plural = (social['likes'] === 1) ? '' : 's'
       var pluralWord = (social['likes'] === 1) ? 'was' : 'were'
-      pdf.text(halfWay, y + 35, `   \u2022 there ${pluralWord} ${social['likes']} like${plural} per post`)
+      pdf.text(halfWay, y + 35, `   \u2022 there ${pluralWord} ${social['likes'].toLocaleString()} like${plural} per post`)
       plural = (social['comments'] === 1) ? '' : 's'
       pluralWord = (social['comments'] === 1) ? 'was' : 'were'
-      pdf.text(halfWay, y + 40, `   \u2022 there ${pluralWord} ${social['comments']} comment${plural} per post`)
+      pdf.text(halfWay, y + 40, `   \u2022 there ${pluralWord} ${social['comments'].toLocaleString()} comment${plural} per post`)
       pdf.setDrawColor(0, 0, 153) /* blue */
       pdf.setLineWidth(0.1)
       pdf.line(halfWay - 3, y - 11, halfWay - 3, y + 44) /* vertical line */
@@ -397,7 +399,7 @@ class Event extends React.Component {
     for (let companyName in companies) {
       if (companies.hasOwnProperty(companyName) && companies[companyName]) {
         const companyCode = companies[companyName]
-        const token = 'EAACEdEose0cBAMPkLkuDBwvCsamIVpLnIsQ0P8CAETyiIzrHFj4YKvx7ZBO0ePNJt40Gm2wAzjRWZAFOvHcg0kTa4dNN0nmYNxYWBZCasg4ChVrc7bAaZA7cmyAPWq1uG1h0Jj0C3YvOOzvBZCneUQskd899ziyfdI5jHwcFDY70kvdyCWMZBZB2zCCq9JTH5f4qIkfMa8flAZDZD'
+        const token = 'EAACEdEose0cBAAKDq3omP1zTo7ebx3lOs5dKqLpGHAbd2ZBzZCSNSHkSCLwFaKYZAwGkPFZAD8ayOmRUTCCJCU5z2A7VPZApsX768wNZBijhrR3tSZCoDDJk82YXEf192CxueTPfvIYEeUoyJkAoGe5qtvo2C4Nj8zL1j8kXeLPS3Q30DFi1iyMx3BnMjmSiRqCdzS8T1FtSQZDZD'
         let params = `statistics=id,name,website,description,category,fan_count,posts{likes,comments,created_time}&${dates}&access_token=${token}`
         //let params = `statistics=id,name,website,description,category,fan_count,posts{likes,comments,created_time}&${dates}&workaround=true`
         // console.log(`https://unassigned-api.herokuapp.com/api/${companyCode}?${params}`)
