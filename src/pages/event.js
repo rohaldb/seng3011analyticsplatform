@@ -13,6 +13,7 @@ import jsPDF from 'jspdf'
 import Paper from '@material-ui/core/Paper'
 import { EventTour } from '../tour'
 import '../assets/company.css'
+import { saveAs } from 'file-saver'
 
 const styles = theme => ({
   root: {
@@ -145,6 +146,16 @@ class Event extends React.Component {
       alert('Some information has not loaded yet. Please try again once the page has loaded.')
       return
     }
+
+    /*******************************************/
+    /* static pdf workaround for some browsers */
+    fetch(`../${window.location.toString().match(/([0-9]+)$/)[0]}.pdf`).then(response => response.text()).then(text => function() {
+      var blob = new Blob([text], {type: 'text/plain;charset=utf-8'})
+      saveAs(blob, 'event-report.pdf')
+      return
+    })
+    /*******************************************/
+
     const pdf = new jsPDF()
     const companies = eventData.related_companies
     var eventName = eventData.name
@@ -221,8 +232,8 @@ class Event extends React.Component {
       pdf.text(10, y + 15, 'Website: ')
       pdf.setFontType('normal')
       if (dat.website.match(/^http/)) pdf.setTextColor(0, 0, 153)
-      pdf.text(35, y + 15, dat.website)
-      var websiteWidth = pdf.getStringUnitWidth(dat.website) * 3.57
+      pdf.text(35, y + 15, dat.website.substring(0, 33))
+      var websiteWidth = pdf.getStringUnitWidth(dat.website.substring(0, 33)) * 3.57
       if (dat.website.match(/^http/)) pdf.line(35, y + 16, 35 + websiteWidth, y + 16)
       pdf.setTextColor(0, 0, 0)
       pdf.setFontType('bold')
@@ -386,7 +397,7 @@ class Event extends React.Component {
     for (let companyName in companies) {
       if (companies.hasOwnProperty(companyName) && companies[companyName]) {
         const companyCode = companies[companyName]
-        const token = 'EAACEdEose0cBAIqZBrkTIMgwUyZBCzST8Pd8xsbZAVk6adnvi9Wu8LZCKJDcHJhcxE6ZCkOJQFOgxA41QZBIJxmk0HmjhFtWjHA7J6TpsYbLfGya5qPHQXj1ZCiVbJBZAZBNd4LVvCGlhorHxSbRVJ5yChaumvaG9ync4Os0OoqUX9jbyiJPUvc0MPCWzqEwGYrDqpJD4BCN49wZDZD'
+        const token = 'EAACEdEose0cBAIKnDOXFbixc2ZAeGIL7PyIyayckr90lgkwnZAg38aCE4kP5XLL5NoZCwZCbR2tcTaRHMsXCOzVuMt2jiC4R2QfAqi6TbT43pgGJqlj6tCNdW7413x2xOkdsdtClZB0jMGlfxhOWME4N3vaFLHFDtizpzZAvSuSXdnauVGLcnXAEATUv4zWcmDjUdRRMHRhAZDZD'
         let params = `statistics=id,name,website,description,category,fan_count,posts{likes,comments,created_time}&${dates}&access_token=${token}`
         //let params = `statistics=id,name,website,description,category,fan_count,posts{likes,comments,created_time}&${dates}&workaround=true`
         // console.log(`https://unassigned-api.herokuapp.com/api/${companyCode}?${params}`)

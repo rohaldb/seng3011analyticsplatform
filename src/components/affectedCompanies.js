@@ -21,6 +21,9 @@ const styles = theme => ({
   cardHeader: {
     background: 'linear-gradient(60deg, #26c6da, #00acc1)'
   },
+  title: {
+    fontSize: '18px'
+  },
   button: {
     margin: theme.spacing.unit,
     color: 'linear-gradient(60deg, #26c6da, #00acc1)'
@@ -74,7 +77,7 @@ class Company extends React.Component {
       <div>
         <Fade in timeout={500}>
           <Card className={infoJSON ? classes.card : null} onClick={() => infoJSON ? this.handleOpen() : null}>
-            <CardHeader title={name} className={classes.cardHeader}
+            <CardHeader title={name} className={classes.cardHeader} classes={{title: classes.title}}
               avatar={<Avatar src={`https://logo.clearbit.com/${_.split(_.replace(_.toLower(name), /\s*the\s*/, ''), /\s+/)[0]}.com?size=50`} alt=''
                               onError={()=>{
                                 backupAvatarStrings[name] = _.capitalize(name)[0]
