@@ -149,11 +149,13 @@ class Event extends React.Component {
 
     /*******************************************/
     /* static pdf workaround for some browsers */
+    /*
     fetch(`../${window.location.toString().match(/([0-9]+)$/)[0]}.pdf`).then(response => response.text()).then(text => function() {
       var blob = new Blob([text], {type: 'text/plain;charset=utf-8'})
       saveAs(blob, 'event-report.pdf')
       return
     })
+    */
     /*******************************************/
 
     const pdf = new jsPDF()
@@ -172,8 +174,10 @@ class Event extends React.Component {
       creator: 'EventStock'
     })
     this.newPDFPage(pdf, false, pg)
-    var width = pdf.internal.pageSize.width / 1.4
-    var height = pdf.internal.pageSize.height / 3
+    /* var width = pdf.internal.pageSize.width / 1.4
+    var height = pdf.internal.pageSize.height / 3 */
+    var width = document.getElementById('map').offsetWidth / 5
+    var height = document.getElementById('map').offsetHeight / 4.5
 
     const makePage = (pdf, pg) => {
       this.newPDFPage(pdf, true, pg)
@@ -397,7 +401,7 @@ class Event extends React.Component {
     for (let companyName in companies) {
       if (companies.hasOwnProperty(companyName) && companies[companyName]) {
         const companyCode = companies[companyName]
-        const token = 'EAACEdEose0cBAIKnDOXFbixc2ZAeGIL7PyIyayckr90lgkwnZAg38aCE4kP5XLL5NoZCwZCbR2tcTaRHMsXCOzVuMt2jiC4R2QfAqi6TbT43pgGJqlj6tCNdW7413x2xOkdsdtClZB0jMGlfxhOWME4N3vaFLHFDtizpzZAvSuSXdnauVGLcnXAEATUv4zWcmDjUdRRMHRhAZDZD'
+        const token = 'EAACEdEose0cBAN0qycJH6DRk02nCvLhV2Ob5YakVVHquFUBwPQT935k7ZABNYF23bhTedBT9IOrZBVoxO4fkssFrmWvaql0qvzg4GPlDpEXQfhhFtiYFvjfc3QO8zdrB4vIjehEykEBwVlxSVZAcfm8gphZCprfJ2Gq2fuTZCv2juGZBZBEdW6EtZAI3nJOVVxoaCrI6oZB9U1gZDZD'
         let params = `statistics=id,name,website,description,category,fan_count,posts{likes,comments,created_time}&${dates}&access_token=${token}`
         //let params = `statistics=id,name,website,description,category,fan_count,posts{likes,comments,created_time}&${dates}&workaround=true`
         // console.log(`https://unassigned-api.herokuapp.com/api/${companyCode}?${params}`)
