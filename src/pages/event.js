@@ -3,23 +3,16 @@ import { withRouter } from 'react-router'
 import PropTypes from 'prop-types'
 import { withStyles } from 'material-ui/styles'
 import withRoot from '../withRoot'
-import { Typography, Grid } from 'material-ui'
+import { Grid } from 'material-ui'
 import moment from 'moment'
-import { EventSummary, Company, Stock, Map, NewsCard, Navigation, StatsTable } from '../components'
+import { EventSummary, Company, Stock, Map, NewsCard, Navigation } from '../components'
 import { getDate } from '../time'
 import { extractCompanySummary } from '../info'
 import _ from 'lodash'
 import jsPDF from 'jspdf'
 import Paper from '@material-ui/core/Paper'
-import Tabs from '@material-ui/core/Tabs'
-import Tab from '@material-ui/core/Tab'
 import { EventTour } from '../tour'
 import '../assets/company.css'
-
-// News timeline components
-import { Link } from 'react-router-dom'
-import { VerticalTimeline, VerticalTimelineElement } from 'react-vertical-timeline-component'
-import { Event as EventIcon} from 'material-ui-icons'
 
 const styles = theme => ({
   root: {
@@ -44,13 +37,6 @@ const styles = theme => ({
   },
 })
 
-const bgCols = [
-  '#AB47B8',
-  '#26c6da',
-  '#ef5350',
-  '#66bb6a'
-]
-
 class Event extends React.Component {
 
   static propTypes = {
@@ -69,8 +55,7 @@ class Event extends React.Component {
     loadingNews: true,
     startDate: null,
     endDate: null,
-    currentUser: this.props.currentUser,
-    currentTab: 0,
+    currentUser: this.props.currentUser
   }
 
   constructor (props) {
@@ -243,7 +228,9 @@ class Event extends React.Component {
       pdf.setFontType('bold')
       pdf.text(10, y + 20, 'Description:')
       pdf.setFontType('normal')
-      lines = pdf.splitTextToSize(dat.description.substring(0, 220).replace(/\s[^\s]*$/, '').replace(/\s*[^a-z]+$/i, '').replace(/\n/g, '') + ' ... ', halfWay - 20)
+      var desc = dat.description.substring(0, 220).replace(/\s[^\s]*$/, '').replace(/\s*[^a-z]+$/i, '').replace(/\n/g, '') + ' ... '
+      if (dat.description.match(/^This company has not provided a description/)) desc = dat.description
+      lines = pdf.splitTextToSize(desc, halfWay - 20)
       pdf.text(10, y + 25, lines)
 
       /* news, stock and social stas on the right */
@@ -399,7 +386,7 @@ class Event extends React.Component {
     for (let companyName in companies) {
       if (companies.hasOwnProperty(companyName) && companies[companyName]) {
         const companyCode = companies[companyName]
-        const token = 'EAACEdEose0cBAAKDq3omP1zTo7ebx3lOs5dKqLpGHAbd2ZBzZCSNSHkSCLwFaKYZAwGkPFZAD8ayOmRUTCCJCU5z2A7VPZApsX768wNZBijhrR3tSZCoDDJk82YXEf192CxueTPfvIYEeUoyJkAoGe5qtvo2C4Nj8zL1j8kXeLPS3Q30DFi1iyMx3BnMjmSiRqCdzS8T1FtSQZDZD'
+        const token = 'EAACEdEose0cBAIqZBrkTIMgwUyZBCzST8Pd8xsbZAVk6adnvi9Wu8LZCKJDcHJhcxE6ZCkOJQFOgxA41QZBIJxmk0HmjhFtWjHA7J6TpsYbLfGya5qPHQXj1ZCiVbJBZAZBNd4LVvCGlhorHxSbRVJ5yChaumvaG9ync4Os0OoqUX9jbyiJPUvc0MPCWzqEwGYrDqpJD4BCN49wZDZD'
         let params = `statistics=id,name,website,description,category,fan_count,posts{likes,comments,created_time}&${dates}&access_token=${token}`
         //let params = `statistics=id,name,website,description,category,fan_count,posts{likes,comments,created_time}&${dates}&workaround=true`
         // console.log(`https://unassigned-api.herokuapp.com/api/${companyCode}?${params}`)
@@ -592,25 +579,13 @@ class Event extends React.Component {
   }
 
   render () {
-    const { infoJSON, stockJSON, newsJSON, loadingInfo, loadingStock, loadingNews, currentUser, currentTab } = this.state
+    const { infoJSON, stockJSON, newsJSON, loadingInfo, loadingStock, loadingNews, currentUser } = this.state
     const { classes, eventData, categoryIcons } = this.props
     const country = (eventData.country) ? eventData.country : ''
     document.title = 'EventStock - ' + eventData.name
     return (
       <Paper className={classes.root}>
         <Navigation isAdmin={currentUser.admin} tour={EventTour} favIndustry={currentUser.fav} user={currentUser.username} filterFavourites={null} categoryIcons={categoryIcons}/>
-        <Tabs
-          value={currentTab}
-          onChange={this.handleTabChange}
-          indicatorColor="primary"
-          textColor="primary"
-          centered
-        >
-          <Tab label="Explore" />
-          <Tab label="Insights" />
-        </Tabs>
-
-        {currentTab === 0 &&
           <div className={classes.content}>
             <Grid container spacing={24}>
               <Grid item xs={12}>
@@ -657,50 +632,6 @@ class Event extends React.Component {
               </Grid>
             </Grid>
           </div>
-        }
-        {currentTab === 1 &&
-        <div className={classes.content}>
-          <Grid container spacing={24}>
-            <Grid item xs={12}>
-              <StatsTable getCompanySummaryStats={this.getCompanySummaryStats} companySocialStats={this.companySocialStats} eventData={eventData}/>
-            </Grid>
-            <Grid item xs={8}>
-              <Grid container direction="column" alignItems="center">
-                <Grid item xs={12}>
-                  <Typography variant='display3' gutterBottom className={classes.title}>
-                    Top News Headlines
-                  </Typography>
-                </Grid>
-              </Grid>
-              <VerticalTimeline>
-                { _.map(this.getTopArticles(), (n, i) =>
-                  <VerticalTimelineElement
-                    key={i}
-                    className='vertical-timeline-element--work'
-                    date={n.date}
-                    iconStyle={{background: bgCols[i % bgCols.length], color: '#fff'}}
-                    icon={<EventIcon />}
-                  >
-                    <Grid container direction="row">
-                      <Grid item xs={12}>
-                        <Link className={classes.link} to="#" target="_blank" onClick={(event) => {event.preventDefault(); this.showArticle(n.url)}} >
-                          <Typography variant='title' className='vertical-timeline-element-title' gutterBottom>
-                            {n.title}
-                          </Typography>
-                        </Link>
-                      </Grid>
-                    </Grid>
-                    <Grid container direction="row">
-                      <Typography gutterBottom>
-                        {n.body}
-                      </Typography>
-                    </Grid>
-                  </VerticalTimelineElement>
-                )}
-              </VerticalTimeline>
-            </Grid>
-          </Grid>
-        </div>}
       </Paper>
     )
   }

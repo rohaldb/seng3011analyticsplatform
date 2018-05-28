@@ -302,8 +302,8 @@ class Map extends React.Component {
       {'code': 'AU', 'name': 'Australia', 'value': 313085380 * Math.floor((Math.random() * 5) + 5) / 10, 'color': '#8aabb0'},
       {'code': 'CA', 'name': 'Canada', 'value': Math.round(Math.random()) * 31349561 * Math.floor((Math.random() * 5) + 5) / 10, 'color': '#a7a737'},
       {'code': 'CN', 'name': 'China', 'value': 67757577 * Math.floor((Math.random() * 5) + 5) / 10, 'color': '#eea638'},
-      {'code': 'FR', 'name': 'France', 'value': Math.round(Math.random()) * 10125894 * Math.floor((Math.random() * 5) + 5) / 10, 'color': '#d8854f'},
-      {'code': 'DE', 'name': 'Germany', 'value': 12162512 * Math.floor((Math.random() * 5) + 5) / 10, 'color': '#d8854f'},
+      {'code': 'FR', 'name': 'France', 'value': Math.round(Math.random()) * 9125894 * Math.floor((Math.random() * 5) + 5) / 10, 'color': '#d8854f'},
+      {'code': 'DE', 'name': 'Germany', 'value': 9162512 * Math.floor((Math.random() * 5) + 5) / 10, 'color': '#d8854f'},
       {'code': 'HK', 'name': 'Hong Kong, China', 'value': 7122187 * Math.floor((Math.random() * 5) + 5) / 10, 'color': '#eea638'},
       {'code': 'IN', 'name': 'India', 'value': Math.round(Math.random()) * 74798599 * Math.floor((Math.random() * 5) + 5) / 10, 'color': '#eea638'},
       {'code': 'IL', 'name': 'Israel', 'value': Math.round(Math.random()) * 4562194 * Math.floor((Math.random() * 5) + 5) / 10, 'color': '#eea638'},
@@ -312,7 +312,7 @@ class Map extends React.Component {
       {'code': 'RU', 'name': 'Russia', 'value': 82835555 * Math.floor((Math.random() * 5) + 5) / 10, 'color': '#d8854f'},
       {'code': 'SG', 'name': 'Singapore', 'value': Math.round(Math.random()) * 5187933 * Math.floor((Math.random() * 5) + 5) / 10, 'color': '#eea638'},
       {'code': 'ZA', 'name': 'South Africa', 'value': Math.round(Math.random()) * 30459978 * Math.floor((Math.random() * 5) + 5) / 10, 'color': '#de4c4f'},
-      {'code': 'GB', 'name': 'United Kingdom', 'value': 42417431 * Math.floor((Math.random() * 5) + 5) / 10, 'color': '#d8854f'},
+      {'code': 'GB', 'name': 'United Kingdom', 'value': 41417431 * Math.floor((Math.random() * 5) + 5) / 10, 'color': '#d8854f'},
       {'code': 'US', 'name': 'United States', 'value': 173085380 * Math.floor((Math.random() * 5) + 5) / 10, 'color': '#a7a737'}
       ]
     }
