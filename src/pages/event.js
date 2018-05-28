@@ -289,7 +289,7 @@ class Event extends React.Component {
     pdf.text(10, y, 'Global Impact Heat Map')
     pdf.setFontSize(10)
     pdf.setFontType('normal')
-    pdf.addImage(map, 'PNG', 10, y + 8, width, height)
+    pdf.addImage(map, 'PNG', 10, y + 8, width * 1.5, height * 1.5)
     y += 20 + height
     if (y + 15 + height > pdf.internal.pageSize.height - 10) {
       y = 20
