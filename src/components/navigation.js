@@ -11,21 +11,14 @@ import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { withRouter } from 'react-router'
 import NewEventForm from './newEventForm'
-//import hopscotch from 'hopscotch'
 import Tooltip from '@material-ui/core/Tooltip'
 import Tour from 'react-user-tour'
-//import AviationBG from '../assets/backgrounds/aviation.jpg'
-//import TechBG from '../assets/backgrounds/tech.jpg'
 
 const styles = {
   root: {
     flexGrow: 1,
     color: 'blue'
   },
-  // menuIcon: {
-  //   marginLeft: -12,
-  //   marginRight: 20
-  // },
   menuButton: {
       magin: 20
   },
@@ -35,30 +28,14 @@ const styles = {
   }
 }
 
-/*
-const tour = {
-  id: 'hello-hopscotch',
-  steps: [
-    {
-      title: 'My content',
-      content: 'Here is where I put my content.',
-      target: document.getElementById('test'),
-      placement: 'bottom'
-    }
-  ]
-}
-*/
-
 class Navigation extends React.Component {
 
   static propTypes = {
     isAdmin: PropTypes.bool.isRequired,
     favIndustry: PropTypes.string.isRequired,
     filterFavourites: PropTypes.func,
-    //filterCategories: PropTypes.object,
     categoryIcons: PropTypes.object.isRequired,
     user: PropTypes.string.isRequired,
-    //tour: PropTypes.object
   }
 
   state = {
@@ -74,7 +51,7 @@ class Navigation extends React.Component {
   }
 
   componentDidMount () {
-    // Fetch categories from Firebase /categories
+    /* fetch categories from Firebase /categories */
     base.fetch('categories_and_icons', {
       context: this,
     }).then((categories) => {
@@ -83,13 +60,9 @@ class Navigation extends React.Component {
   }
 
   startTour() {
-    //console.log('starting tour...')
-    //hopscotch.listen('error', function(err) {
-      //console.log('undefined' + err)
-    //})
-    //hopscotch.startTour(tour)
     this.setState({isTourActive: true})
   }
+
   toggle() {
 
   }

@@ -13,13 +13,11 @@ import Dialog, {
   DialogTitle,
   DialogActions
 } from 'material-ui/Dialog'
-
 import { Close } from 'material-ui-icons'
 import Snackbar from '@material-ui/core/Snackbar'
 import ChipInput from 'material-ui-chip-input'
 import Button from 'material-ui/Button'
 import TextField from 'material-ui/TextField'
-
 import InputLabel from '@material-ui/core/InputLabel'
 import FormControl from '@material-ui/core/FormControl'
 import Select from '@material-ui/core/Select'
@@ -28,15 +26,15 @@ const styles = theme => ({
   textField: {
     marginLeft: theme.spacing.unit,
     marginRight: theme.spacing.unit,
-    marginTop: theme.spacing.unit,
+    marginTop: theme.spacing.unit
   },
   button: {
-    margin: theme.spacing.unit,
+    margin: theme.spacing.unit
   },
   formControl: {
     margin: theme.spacing.unit,
-    minWidth: 120,
-  },
+    minWidth: 120
+  }
 })
 
 class NewEventForm extends React.Component {
@@ -76,7 +74,7 @@ class NewEventForm extends React.Component {
       category: 'other',
       companyCode: '',
       companyName: '',
-      invalid: '',
+      invalid: ''
     })
   }
 
@@ -109,7 +107,7 @@ class NewEventForm extends React.Component {
           keywords: keywordsHash,
           category,
           name,
-          related_companies,
+          related_companies
         })
 
         this.resetFields()
@@ -121,7 +119,7 @@ class NewEventForm extends React.Component {
 
   handleChange = name => event => {
     this.setState({
-      [name]: event.target.value,
+      [name]: event.target.value
     })
   }
 
@@ -205,7 +203,7 @@ class NewEventForm extends React.Component {
               onChange={this.handleChange('start_date')}
               className={classes.textField}
               InputLabelProps={{
-                shrink: true,
+                shrink: true
               }}
             />
             <TextField
@@ -216,7 +214,7 @@ class NewEventForm extends React.Component {
               onChange={this.handleChange('end_date')}
               className={classes.textField}
               InputLabelProps={{
-                shrink: true,
+                shrink: true
               }}
             />
 
@@ -227,7 +225,7 @@ class NewEventForm extends React.Component {
                 value={this.state.category}
                 onChange={this.handleChange('category')}
                 inputProps={{
-                  id: 'category-simple',
+                  id: 'category-simple'
                 }}
               >
                 {_.map(this.props.categories, (k) =>
@@ -305,13 +303,13 @@ class NewEventForm extends React.Component {
       <Snackbar
         anchorOrigin={{
           vertical: 'bottom',
-          horizontal: 'left',
+          horizontal: 'left'
         }}
         open={this.state.snackbarOpen}
         autoHideDuration={4000}
         onClose={this.snackbarClose}
         ContentProps={{
-          'aria-describedby': 'message-id',
+          'aria-describedby': 'message-id'
         }}
         message={<span id="message-id">A new event has been added to your favourite category.</span>}
         action={[
@@ -323,7 +321,7 @@ class NewEventForm extends React.Component {
             onClick={this.snackbarClose}
           >
             <Close />
-          </IconButton>,
+          </IconButton>
         ]}
       />
     </div>

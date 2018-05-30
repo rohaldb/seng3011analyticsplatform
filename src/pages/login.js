@@ -5,10 +5,7 @@ import { withStyles } from 'material-ui'
 import '../assets/login.css'
 import { fb } from '../config'
 import { base } from '../config'
-import Dialog, {
-  DialogContent,
-  DialogTitle
-} from 'material-ui/Dialog'
+import Dialog, { DialogContent, DialogTitle } from 'material-ui/Dialog'
 import Button from '@material-ui/core/Button'
 import DialogContentText from '@material-ui/core/DialogContentText'
 import TextField from '@material-ui/core/TextField'
@@ -100,15 +97,19 @@ class Login extends React.Component {
     if (this.refs.pass.value.length < 1) {
       this.setState({isValid: false})
     } else {
-      this.database.child('users').orderByChild('username').equalTo(this.refs.name.value).on("value", snap => {
+      this.database.child('users').orderByChild('username').equalTo(this.refs.name.value).on('value', snap => {
         if (snap.val() != null) {
           snap.forEach(data => {
-            this.props.history.push({
-              pathname: `/timeline`,
-              state: {
-                currentUser: data.val()
-              }
-            })
+            if (data.val().password === this.refs.pass.value) {
+              this.props.history.push({
+                pathname: `/timeline`,
+                state: {
+                  currentUser: data.val()
+                }
+              })
+            } else {
+              this.setState({isValid: false})
+            }
           })
         } else {
           this.setState({isValid: false})
@@ -144,6 +145,7 @@ class Login extends React.Component {
         state: 'users',
       })
 
+      /* check for existing user name or email */
       var err = ''
       Object.entries(users).forEach(
         ([key, value]) => {
@@ -155,6 +157,7 @@ class Login extends React.Component {
           }
       )
 
+      /* manually validate all sign-up fields */
       if (username.match(/^\s*$/) || email.match(/^\s*$/) || password === '' || confirmpass === '') {
         this.setState({invalid: 'Please complete all fields.'})
       } else if (username.length < 3) {

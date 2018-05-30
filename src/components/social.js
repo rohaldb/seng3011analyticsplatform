@@ -62,7 +62,7 @@ class Social extends React.Component {
           "hideBulletsCount": 30,
           "title": "Posts",
           "valueField": "posts",
-      "fillAlphas": 0
+          "fillAlphas": 0
       }, {
           "valueAxis": "v2",
           "lineColor": "#FCD202",
@@ -71,7 +71,7 @@ class Social extends React.Component {
           "hideBulletsCount": 30,
           "title": "Average Comments",
           "valueField": "comments",
-      "fillAlphas": 0
+          "fillAlphas": 0
       }, {
           "valueAxis": "v3",
           "lineColor": "#B0DE09",
@@ -80,7 +80,7 @@ class Social extends React.Component {
           "hideBulletsCount": 30,
           "title": "Average Likes",
           "valueField": "likes",
-      "fillAlphas": 0
+          "fillAlphas": 0
       }],
       "chartScrollbar": {},
       "chartCursor": {
@@ -91,13 +91,13 @@ class Social extends React.Component {
           "parseDates": true,
           "axisColor": "#DADADA",
           "minorGridEnabled": true,
-          // Add a vertical band displaying the date range of the event
+          /* vertical band displaying the date range of the event */
           "guides": [{
             "lineAlpha": 0,
             "fillColor": "#cc0000",
             "fillAlpha": 0.1,
             "date": moment(start).toDate(),
-            "toDate": moment(end).toDate(),
+            "toDate": moment(end).toDate()
           }]
       },
       "export": {
@@ -136,7 +136,6 @@ class Social extends React.Component {
         'comments': Math.ceil(chartData[i].comments / chartData[i].posts)
       })
     }
-    // console.log('chartData: ' + JSON.stringify(chartData) + '\n' + JSON.stringify(chartArr))
     const config = this.configGraph(chartArr, start, end)
     return config
   }

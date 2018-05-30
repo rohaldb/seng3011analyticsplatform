@@ -10,10 +10,7 @@ import IconButton from '@material-ui/core/IconButton'
 import NumericLabel from 'react-pretty-numbers'
 import Social from './social'
 import Avatar from '@material-ui/core/Avatar'
-import Dialog, {
-  DialogContent,
-  DialogTitle
-} from 'material-ui/Dialog'
+import Dialog, { DialogContent, DialogTitle } from 'material-ui/Dialog'
 import OpenInNewIcon from 'react-material-icon-svg/dist/OpenInNewIcon'
 import _ from "lodash"
 

@@ -2,8 +2,6 @@ import React from 'react'
 import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles'
 import 'typeface-roboto'
 
-// A theme with custom primary and secondary color.
-// It's optional.
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -27,7 +25,6 @@ function withRoot (Component) {
       </MuiThemeProvider>
     )
   }
-
   return WithRoot
 }
 

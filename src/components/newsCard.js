@@ -8,7 +8,6 @@ import Card, { CardContent, CardHeader, CardActions } from 'material-ui/Card'
 import Button from 'material-ui/Button'
 import Fade from 'material-ui/transitions/Fade'
 
-// Styles should go here CSS should go here
 const styles = theme => ({
   cardHeader: {
     background: 'linear-gradient(60deg, #66bb6a, #338a3e)'

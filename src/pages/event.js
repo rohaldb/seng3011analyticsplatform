@@ -13,8 +13,6 @@ import jsPDF from 'jspdf'
 import Paper from '@material-ui/core/Paper'
 import { EventTour } from '../tour'
 import '../assets/company.css'
-import { saveAs } from 'file-saver'
-
 const styles = theme => ({
   root: {
     flexGrow: 1,
@@ -33,9 +31,9 @@ const styles = theme => ({
   },
   gridListHorizontal: {
     flexWrap: 'nowrap',
-    // Promote the list into his own layer on Chrome. This cost memory but helps keeping high FPS.
+    /* Promote the list into his own layer on Chrome. This cost memory but helps keeping high FPS. */
     transform: 'translateZ(0)',
-  },
+  }
 })
 
 class Event extends React.Component {
@@ -75,10 +73,10 @@ class Event extends React.Component {
   }
 
   getCompanySummaryStats(name) {
+    /* initial stats */
     var numMentions = 0
     var min = 9999
     var max = 0
-
     var stockStart = 0
     var stockEnd = 0
 
@@ -97,10 +95,13 @@ class Event extends React.Component {
       if (this.state.stockJSON.hasOwnProperty(name)) {
         this.state.stockJSON[name].map(function(item, i) {
           var t = moment(item.date, 'YYYY-MM-DD').valueOf()
+          /* get min/max stock price */
           if (t >= eventData.start_date * 1000 && t <= eventData.end_date * 1000) {
             min = (item.low < min) ? item.low : min
             max = (item.high > max) ? item.high : max
           }
+
+          /* get start/end stock price */
           if (item.date === begin) stockStart = item.value
           if (item.date === end) stockEnd = item.value
           return true
@@ -122,12 +123,16 @@ class Event extends React.Component {
   getTopArticles() {
     var formatted = []
     if (this.state.newsJSON && this.state.newsJSON.response) {
+
+      /* find top 5 articles relating to event */
       var articles = _.shuffle(this.state.newsJSON.response.results.slice(0, 20)).slice(0, 5)
       articles = articles.sort(function(a, b) {
         const t1 = new Date(a.blocks.main.createdDate).valueOf()
         const t2 = new Date(b.blocks.main.createdDate).valueOf()
         return t1 < t2
       })
+
+      /* format news article data */
       articles.map(function(item, i) {
         const time = new Date(item.blocks.main.createdDate)
         const date = moment(time).format('ddd D MMM YY')
@@ -142,29 +147,24 @@ class Event extends React.Component {
   }
 
   printDocument(eventData) {
-    if (this.state.loadingInfo || this.state.loadingStock || this.state.loadingNews || !document.getElementById('stock-img') || !document.getElementById('map-img')) {
+    if (this.state.loadingInfo || this.state.loadingStock || this.state.loadingNews ||
+      !document.getElementById('stock-img') || !document.getElementById('map-img')) {
       alert('Some information has not loaded yet. Please try again once the page has loaded.')
       return
     }
 
-    /*******************************************/
-    /* static pdf workaround for some browsers */
-    /*
-    fetch(`../${window.location.toString().match(/([0-9]+)$/)[0]}.pdf`).then(response => response.text()).then(text => function() {
-      var blob = new Blob([text], {type: 'text/plain;charset=utf-8'})
-      saveAs(blob, 'event-report.pdf')
-      return
-    })
-    */
-    /*******************************************/
-
-    const pdf = new jsPDF()
+    /* extract data to add to pdf */
     const companies = eventData.related_companies
     var eventName = eventData.name
     const eventDesc = eventData.description
     const eventDate = document.getElementById('event-date').textContent
     const map = document.getElementById('map-img').innerHTML
     const stock = document.getElementById('stock-img').innerHTML
+    var width = document.getElementById('map').offsetWidth / 5
+    var height = document.getElementById('map').offsetHeight / 4.5
+
+    /* create pdf and set document properties */
+    const pdf = new jsPDF()
     var pg = 1
     pdf.setProperties({
       title: eventData.name + ' report',
@@ -174,10 +174,6 @@ class Event extends React.Component {
       creator: 'EventStock'
     })
     this.newPDFPage(pdf, false, pg)
-    /* var width = pdf.internal.pageSize.width / 1.4
-    var height = pdf.internal.pageSize.height / 3 */
-    var width = document.getElementById('map').offsetWidth / 5
-    var height = document.getElementById('map').offsetHeight / 4.5
 
     const makePage = (pdf, pg) => {
       this.newPDFPage(pdf, true, pg)
@@ -346,14 +342,15 @@ class Event extends React.Component {
 
   companySocialStats(name) {
     const posts = this.state.infoJSON[name].posts
-    let {startDate, endDate} = this.state
-
+    let { startDate, endDate } = this.state
     let start = moment(startDate).valueOf()
     let end = moment(endDate).valueOf()
     var days = moment(endDate).diff(moment(start), 'days')
     var numPosts = 0
     var numLikes = 0
     var numComments = 0
+
+    /* get the average number of posts, likes & comments per day */
     for (let post in posts) {
       var date = moment(posts[post]['created_time']).valueOf()
       if (date >= start && date <= end) {
@@ -362,6 +359,7 @@ class Event extends React.Component {
         numComments += posts[post]['comments']
       }
     }
+
     return {
       'posts': Math.ceil(numPosts / days),
       'likes': Math.ceil(numLikes / numPosts),
@@ -369,6 +367,7 @@ class Event extends React.Component {
     }
   }
 
+  /* add a new page to pdf with a header */
   newPDFPage(pdf, add, pg) {
     if (add) pdf.addPage()
     pdf.setFontSize(10)
@@ -377,6 +376,7 @@ class Event extends React.Component {
     this.alignText('Page ' + pg, 8, pdf, 'right')
   }
 
+  /* write text to pdf algined to the centre or to the right */
   alignText(text, y, pdf, centreOrRight) {
     var textWidth = pdf.getStringUnitWidth(text) * pdf.internal.getFontSize() / pdf.internal.scaleFactor
     var textOffset = (pdf.internal.pageSize.width - textWidth)
@@ -401,27 +401,30 @@ class Event extends React.Component {
     for (let companyName in companies) {
       if (companies.hasOwnProperty(companyName) && companies[companyName]) {
         const companyCode = companies[companyName]
-        const token = 'EAACEdEose0cBAN0qycJH6DRk02nCvLhV2Ob5YakVVHquFUBwPQT935k7ZABNYF23bhTedBT9IOrZBVoxO4fkssFrmWvaql0qvzg4GPlDpEXQfhhFtiYFvjfc3QO8zdrB4vIjehEykEBwVlxSVZAcfm8gphZCprfJ2Gq2fuTZCv2juGZBZBEdW6EtZAI3nJOVVxoaCrI6oZB9U1gZDZD'
-        let params = `statistics=id,name,website,description,category,fan_count,posts{likes,comments,created_time}&${dates}&access_token=${token}`
-        //let params = `statistics=id,name,website,description,category,fan_count,posts{likes,comments,created_time}&${dates}&workaround=true`
-        // console.log(`https://unassigned-api.herokuapp.com/api/${companyCode}?${params}`)
+
+        /* use fb auto-token gen workaround */
+        let params = `statistics=id,name,website,description,category,fan_count,posts{likes,comments,created_time}&${dates}&workaround=true`
+
+        /* hard-code token if needed; sometimes, fb auto-token gen workaround fails */
+        // const token = 'EAACEdEose0cBAN0qycJH6DRk02nCvLhV2Ob5YakVVHquFUBwPQT935k7ZABNYF23bhTedBT9IOrZBVoxO4fkssFrmWvaql0qvzg4GPlDpEXQfhhFtiYFvjfc3QO8zdrB4vIjehEykEBwVlxSVZAcfm8gphZCprfJ2Gq2fuTZCv2juGZBZBEdW6EtZAI3nJOVVxoaCrI6oZB9U1gZDZD'
+        // let params = `statistics=id,name,website,description,category,fan_count,posts{likes,comments,created_time}&${dates}&access_token=${token}`
+
         fetch(`https://unassigned-api.herokuapp.com/api/${companyCode}?${params}`)
           // eslint-disable-next-line
           .then((response) => {
             if (response.ok) {
               response.json().then(data => {
-                // console.log(data)
                 let infoJSON = this.state.infoJSON
                 if (data.data.website) data.data.website = data.data.website.replace(/.*(www\.[^ ]+).*/, '$1') /* extract 1st site only */
                 if (data.data.website && !data.data.website.match(/^http/)) data.data.website = 'http://' + data.data.website
                 if (!data.data.website || data.data.website.match(/^\s*$/)) data.data.website = 'Not provided'
                 if (!data.data.description || data.data.description.length < 40) {
+                  /* use wikipedia as a fallback for the description */
                   var url = 'https://en.wikipedia.org/w/api.php?action=query&origin=*&prop=extracts'
                   url += '&format=json&exintro=&explaintext=&titles=' + companyName + '&rvprop=content&redirects&callback=?'
                   fetch(url).then((response) => {
                     if (response.ok) {
                       response.text().then(res => {
-                        // console.log(res)
                         var extract = res.substring(res.indexOf('extract'), res.length)
                         data.data.description = extractCompanySummary(extract, 450).replace(/\}+\)/, '')
                         if (!data.data.description || data.data.description.match(/^\s*$/)) {
@@ -432,7 +435,6 @@ class Event extends React.Component {
                         }
                         data.data.code = companyCode
                         infoJSON[companyName] = data.data
-                        // console.log(infoJSON)
                         companiesProcessed++
                         if (companiesProcessed === Object.keys(companies).length) {
                           this.setState({ infoJSON: infoJSON, loadingInfo: false })
@@ -443,7 +445,6 @@ class Event extends React.Component {
                 } else {
                   data.data.code = companyCode
                   infoJSON[companyName] = data.data
-                  // console.log(infoJSON)
                   companiesProcessed++
                   if (companiesProcessed === Object.keys(companies).length) {
                     this.setState({ infoJSON: infoJSON, loadingInfo: false })
@@ -452,7 +453,7 @@ class Event extends React.Component {
               })
             }
           }).catch(error => console.error(error))
-      } else if (!companies[companyName]) { // null stock code
+      } else if (!companies[companyName]) { /* null stock code */
         companiesProcessed++
         if (companiesProcessed === Object.keys(companies).length) {
           this.setState({ loadingInfo: false })
@@ -475,32 +476,26 @@ class Event extends React.Component {
       dates += `&to-date=${end.format('YYYY-MM-DD')}`
     }
 
-    // console.log(`fetching ${base}?${query}&${dates}&${params}&${apiKey}`)
     fetch(`${base}?${query}&${dates}&${params}&${apiKey}`)
     .then((response) => {
       if (response.ok) {
         response.json().then(data => {
-          // console.log(data)
           if (!data || !data.response || !data.response.results || data.response.results.length === 0) {
             /* if no results, try again with two keywords */
             const keywords = eventInfo.keywords.toString().replace(/([^,]+),([^,]+).*/, '$1,$2').replace(/,/g, '%20AND%20')
             query = `q=${keywords}`
-            // console.log(`fetching ${base}?${query}&${dates}&${params}&${apiKey}`)
             fetch(`${base}?${query}&${dates}&${params}&${apiKey}`)
             .then((response) => {
               if (response.ok) {
                 response.json().then(data => {
-                  // console.log(data)
                   if (!data || !data.response || !data.response.results || data.response.results.length === 0) {
                     /* if no results, try again with one keyword */
                     const keywords = eventInfo.keywords.toString().replace(/([^,]+),.*/, '$1')
                     query = `q=${keywords}`
-                    // console.log(`fetching ${base}?${query}&${dates}&${params}&${apiKey}`)
                     fetch(`${base}?${query}&${dates}&${params}&${apiKey}`)
                     .then((response) => {
                       if (response.ok) {
                         response.json().then(data => {
-                          // console.log(data)
                           this.setState({ newsJSON: data, loadingNews: false })
                         })
                       }
@@ -523,9 +518,7 @@ class Event extends React.Component {
     const eventInfo = this.props.eventData
     const companies = eventInfo.related_companies
     let startDate = moment.unix(eventInfo.start_date)
-    let endDate = eventInfo.end_date === 'ongoing' ? moment() : moment.unix(eventInfo.end_date) // Use today's date if ongoing
-    // console.log('START DATE: ' + startDate.format('dddd, MMMM Do YYYY, h:mm:ss a'))
-    // console.log('END DATE: ' + endDate.format('dddd, MMMM Do YYYY, h:mm:ss a'))
+    let endDate = eventInfo.end_date === 'ongoing' ? moment() : moment.unix(eventInfo.end_date) /* use today's date if ongoing */
 
     this.setState({
       startDate,
@@ -534,15 +527,12 @@ class Event extends React.Component {
 
     let companiesProcessed = 0
     for (let companyName in companies) {
-      // console.log('COMPANY: ' + companyName)
       if (companies.hasOwnProperty(companyName) && companies[companyName]) {
         const companyCode = companies[companyName]
         const base = 'https://www.alphavantage.co/query'
         const apiKey = '2V4IGWVZ6W8XS8AI'
-        // TODO MAKE OUTPUTSIZE == full
         const params = `?function=TIME_SERIES_DAILY&outputsize=full&symbol=${companyCode}&apikey=${apiKey}`
         const url = base + params
-        // console.log('FETCHING: ' + url)
         fetch(url)
           // eslint-disable-next-line
           .then((response) => {
@@ -565,7 +555,6 @@ class Event extends React.Component {
                 }
                 let stockJSON = this.state.stockJSON
                 stockJSON[companyName] = newData
-
                 companiesProcessed++
                 if (companiesProcessed === Object.keys(companies).length) {
                   this.setState({ stockJSON: stockJSON, loadingStock: false })
@@ -573,7 +562,7 @@ class Event extends React.Component {
               })
             }
           })
-      } else if (!companies[companyName]) { // null stock code
+      } else if (!companies[companyName]) { /* null stock code */
         companiesProcessed++
         if (companiesProcessed === Object.keys(companies).length) {
           this.setState({ loadingStock: false })

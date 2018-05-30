@@ -12,24 +12,17 @@ import moment from 'moment'
 import { Grid, Chip, Typography, withStyles } from 'material-ui'
 import Drawer from '@material-ui/core/Drawer'
 import Button from '@material-ui/core/Button'
-
 import TextField from '@material-ui/core/TextField'
 import Switch from '@material-ui/core/Switch'
-
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
 import ListItemText from '@material-ui/core/ListItemText'
-
 import { TimelineTour } from '../tour'
 import { getDate } from '../time'
 import { Navigation } from '../components'
-
 import { Event } from 'material-ui-icons'
-
-//import AviationBG from '../assets/backgrounds/aviation.jpg'
-//import TechBG from '../assets/backgrounds/tech.jpg'
 
 const styles = theme => ({
   root: {
@@ -81,7 +74,7 @@ const styles = theme => ({
   expansionHeading: {
     fontSize: theme.typography.pxToRem(15),
     fontWeight: theme.typography.fontWeightRegular,
-  },
+  }
 })
 
 const bgCols = [
@@ -102,14 +95,14 @@ class Timeline extends React.Component {
     eventData: {},
     filterStartDate: moment().subtract(5, 'y').format('YYYY-MM-DD'),
     filterEndDate: moment().format('YYYY-MM-DD'),
-    filterCategories: {}, // filled in with categories from Firebase
-    categoryIcons: {}, // filled in with data from Firebase
+    filterCategories: {}, /* filled in with categories from Firebase */
+    categoryIcons: {}, /* filled in with data from Firebase */
     drawerOpen: false,
-    searchString: ""
+    searchString: ''
   }
 
   componentDidMount() {
-    // Fetch categories from Firebase /categories
+    /* Fetch categories from Firebase /categories */
     base.fetch('categories_and_icons', {
       context: this,
     }).then((categories) => {
@@ -267,30 +260,30 @@ class Timeline extends React.Component {
       </Drawer>
     )
 
-    //need to clean data up a bit
+    /* need to clean data up a bit */
     let sortedEvents = {}
     _.map(_.pickBy(eventData, _.identity), (x,i) => sortedEvents[i] = x)
 
-    // Filter events by date, category and search string
+    /* filter events by date, category and search string */
     sortedEvents = _.filter(sortedEvents, x => {
-      // Filter by date
+      /* filter by date */
       const startDate   = moment.unix(x.start_date)
       const filterStart = moment(filterStartDate, 'YYYY-MM-DD')
       const filterEnd   = moment(filterEndDate, 'YYYY-MM-DD')
 
-      const dateMatch = startDate.isBetween(filterStart, filterEnd, null, '[]') // Inclusive date range match
-      if (!dateMatch) return false // Early exit
+      const dateMatch = startDate.isBetween(filterStart, filterEnd, null, '[]') /* inclusive date range match */
+      if (!dateMatch) return false /* early exit */
 
-      // Filter by category
-      // Handle events with no category/category is not on Firebase list
+      /* filter by category */
+      /* handle events with no category/category is not on Firebase list */
       const categoryNotOnFirebase = !_.includes(_.keys(filterCategories), _.toLower(x.category))
       const uncategorisedSelected = filterCategories['uncategorised'] === true
       const categoryToggled       = filterCategories[_.toLower(x.category)] === true
 
       const categoryMatch = categoryToggled || (categoryNotOnFirebase && uncategorisedSelected)
-      if (!categoryMatch) return false // Early exit
+      if (!categoryMatch) return false /* early exit */
 
-      // Filter by search string
+      /* filter by search string */
       if (!searchString) {
         return true
       } else {
@@ -305,7 +298,7 @@ class Timeline extends React.Component {
       }
     })
 
-    // Sort by start date
+    /* sort by start date */
     sortedEvents = _.reverse(_.sortBy(sortedEvents, x => x.start_date))
 
     document.title = 'EventStock'
@@ -377,8 +370,10 @@ class Timeline extends React.Component {
                                 </Grid>
                                 <Grid item xs={2}>
                                   <Grid container direction="column" alignItems="flex-end">
-                                    { _.map(_.take(_.keys(sortedEvents[k].related_companies), 1), (c, i) => { // Take first company's logo - adjust 2nd arg of _.take for more logos
-                                      const companyName = _.split(_.replace(_.toLower(c), /\s*the\s*/, ''), /\s+/)[0] // Remove 'the', take first word in companyName and hope that NAME.com gives a logo
+                                    { _.map(_.take(_.keys(sortedEvents[k].related_companies), 1), (c, i) => {
+                                      /* rake first company's logo - adjust 2nd arg of _.take for more logos */
+                                      /* remove 'the', take first word in companyName and hope that NAME.com gives a logo */
+                                      const companyName = _.split(_.replace(_.toLower(c), /\s*the\s*/, ''), /\s+/)[0]
                                       const logoUrl = `https://logo.clearbit.com/${companyName}.com?size=50`
                                       return (<img key={i} src={logoUrl} alt='' />)
                                     })}

@@ -7,10 +7,7 @@ import IconButton from 'material-ui/IconButton'
 import OpenInNewIcon from 'react-material-icon-svg/dist/OpenInNewIcon'
 import FormatAlignJustifyIcon from 'react-material-icon-svg/dist/FormatAlignJustifyIcon'
 import { CardContent } from 'material-ui/Card'
-import Dialog, {
-  DialogContent,
-  DialogTitle
-} from 'material-ui/Dialog'
+import Dialog, { DialogContent, DialogTitle } from 'material-ui/Dialog'
 
 const styles = theme => ({
   root: {

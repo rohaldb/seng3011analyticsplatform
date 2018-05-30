@@ -317,7 +317,7 @@ class Map extends React.Component {
       ]
     }
 
-    // get min and max values
+    /* get min and max values */
     var minBulletSize = 3
     var maxBulletSize = 50
     var min = Infinity
@@ -332,17 +332,17 @@ class Map extends React.Component {
       }
     }
 
-    // it's better to use circle square to show difference between values, not a radius
+    /* it's better to use circle square to show difference between values, not a radius */
     var maxSquare = maxBulletSize * maxBulletSize * 2 * Math.PI
     var minSquare = minBulletSize * minBulletSize * 2 * Math.PI
 
-    // create circle for each country
+    /* create circle for each country */
     var images = []
     for (i = 0; i < mapData.length; i++) {
       var dataItem = mapData[ i ]
       value = dataItem.value
 
-      // calculate size of a bubble
+      /* calculate size of a bubble */
       var square = (value - min) / (max - min) * (maxSquare - minSquare) + minSquare
       if (square < minSquare) {
         square = minSquare
@@ -364,7 +364,6 @@ class Map extends React.Component {
       })
     }
 
-    // config as same as yours but inside const
     const config = {
       'type': 'map',
       'projection': 'eckert6',
@@ -380,15 +379,17 @@ class Map extends React.Component {
       "listeners": [{
         "event": "rendered",
         "method": function(e) {
+          /* use amcharts native export to generate image for pdf generation */
           var interval = setInterval(function() {
             if (window.fabric) {
               clearTimeout(interval)
-              e.chart["export"].capture({}, function() {
+              e.chart['export'].capture({}, function() {
                 this.toJPG({}, function(base64) {
                   if (!document.getElementById('map-img')) {
-                    var div = document.createElement("div")
+                    /* add image data from export to a hidden div for easy of access */
+                    var div = document.createElement('div')
                     div.innerHTML = base64
-                    div.setAttribute("id", 'map-img')
+                    div.setAttribute('id', 'map-img')
                     div.setAttribute('style', 'display:none')
                     document.getElementById('stock').appendChild(div)
                   }
